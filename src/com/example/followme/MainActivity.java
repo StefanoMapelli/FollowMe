@@ -15,6 +15,10 @@ import android.net.NetworkInfo.State;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.telephony.TelephonyManager;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.widget.Button;
+import android.widget.EditText;
 
 import com.parse.FindCallback;
 import com.parse.Parse;
@@ -23,13 +27,53 @@ import com.parse.ParseObject;
 import com.parse.ParseQuery;
 
 public class MainActivity extends Activity {
+	
+	private EditText phoneNumberText;
+	private Button okButton;
+	private String phoneNumber;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
 	{
 		super.onCreate(savedInstanceState);
 		
+		
+		Parse.enableLocalDatastore(this);
 		Parse.initialize(this,"x9hwNnRfTCCYGXPVJNKaR7zYTIMOdKeLkerRQJT2" ,"hi7GT6rUlp9uTfw6XQzdEjnTqwgPnRPoikPehgVf");
+		
+		ParseQuery<ParseObject> personalQuery = ParseQuery.getQuery("PersonalData");
+		personalQuery.fromLocalDatastore();
+		int numberOfData=-1;
+		try {
+			numberOfData=personalQuery.count();
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		if(numberOfData<=0)
+		{
+			//chiedere numero all'utente perchè primo utilizzo
+			super.setContentView(R.layout.first_use_layout);
+			phoneNumberText = (EditText) findViewById(R.id.phoneNumberText);
+			okButton = (Button) findViewById(R.id.okButton);
+			
+			okButton.setOnClickListener(new OnClickListener() {
+				
+				@Override
+				public void onClick(View v) 
+				{
+					phoneNumber = phoneNumberText.getText().toString();
+					ParseObject personalData = new ParseObject("PersonalData");
+					personalData.put("phone", phoneNumber);	
+					personalData.saveInBackground();
+				} 
+			});
+			super.setContentView(R.layout.main_activity_layout);	
+		}
+		else
+		{
+			super.setContentView(R.layout.main_activity_layout);
+		}
 		new NetworkActivity().execute();
 	}
 	
@@ -40,17 +84,11 @@ public class MainActivity extends Activity {
 		protected String doInBackground(Void... params) 
 		{
 			ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-			String ipAddress = null;
-			String phoneNumber = ((TelephonyManager)getSystemService(TELEPHONY_SERVICE)).getLine1Number();
+			String ipAddress = "initialization";
 			
-			if(connectionPresent(connMgr))
-			{
-				ipAddress = getIpAddress();
-			}
-				
 			while(true)
 			{
-				if(connectionPresent(connMgr) && ipAddress!=getIpAddress())
+				if(connectionPresent(connMgr) && ipAddress.compareTo(getIpAddress())!=0)
 				{			
 					ipAddress = getIpAddress();
 					final String ip = ipAddress;
@@ -67,6 +105,7 @@ public class MainActivity extends Activity {
 										if(!objects.isEmpty())
 										{
 											objects.get(0).put("ipAddress",ip);
+											objects.get(0).saveInBackground();
 										}
 										else
 										{
