@@ -2,6 +2,7 @@ package com.example.followme;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 
@@ -64,5 +65,28 @@ public class PersonalDataManager {
 		  {
 			  return false;
 		  }				  
+	  }
+	  
+	  /**
+	   * Getter del numero di telefono del db, nell tabella dati personali
+	   * 
+	   * @return numero di telefono salvato nel db
+	   */
+	  public static String getPhoneNumber()
+	  {
+		  if(phoneNumberExists())
+		  {
+			  Cursor cursor =database.query(DatabaseCreationManager.TABLE_PERSONAL_DATA, allColumns, null, null, null, null, null);
+		  
+			  cursor.moveToFirst();
+		  
+			  String phoneNumber=cursor.getString(1);
+		  
+			  return phoneNumber;
+		  }
+		  else
+		  {
+			  return null;
+		  }
 	  }
 }

@@ -2,6 +2,7 @@ package com.example.followme;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 
@@ -25,52 +26,26 @@ import com.parse.ParseQuery;
 
 public class MainActivity extends Activity {
 	
-	private EditText phoneNumberText;
-	private Button okButton;
 	private String phoneNumber;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
 	{
 		super.onCreate(savedInstanceState);
+		super.setContentView(R.layout.main_activity_layout);
 		
-		
-		Parse.enableLocalDatastore(this);
-		Parse.initialize(this,"x9hwNnRfTCCYGXPVJNKaR7zYTIMOdKeLkerRQJT2" ,"hi7GT6rUlp9uTfw6XQzdEjnTqwgPnRPoikPehgVf");
-		
-		ParseQuery<ParseObject> personalQuery = ParseQuery.getQuery("PersonalData");
-		personalQuery.fromLocalDatastore();
-		int numberOfData=-1;
-		try {
-			numberOfData=personalQuery.count();
-		} catch (ParseException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		if(numberOfData<=0)
+		if(!PersonalDataManager.phoneNumberExists())
 		{
-			//chiedere numero all'utente perchè primo utilizzo
-			super.setContentView(R.layout.first_use_layout);
-			phoneNumberText = (EditText) findViewById(R.id.phoneNumberText);
-			okButton = (Button) findViewById(R.id.okButton);
+			Intent intent = new Intent(this,FirstUseActivity.class);
 			
-			okButton.setOnClickListener(new OnClickListener() {
-				
-				@Override
-				public void onClick(View v) 
-				{
-					phoneNumber = phoneNumberText.getText().toString();
-					ParseObject personalData = new ParseObject("PersonalData");
-					personalData.put("phone", phoneNumber);	
-					personalData.saveInBackground();
-				} 
-			});
-			super.setContentView(R.layout.main_activity_layout);	
+			startActivityForResult(intent, 0);
 		}
 		else
 		{
-			super.setContentView(R.layout.main_activity_layout);
+			phoneNumber = PersonalDataManager.getPhoneNumber();
 		}
+		
+		Parse.initialize(this,"x9hwNnRfTCCYGXPVJNKaR7zYTIMOdKeLkerRQJT2" ,"hi7GT6rUlp9uTfw6XQzdEjnTqwgPnRPoikPehgVf");
 		new NetworkActivity().execute();
 	}
 	
