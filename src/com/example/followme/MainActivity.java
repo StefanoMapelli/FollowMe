@@ -9,18 +9,15 @@ import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.net.SocketException;
 import java.util.Enumeration;
-import java.util.List;
 
 import android.net.NetworkInfo.State;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.telephony.TelephonyManager;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
 
-import com.parse.FindCallback;
 import com.parse.Parse;
 import com.parse.ParseException;
 import com.parse.ParseObject;
@@ -90,35 +87,8 @@ public class MainActivity extends Activity {
 			{
 				if(connectionPresent(connMgr) && ipAddress.compareTo(getIpAddress())!=0)
 				{			
-					ipAddress = getIpAddress();
-					final String ip = ipAddress;
-					final String pNumber = phoneNumber;
-					ParseQuery<ParseObject> query = ParseQuery.getQuery("Address");
-					query.whereEqualTo("phone", phoneNumber);
-					query.findInBackground(new FindCallback<ParseObject>() 
-							{
-								@Override
-								public void done(List<ParseObject> objects,ParseException e) 
-								{
-									if(e == null)
-									{
-										if(!objects.isEmpty())
-										{
-											objects.get(0).put("ipAddress",ip);
-											objects.get(0).saveInBackground();
-										}
-										else
-										{
-											ParseObject address = new ParseObject("Address");
-											address.put("phone", pNumber);
-											address.put("ipAddress", ip);
-											address.saveInBackground();											
-										}
-									}
-								}
-							}
-					);
-					
+					ipAddress = getIpAddress();					
+					ParseManager.updateIpAddress(phoneNumber, ipAddress);					
 				}
 			}
 		}
