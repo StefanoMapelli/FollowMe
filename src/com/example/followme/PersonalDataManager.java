@@ -2,7 +2,6 @@ package com.example.followme;
 
 import android.content.ContentValues;
 import android.content.Context;
-import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 
@@ -53,5 +52,17 @@ public class PersonalDataManager {
 		  ContentValues values = new ContentValues();
 		  values.put(DatabaseCreationManager.COLUMN_PHONE_NUMBER, newPhoneNumber);
 		  database.update(DatabaseCreationManager.TABLE_PERSONAL_DATA, values, null, null);
+	  }
+	  
+	  public boolean phoneNumberExists()
+	  {
+		  if(database.query(DatabaseCreationManager.TABLE_PERSONAL_DATA, allColumns, null, null, null, null, null).getCount()>0)
+		  {
+			  return true;
+		  }
+		  else
+		  {
+			  return false;
+		  }				  
 	  }
 }
