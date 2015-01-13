@@ -33,17 +33,33 @@ public class MainActivity extends Activity {
 	{
 		super.onCreate(savedInstanceState);
 		super.setContentView(R.layout.main_activity_layout);
-		
-		if(!PersonalDataManager.phoneNumberExists())
+		boolean esito;
+		try
 		{
-			Intent intent = new Intent(this,FirstUseActivity.class);
+			PersonalDataManager.open();
+			esito= PersonalDataManager.phoneNumberExists();
+		}
+		catch(Exception e)
+		{
+			esito=false;
+		}
+		if(!esito)
+		{
+			//creo il db
+			new PersonalDataManager(this);
+			PersonalDataManager.open();
 			
+			//intent per l'attività del primo utilizzo
+			Intent intent = new Intent(this,FirstUseActivity.class);
 			startActivityForResult(intent, 0);
+			
 		}
 		else
 		{
+			//carico il phone number presente nel db
 			phoneNumber = PersonalDataManager.getPhoneNumber();
 		}
+		PersonalDataManager.close();
 		
 		Parse.initialize(this,"x9hwNnRfTCCYGXPVJNKaR7zYTIMOdKeLkerRQJT2" ,"hi7GT6rUlp9uTfw6XQzdEjnTqwgPnRPoikPehgVf");
 		new NetworkActivity().execute();

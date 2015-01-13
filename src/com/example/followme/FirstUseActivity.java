@@ -2,6 +2,7 @@ package com.example.followme;
 
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -28,7 +29,12 @@ public class FirstUseActivity extends Activity {
 			public void onClick(View v) 
 			{
 				phoneNumber = phoneNumberText.getText().toString();
+				PersonalDataManager.open();
 				PersonalDataManager.insertPhoneNumber(phoneNumber);
+				PersonalDataManager.close();
+				Intent intent = new Intent();
+                setResult(RESULT_OK, intent);
+                finish();
 			} 
 		});
 	}
