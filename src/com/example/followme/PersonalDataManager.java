@@ -14,9 +14,9 @@ import android.database.sqlite.SQLiteDatabase;
 public class PersonalDataManager {
 	
 	// Database fields
-	  private SQLiteDatabase database;
-	  private DatabaseCreationManager dbHelper;
-	  private String[] allColumns = { DatabaseCreationManager.COLUMN_ID,
+	  private static SQLiteDatabase database;
+	  private static DatabaseCreationManager dbHelper;
+	  private static String[] allColumns = { DatabaseCreationManager.COLUMN_ID,
 	      DatabaseCreationManager.COLUMN_PHONE_NUMBER };
 
 	  
@@ -24,11 +24,11 @@ public class PersonalDataManager {
 	    dbHelper = new DatabaseCreationManager(context);
 	  }
 	  
-	  public void open() throws SQLException {
+	  public static void open() throws SQLException {
 		    database = dbHelper.getWritableDatabase();
 		  }
 	  
-	  public void close() {
+	  public static void close() {
 		    dbHelper.close();
 		  }
 	  
@@ -36,7 +36,7 @@ public class PersonalDataManager {
 	   * Insertion of a new phone number in the database, in the table of personal data
 	   * @param phoneNumber
 	   */
-	  public void insertPhoneNumber(String phoneNumber) 
+	  public static void insertPhoneNumber(String phoneNumber) 
 	  {
 		  ContentValues values = new ContentValues();
 		  values.put(DatabaseCreationManager.COLUMN_PHONE_NUMBER, phoneNumber);
@@ -47,14 +47,14 @@ public class PersonalDataManager {
 	   * Update of the phone number saved in the table personalData
 	   * @param newPhoneNumber
 	   */
-	  public void updatePhoneNumber(String newPhoneNumber)
+	  public static void updatePhoneNumber(String newPhoneNumber)
 	  {
 		  ContentValues values = new ContentValues();
 		  values.put(DatabaseCreationManager.COLUMN_PHONE_NUMBER, newPhoneNumber);
 		  database.update(DatabaseCreationManager.TABLE_PERSONAL_DATA, values, null, null);
 	  }
 	  
-	  public boolean phoneNumberExists()
+	  public static boolean phoneNumberExists()
 	  {
 		  if(database.query(DatabaseCreationManager.TABLE_PERSONAL_DATA, allColumns, null, null, null, null, null).getCount()>0)
 		  {
