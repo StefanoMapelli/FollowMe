@@ -85,42 +85,12 @@ public class MainActivity extends Activity {
 			
 			while(true)
 			{
-				if(connectionPresent(connMgr) && ipAddress.compareTo(getIpAddress())!=0)
+				if(ConnectionManager.connectionPresent(connMgr) && ipAddress.compareTo(ConnectionManager.getIpAddress())!=0)
 				{			
-					ipAddress = getIpAddress();					
+					ipAddress = ConnectionManager.getIpAddress();					
 					ParseManager.updateIpAddress(phoneNumber, ipAddress);					
 				}
 			}
 		}
-		
-		public boolean connectionPresent(ConnectivityManager cMgr)
-		{
-		      if (cMgr != null) {
-		         NetworkInfo netInfo = cMgr.getActiveNetworkInfo();
-		         if ((netInfo != null) && (netInfo.getState() != null)) {
-		            return netInfo.getState().equals(State.CONNECTED);
-		         } else {
-		            return false;
-		         }
-		      }
-		      return false;
-		   }
-		
-		 public String getIpAddress() {
-		      try {
-		         for (Enumeration<NetworkInterface> en = NetworkInterface.getNetworkInterfaces(); en.hasMoreElements();) {
-		            NetworkInterface intf = en.nextElement();
-		            for (Enumeration<InetAddress> enumIpAddr = intf.getInetAddresses(); enumIpAddr.hasMoreElements();) {
-		               InetAddress inetAddress = enumIpAddr.nextElement();
-		               if (!inetAddress.isLoopbackAddress()) {
-		                  return inetAddress.getHostAddress().toString();
-		               }
-		            }
-		         }
-		      } catch (SocketException e) {
-		        // Log.e(Constants.LOG_TAG, e.getMessage(), e);
-		      }
-		      return null;
-		   }
     }
 }
