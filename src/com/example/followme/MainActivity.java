@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.net.ConnectivityManager;
+import android.net.wifi.WifiManager;
 
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -57,15 +58,16 @@ public class MainActivity extends Activity {
 		protected String doInBackground(Void... params) 
 		{
 			ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+			WifiManager wifiMgr = (WifiManager) getSystemService(WIFI_SERVICE);
 			String ipAddress = "initialization";
 			PersonalDataManager.open();
 			
 			while(true)
 			{
 				phoneNumber=PersonalDataManager.getPhoneNumber();
-				if(phoneNumber.compareTo("")!=0 && ConnectionManager.connectionPresent(connMgr) && ipAddress.compareTo(ConnectionManager.getIpAddress())!=0)
+				if(phoneNumber.compareTo("")!=0 && ConnectionManager.connectionPresent(connMgr) && ipAddress.compareTo(ConnectionManager.getIpAddress(connMgr,wifiMgr))!=0)
 				{			
-					ipAddress = ConnectionManager.getIpAddress();					
+					ipAddress = ConnectionManager.getIpAddress(connMgr,wifiMgr);					
 					ParseManager.updateIpAddress(MainActivity.this, phoneNumber, ipAddress);					
 				}
 				try {
