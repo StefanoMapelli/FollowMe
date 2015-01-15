@@ -4,29 +4,13 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 
-import java.net.InetAddress;
-import java.net.NetworkInterface;
-import java.net.SocketException;
-import java.util.Enumeration;
-
-import android.net.NetworkInfo.State;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.view.View;
-import android.view.View.OnClickListener;
-import android.widget.Button;
-import android.widget.EditText;
-
-import com.parse.Parse;
-import com.parse.ParseException;
-import com.parse.ParseObject;
-import com.parse.ParseQuery;
 
 public class MainActivity extends Activity {
 	
-	private String phoneNumber;
+	private String phoneNumber="";
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
@@ -36,6 +20,7 @@ public class MainActivity extends Activity {
 		boolean esito;
 		try
 		{
+			new PersonalDataManager(this);
 			PersonalDataManager.open();
 			esito= PersonalDataManager.phoneNumberExists();
 		}
@@ -57,11 +42,11 @@ public class MainActivity extends Activity {
 		else
 		{
 			//carico il phone number presente nel db
+			PersonalDataManager.open();
 			phoneNumber = PersonalDataManager.getPhoneNumber();
 		}
-		PersonalDataManager.close();
 		
-		Parse.initialize(this,"x9hwNnRfTCCYGXPVJNKaR7zYTIMOdKeLkerRQJT2" ,"hi7GT6rUlp9uTfw6XQzdEjnTqwgPnRPoikPehgVf");
+		//Parse.initialize(this,"x9hwNnRfTCCYGXPVJNKaR7zYTIMOdKeLkerRQJT2" ,"hi7GT6rUlp9uTfw6XQzdEjnTqwgPnRPoikPehgVf");
 		new NetworkActivity().execute();
 	}
 	
@@ -73,13 +58,20 @@ public class MainActivity extends Activity {
 		{
 			ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
 			String ipAddress = "initialization";
+			PersonalDataManager.open();
 			
 			while(true)
 			{
-				if(ConnectionManager.connectionPresent(connMgr) && ipAddress.compareTo(ConnectionManager.getIpAddress())!=0)
+				phoneNumber=PersonalDataManager.getPhoneNumber();
+				if(phoneNumber.compareTo("")!=0 && ConnectionManager.connectionPresent(connMgr) && ipAddress.compareTo(ConnectionManager.getIpAddress())!=0)
 				{			
 					ipAddress = ConnectionManager.getIpAddress();					
-					ParseManager.updateIpAddress(phoneNumber, ipAddress);					
+					ParseManager.updateIpAddress(MainActivity.this, phoneNumber, ipAddress);					
+				}
+				try {
+					Thread.sleep(1000);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
 				}
 			}
 		}

@@ -29,9 +29,7 @@ public class FirstUseActivity extends Activity {
 			public void onClick(View v) 
 			{
 				phoneNumber = phoneNumberText.getText().toString();
-				PersonalDataManager.open();
 				PersonalDataManager.insertPhoneNumber(phoneNumber);
-				PersonalDataManager.close();
 				Intent intent = new Intent();
                 setResult(RESULT_OK, intent);
                 finish();

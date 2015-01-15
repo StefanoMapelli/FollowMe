@@ -86,7 +86,7 @@ public class PersonalDataManager {
 		  }
 		  else
 		  {
-			  return null;
+			  return "";
 		  }
 	  }
 }

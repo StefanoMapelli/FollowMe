@@ -2,7 +2,10 @@ package com.example.followme;
 
 import java.util.List;
 
+import android.content.Context;
+
 import com.parse.FindCallback;
+import com.parse.Parse;
 import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
@@ -14,8 +17,9 @@ public class ParseManager {
 	 * pari a phoneNumber.
 	 * @param phoneNumber : numero di telefono dell'utente di cui vogliamo modificare l'ip
 	 */
-	public static void updateIpAddress(String phoneNumber, String ipAddress)
+	public static void updateIpAddress(Context context, String phoneNumber, String ipAddress)
 	{
+		Parse.initialize(context,"x9hwNnRfTCCYGXPVJNKaR7zYTIMOdKeLkerRQJT2" ,"hi7GT6rUlp9uTfw6XQzdEjnTqwgPnRPoikPehgVf");
 		final String ip = ipAddress;
 		final String pNumber = phoneNumber;
 		ParseQuery<ParseObject> query = ParseQuery.getQuery("Address");
@@ -51,8 +55,9 @@ public class ParseManager {
 	 * @param phoneNumber : numero di telefono dell'utente di cui si vuole conoscere l'ip.
 	 * @return : il campo indirizzo ip della tupla identificata da numero di telefono pari a phoneNumber.
 	 */
-	public static String getIpAddress(String phoneNumber)
+	public static String getIpAddress(Context context, String phoneNumber)
 	{
+		Parse.initialize(context,"x9hwNnRfTCCYGXPVJNKaR7zYTIMOdKeLkerRQJT2" ,"hi7GT6rUlp9uTfw6XQzdEjnTqwgPnRPoikPehgVf");
 		List<ParseObject> objects = null;
 		ParseQuery<ParseObject> query = ParseQuery.getQuery("Address");
 		query.whereEqualTo("phone", phoneNumber);
