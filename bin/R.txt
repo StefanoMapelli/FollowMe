@@ -332,7 +332,7 @@ int drawable abc_textfield_search_activated_mtrl_alpha 0x7f020030
 int drawable abc_textfield_search_default_mtrl_alpha 0x7f020031
 int drawable abc_textfield_search_material 0x7f020032
 int drawable ic_launcher 0x7f020033
-int id RelativeLayout1 0x7f09003f
+int id RelativeLayout1 0x7f090041
 int id action_bar 0x7f090031
 int id action_bar_activity_content 0x7f090003
 int id action_bar_container 0x7f090030
@@ -351,6 +351,7 @@ int id always 0x7f090014
 int id beginning 0x7f09001b
 int id checkbox 0x7f090029
 int id collapseActionView 0x7f090015
+int id contactList 0x7f090040
 int id decor_content_parent 0x7f09002f
 int id default_activity_button 0x7f090024
 int id dialog 0x7f090019
@@ -371,8 +372,8 @@ int id middle 0x7f09001d
 int id never 0x7f090017
 int id none 0x7f09000f
 int id normal 0x7f09000b
-int id okButton 0x7f090042
-int id phoneNumberText 0x7f090041
+int id okButton 0x7f090043
+int id phoneNumberText 0x7f090042
 int id progress_circular 0x7f090007
 int id progress_horizontal 0x7f090008
 int id radio 0x7f09002b
@@ -393,7 +394,7 @@ int id showTitle 0x7f090012
 int id split_action_bar 0x7f090004
 int id submit_area 0x7f09003c
 int id tabMode 0x7f09000c
-int id textView1 0x7f090040
+int id textLabel 0x7f09003f
 int id title 0x7f090027
 int id up 0x7f090001
 int id useLogo 0x7f090013
@@ -423,9 +424,10 @@ int layout abc_screen_toolbar 0x7f030013
 int layout abc_search_dropdown_item_icons_2line 0x7f030014
 int layout abc_search_view 0x7f030015
 int layout abc_simple_dropdown_hint 0x7f030016
-int layout first_use_layout 0x7f030017
-int layout main_activity_layout 0x7f030018
-int layout support_simple_spinner_dropdown_item 0x7f030019
+int layout activity_choose_contact 0x7f030017
+int layout first_use_layout 0x7f030018
+int layout main_activity_layout 0x7f030019
+int layout support_simple_spinner_dropdown_item 0x7f03001a
 int string abc_action_bar_home_description 0x7f0a0001
 int string abc_action_bar_home_description_format 0x7f0a0005
 int string abc_action_bar_home_subtitle_description_format 0x7f0a0006
@@ -443,6 +445,8 @@ int string abc_shareactionprovider_share_with 0x7f0a000f
 int string abc_shareactionprovider_share_with_application 0x7f0a000e
 int string abc_toolbar_collapse_description 0x7f0a0004
 int string app_name 0x7f0a0010
+int string hello_world 0x7f0a0012
+int string title_activity_choose_contact 0x7f0a0011
 int style AppBaseTheme 0x7f0b00eb
 int style AppTheme 0x7f0b00ec
 int style Base_TextAppearance_AppCompat 0x7f0b0098

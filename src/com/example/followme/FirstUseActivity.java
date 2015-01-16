@@ -30,6 +30,7 @@ public class FirstUseActivity extends Activity {
 			{
 				phoneNumber = phoneNumberText.getText().toString();
 				PersonalDataManager.insertPhoneNumber(phoneNumber);
+				ParseManager.insertPhoneNumber(FirstUseActivity.this, phoneNumber);
 				Intent intent = new Intent();
                 setResult(RESULT_OK, intent);
                 finish();

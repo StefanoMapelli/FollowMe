@@ -13,40 +13,23 @@ import com.parse.ParseQuery;
 public class ParseManager {
 	
 	/**
-	 * Metodo che aggiorna l'indirizzo ip salvato su Parse della tupla con numero di telefono
-	 * pari a phoneNumber.
-	 * @param phoneNumber : numero di telefono dell'utente di cui vogliamo modificare l'ip
+	 * Metodo che aggiorna o inserisce il numero di telefono salvato su Parse
+	 * @param phoneNumber : numero di telefono dell'utente da updatare o inserire
 	 */
-	public static void updateIpAddress(Context context, String phoneNumber, String ipAddress)
+	public static void insertPhoneNumber(Context context, String phoneNumber)
+	{
+		final String pNumber=phoneNumber;
+		Parse.initialize(context,"x9hwNnRfTCCYGXPVJNKaR7zYTIMOdKeLkerRQJT2" ,"hi7GT6rUlp9uTfw6XQzdEjnTqwgPnRPoikPehgVf");
+		ParseObject address = new ParseObject("Utente");
+		address.put("numero", pNumber);
+		address.saveInBackground();											
+	}
+	
+	public static void getRequest(Context context, String phoneNumber)
 	{
 		Parse.initialize(context,"x9hwNnRfTCCYGXPVJNKaR7zYTIMOdKeLkerRQJT2" ,"hi7GT6rUlp9uTfw6XQzdEjnTqwgPnRPoikPehgVf");
-		final String ip = ipAddress;
-		final String pNumber = phoneNumber;
-		ParseQuery<ParseObject> query = ParseQuery.getQuery("Address");
-		query.whereEqualTo("phone", phoneNumber);
-		query.findInBackground(new FindCallback<ParseObject>() 
-				{
-					@Override
-					public void done(List<ParseObject> objects,ParseException e) 
-					{
-						if(e == null)
-						{
-							if(!objects.isEmpty())
-							{
-								objects.get(0).put("ipAddress",ip);
-								objects.get(0).saveInBackground();
-							}
-							else
-							{
-								ParseObject address = new ParseObject("Address");
-								address.put("phone", pNumber);
-								address.put("ipAddress", ip);
-								address.saveInBackground();											
-							}
-						}
-					}
-				}
-		);
+		List<ParseObject> objects = null;
+		ParseQuery<ParseObject> query = ParseQuery.getQuery("Richiesta");
 	}
 	
 	/**
@@ -55,7 +38,7 @@ public class ParseManager {
 	 * @param phoneNumber : numero di telefono dell'utente di cui si vuole conoscere l'ip.
 	 * @return : il campo indirizzo ip della tupla identificata da numero di telefono pari a phoneNumber.
 	 */
-	public static String getIpAddress(Context context, String phoneNumber)
+	public static String getPhoneNumber(Context context, String phoneNumber)
 	{
 		Parse.initialize(context,"x9hwNnRfTCCYGXPVJNKaR7zYTIMOdKeLkerRQJT2" ,"hi7GT6rUlp9uTfw6XQzdEjnTqwgPnRPoikPehgVf");
 		List<ParseObject> objects = null;

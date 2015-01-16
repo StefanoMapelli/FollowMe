@@ -11,7 +11,7 @@ import android.os.Bundle;
 
 public class MainActivity extends Activity {
 	
-	private String phoneNumber="";
+	private Utente user=new Utente("","");
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
@@ -44,10 +44,9 @@ public class MainActivity extends Activity {
 		{
 			//carico il phone number presente nel db
 			PersonalDataManager.open();
-			phoneNumber = PersonalDataManager.getPhoneNumber();
+			user.setNumero(PersonalDataManager.getPhoneNumber());
 		}
 		
-		//Parse.initialize(this,"x9hwNnRfTCCYGXPVJNKaR7zYTIMOdKeLkerRQJT2" ,"hi7GT6rUlp9uTfw6XQzdEjnTqwgPnRPoikPehgVf");
 		new NetworkActivity().execute();
 	}
 	
@@ -56,22 +55,16 @@ public class MainActivity extends Activity {
 
 		@Override
 		protected String doInBackground(Void... params) 
-		{
-			ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-			WifiManager wifiMgr = (WifiManager) getSystemService(WIFI_SERVICE);
-			String ipAddress = "initialization";
-			PersonalDataManager.open();
-			
+		{			
 			while(true)
-			{
-				phoneNumber=PersonalDataManager.getPhoneNumber();
-				if(phoneNumber.compareTo("")!=0 && ConnectionManager.connectionPresent(connMgr) && ipAddress.compareTo(ConnectionManager.getIpAddress(connMgr,wifiMgr))!=0)
-				{			
-					ipAddress = ConnectionManager.getIpAddress(connMgr,wifiMgr);					
-					ParseManager.updateIpAddress(MainActivity.this, phoneNumber, ipAddress);					
+			{	
+				if(!(user.getNumero().compareTo("")==0))
+				{
+					//roba da fare per chiedere a parse se c'è roba per me	
 				}
+								
 				try {
-					Thread.sleep(1000);
+					Thread.sleep(2000);
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}

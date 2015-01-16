@@ -1,5 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
 
     <string name="app_name">Follow Me</string>
+    <string name="title_activity_choose_contact">ChooseContact</string>
+    <string name="hello_world">Hello world!</string>
 
 </resources>
