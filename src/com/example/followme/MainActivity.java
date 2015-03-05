@@ -1,17 +1,13 @@
 package com.example.followme;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
-import android.net.ConnectivityManager;
-import android.net.wifi.WifiManager;
-
 import android.os.AsyncTask;
 import android.os.Bundle;
 
 public class MainActivity extends Activity {
 	
-	private Utente user=new Utente("","");
+	private User user=new User("","");
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
@@ -29,6 +25,7 @@ public class MainActivity extends Activity {
 		{
 			esito=false;
 		}
+		//nessun numero di telefono salvato nel db
 		if(!esito)
 		{
 			//creo il db
@@ -44,7 +41,7 @@ public class MainActivity extends Activity {
 		{
 			//carico il phone number presente nel db
 			PersonalDataManager.open();
-			user.setNumero(PersonalDataManager.getPhoneNumber());
+			user.setPhoneNumber(PersonalDataManager.getPhoneNumber());
 		}
 		
 		new NetworkActivity().execute();
@@ -58,7 +55,7 @@ public class MainActivity extends Activity {
 		{			
 			while(true)
 			{	
-				if(!(user.getNumero().compareTo("")==0))
+				if(!(user.getPhoneNumber().compareTo("")==0))
 				{
 					//roba da fare per chiedere a parse se c'è roba per me	
 				}

@@ -4,6 +4,11 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.NetworkInfo.State;
 
+/**
+ * Class that concern in all connection management aspects.
+ * @author maru
+ *
+ */
 public class ConnectionManager {
 	
 	public static boolean connectionPresent(ConnectivityManager cMgr)
