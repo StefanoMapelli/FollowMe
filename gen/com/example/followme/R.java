@@ -1644,6 +1644,9 @@ containing a value of this type.
         public static final int always=0x7f090014;
         public static final int beginning=0x7f09001b;
         public static final int checkbox=0x7f090029;
+        public static final int codeButton=0x7f090042;
+        public static final int codeLabel=0x7f090041;
+        public static final int codeText=0x7f090040;
         public static final int collapseActionView=0x7f090015;
         public static final int decor_content_parent=0x7f09002f;
         public static final int default_activity_button=0x7f090024;
@@ -1665,8 +1668,8 @@ containing a value of this type.
         public static final int never=0x7f090017;
         public static final int none=0x7f09000f;
         public static final int normal=0x7f09000b;
-        public static final int okButton=0x7f090042;
-        public static final int phoneNumberText=0x7f090041;
+        public static final int okButton=0x7f090045;
+        public static final int phoneNumberText=0x7f090044;
         public static final int progress_circular=0x7f090007;
         public static final int progress_horizontal=0x7f090008;
         public static final int radio=0x7f09002b;
@@ -1687,7 +1690,7 @@ containing a value of this type.
         public static final int split_action_bar=0x7f090004;
         public static final int submit_area=0x7f09003c;
         public static final int tabMode=0x7f09000c;
-        public static final int textLabel=0x7f090040;
+        public static final int textLabel=0x7f090043;
         public static final int title=0x7f090027;
         public static final int up=0x7f090001;
         public static final int useLogo=0x7f090013;
@@ -1743,9 +1746,10 @@ containing a value of this type.
         public static final int abc_search_dropdown_item_icons_2line=0x7f030014;
         public static final int abc_search_view=0x7f030015;
         public static final int abc_simple_dropdown_hint=0x7f030016;
-        public static final int first_use_layout=0x7f030017;
-        public static final int main_activity_layout=0x7f030018;
-        public static final int support_simple_spinner_dropdown_item=0x7f030019;
+        public static final int first_use_code_control_layout=0x7f030017;
+        public static final int first_use_layout=0x7f030018;
+        public static final int main_activity_layout=0x7f030019;
+        public static final int support_simple_spinner_dropdown_item=0x7f03001a;
     }
     public static final class string {
         /**  Content description for the action bar "home" affordance. [CHAR LIMIT=NONE] 
