@@ -6,7 +6,6 @@ import java.util.Random;
 import android.app.Activity;
 import android.content.ContentValues;
 import android.content.Intent;
-import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.telephony.SmsManager;
@@ -20,9 +19,6 @@ public class FirstUseActivity extends Activity {
 	private EditText phoneNumberText;
 	private Button okButton;
 	private String phoneNumber;
-	private EditText codeText;
-	private Button okCodeButton;
-	private String code;
 	
 	private static final String _CHAR = "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
 	
@@ -64,10 +60,16 @@ public class FirstUseActivity extends Activity {
 					startActivityForResult(intentControlCode, 0);
 					
 					//scrivo su db parse e db locale il nuovo utente
-					PersonalDataManager.insertPhoneNumber(phoneNumber);
-					ParseManager.insertPhoneNumber(FirstUseActivity.this, phoneNumber);
-				
+					
+					if(!ParseManager.phoneNumberExists(FirstUseActivity.this, phoneNumber))
+					{
+						ParseManager.insertPhoneNumber(FirstUseActivity.this, phoneNumber);
+					}
+					String id = ParseManager.getId(FirstUseActivity.this, phoneNumber);
+					PersonalDataManager.insertUser(phoneNumber, id);
+					
 					Intent intent = new Intent();
+					intent.putExtra("id", id);
 					setResult(RESULT_OK, intent);
                 	finish();
 				}

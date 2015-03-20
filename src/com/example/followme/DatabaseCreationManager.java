@@ -16,6 +16,7 @@ public class DatabaseCreationManager extends SQLiteOpenHelper {
 	public static final String TABLE_PERSONAL_DATA = "personal_data";
 	  public static final String COLUMN_ID = "_id";
 	  public static final String COLUMN_PHONE_NUMBER = "phone_number";
+	  public static final String COLUMN_USER_ID = "user_id";
 
 	  private static final String DATABASE_NAME = "followMeDatabase.db";
 	  private static final int DATABASE_VERSION = 1;
@@ -23,7 +24,8 @@ public class DatabaseCreationManager extends SQLiteOpenHelper {
 	  // Database creation sql statement
 	  private static final String DATABASE_CREATE = "create table "
 	      + TABLE_PERSONAL_DATA + "(" + COLUMN_ID
-	      + " integer primary key autoincrement, " + COLUMN_PHONE_NUMBER
+	      + " integer primary key autoincrement, " + COLUMN_USER_ID
+	      + " text not null, "+ COLUMN_PHONE_NUMBER
 	      + " text not null);";
 
 	public DatabaseCreationManager(Context context, String name, CursorFactory factory,

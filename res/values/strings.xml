@@ -2,7 +2,8 @@
 <resources>
 
     <string name="app_name">Follow Me</string>
-    <string name="title_activity_choose_contact">ChooseContact</string>
-    <string name="hello_world">Hello world!</string>
+    <string name="action_location_found">Location Founds</string>
+    <string name="action_refresh">Action Refresh</string>
+    <string name="action_help">Action Help</string>
 
 </resources>

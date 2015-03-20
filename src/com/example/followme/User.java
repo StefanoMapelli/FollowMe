@@ -1,5 +1,7 @@
 package com.example.followme;
 
+import com.parse.ParseObject;
+
 public class User {
 	
 	private String id;
@@ -9,6 +11,12 @@ public class User {
 	{
 		this.id=id;
 		this.phoneNumber=numero;
+	}
+	
+	public User(ParseObject user)
+	{
+		this.id=user.getObjectId();
+		this.phoneNumber=user.getString("numero");
 	}
 	
 	public String getPhoneNumber() {
@@ -23,7 +31,4 @@ public class User {
 	public void setId(String id) {
 		this.id = id;
 	}
-	
-	
-
 }

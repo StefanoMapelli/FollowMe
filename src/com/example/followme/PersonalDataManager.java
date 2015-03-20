@@ -18,6 +18,7 @@ public class PersonalDataManager {
 	  private static SQLiteDatabase database;
 	  private static DatabaseCreationManager dbHelper;
 	  private static String[] allColumns = { DatabaseCreationManager.COLUMN_ID,
+		  DatabaseCreationManager.COLUMN_USER_ID,
 	      DatabaseCreationManager.COLUMN_PHONE_NUMBER };
 
 	  
@@ -37,10 +38,11 @@ public class PersonalDataManager {
 	   * Insertion of a new phone number in the database, in the table of personal data
 	   * @param phoneNumber
 	   */
-	  public static void insertPhoneNumber(String phoneNumber) 
+	  public static void insertUser(String phoneNumber, String userId) 
 	  {
 		  ContentValues values = new ContentValues();
 		  values.put(DatabaseCreationManager.COLUMN_PHONE_NUMBER, phoneNumber);
+		  values.put(DatabaseCreationManager.COLUMN_USER_ID, userId);
 		  database.insert(DatabaseCreationManager.TABLE_PERSONAL_DATA, null,values);
 	  }
 	  
@@ -55,7 +57,7 @@ public class PersonalDataManager {
 		  database.update(DatabaseCreationManager.TABLE_PERSONAL_DATA, values, null, null);
 	  }
 	  
-	  public static boolean phoneNumberExists()
+	  public static boolean userExists()
 	  {
 		  if(database.query(DatabaseCreationManager.TABLE_PERSONAL_DATA, allColumns, null, null, null, null, null).getCount()>0)
 		  {
@@ -74,15 +76,33 @@ public class PersonalDataManager {
 	   */
 	  public static String getPhoneNumber()
 	  {
-		  if(phoneNumberExists())
+		  if(userExists())
 		  {
 			  Cursor cursor =database.query(DatabaseCreationManager.TABLE_PERSONAL_DATA, allColumns, null, null, null, null, null);
 		  
 			  cursor.moveToFirst();
 		  
-			  String phoneNumber=cursor.getString(1);
+			  String phoneNumber=cursor.getString(2);
 		  
 			  return phoneNumber;
+		  }
+		  else
+		  {
+			  return "";
+		  }
+	  }
+	  
+	  public static String getUserId()
+	  {
+		  if(userExists())
+		  {
+			  Cursor cursor =database.query(DatabaseCreationManager.TABLE_PERSONAL_DATA, allColumns, null, null, null, null, null);
+		  
+			  cursor.moveToFirst();
+		  
+			  String userId=cursor.getString(1);
+		  
+			  return userId;
 		  }
 		  else
 		  {
