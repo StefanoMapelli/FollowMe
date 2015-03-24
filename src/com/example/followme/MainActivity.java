@@ -68,7 +68,7 @@ public class MainActivity extends ActionBarActivity  {
 			public void onClick(View v) 
 			{
 				//intent per l'attività di share
-				Intent intent = new Intent(MainActivity.this,ShareActivity.class);
+				Intent intent = new Intent(MainActivity.this,ChooseContactsForSharingActivity.class);
 				startActivityForResult(intent, 1);
 			}
 			

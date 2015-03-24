@@ -5,5 +5,8 @@
     <string name="action_location_found">Location Founds</string>
     <string name="action_refresh">Action Refresh</string>
     <string name="action_help">Action Help</string>
+    <string name="title_activity_share">ShareActivity</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
 
 </resources>

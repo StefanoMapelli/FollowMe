@@ -50,7 +50,10 @@ public class DeviceDataManager {
 		    Cursor phones = cr.query(Phone.CONTENT_URI, null, Phone.CONTACT_ID + " = " + contactId, null, null);
 		        if (phones.moveToFirst()) 
 		        {
-		           return phones.getString(phones.getColumnIndex(Phone.NUMBER));
+		           String pn = phones.getString(phones.getColumnIndex(Phone.NUMBER));
+		           pn = pn.replace("+39", "");
+		           return pn.replace(" ", "");
+		           
 		        }
 		}
 		return null;

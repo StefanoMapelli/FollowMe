@@ -1941,6 +1941,15 @@ containing a value of this type.
  Default text size for action bar title.
          */
         public static final int abc_text_size_title_material_toolbar=0x7f0b0012;
+        /**  Default screen margins, per the Android Design guidelines. 
+
+         Example customization of dimensions originally defined in res/values/dimens.xml
+         (such as screen margins) for screens with more than 820dp of available width. This
+         would include 7" and 10" devices in landscape (~960dp and ~1280dp respectively).
+    
+         */
+        public static final int activity_horizontal_margin=0x7f0b002b;
+        public static final int activity_vertical_margin=0x7f0b002c;
         /**  The platform's desired fixed height for a dialog along the major axis
          (the screen is in portrait). This may be either a fraction or a dimension.
  The platform's desired fixed height for a dialog along the major axis
@@ -2063,8 +2072,9 @@ containing a value of this type.
         public static final int powered_by_google_light=0x7f020053;
     }
     public static final class id {
-        public static final int RelativeLayout1=0x7f0c0053;
-        public static final int Space1=0x7f0c005a;
+        public static final int GridLayout1=0x7f0c0053;
+        public static final int RelativeLayout1=0x7f0c0059;
+        public static final int Space1=0x7f0c0060;
         public static final int action_bar=0x7f0c0045;
         public static final int action_bar_activity_content=0x7f0c0003;
         public static final int action_bar_container=0x7f0c0044;
@@ -2073,14 +2083,15 @@ containing a value of this type.
         public static final int action_bar_subtitle=0x7f0c0033;
         public static final int action_bar_title=0x7f0c0032;
         public static final int action_context_bar=0x7f0c0046;
-        public static final int action_help=0x7f0c0061;
-        public static final int action_location_found=0x7f0c005f;
+        public static final int action_help=0x7f0c0067;
+        public static final int action_location_found=0x7f0c0065;
         public static final int action_menu_divider=0x7f0c0005;
         public static final int action_menu_presenter=0x7f0c0006;
         public static final int action_mode_bar=0x7f0c0042;
         public static final int action_mode_bar_stub=0x7f0c0041;
         public static final int action_mode_close_button=0x7f0c0034;
-        public static final int action_refresh=0x7f0c0060;
+        public static final int action_refresh=0x7f0c0066;
+        public static final int action_settings=0x7f0c0068;
         public static final int activity_chooser_view_content=0x7f0c0035;
         public static final int adjust_height=0x7f0c0009;
         public static final int adjust_width=0x7f0c000a;
@@ -2091,11 +2102,14 @@ containing a value of this type.
         public static final int buy_now=0x7f0c001a;
         public static final int buy_with_google=0x7f0c001b;
         public static final int checkbox=0x7f0c003d;
+        public static final int chk=0x7f0c0057;
         public static final int classic=0x7f0c001d;
-        public static final int codeButton=0x7f0c0056;
-        public static final int codeLabel=0x7f0c0055;
-        public static final int codeText=0x7f0c0054;
+        public static final int codeButton=0x7f0c005c;
+        public static final int codeLabel=0x7f0c005b;
+        public static final int codeText=0x7f0c005a;
         public static final int collapseActionView=0x7f0c0029;
+        public static final int contactList=0x7f0c0054;
+        public static final int contactSelectButton=0x7f0c0055;
         public static final int decor_content_parent=0x7f0c0043;
         public static final int default_activity_button=0x7f0c0038;
         public static final int dialog=0x7f0c002d;
@@ -2106,9 +2120,9 @@ containing a value of this type.
         public static final int end=0x7f0c0030;
         public static final int expand_activities_button=0x7f0c0036;
         public static final int expanded_menu=0x7f0c003c;
-        public static final int followButton=0x7f0c005e;
+        public static final int followButton=0x7f0c0064;
         public static final int grayscale=0x7f0c001e;
-        public static final int gridLayout=0x7f0c005c;
+        public static final int gridLayout=0x7f0c0062;
         public static final int holo_dark=0x7f0c0010;
         public static final int holo_light=0x7f0c0011;
         public static final int home=0x7f0c0000;
@@ -2119,18 +2133,20 @@ containing a value of this type.
         public static final int image=0x7f0c0037;
         public static final int listMode=0x7f0c0020;
         public static final int list_item=0x7f0c0039;
-        public static final int map=0x7f0c005b;
+        public static final int map=0x7f0c0061;
         public static final int match_parent=0x7f0c0017;
         public static final int middle=0x7f0c0031;
         public static final int monochrome=0x7f0c001f;
+        public static final int name=0x7f0c0058;
         public static final int never=0x7f0c002b;
         public static final int none=0x7f0c000b;
         public static final int normal=0x7f0c000d;
-        public static final int okButton=0x7f0c0059;
-        public static final int phoneNumberText=0x7f0c0058;
+        public static final int okButton=0x7f0c005f;
+        public static final int phoneNumberText=0x7f0c005e;
         public static final int production=0x7f0c0012;
         public static final int progress_circular=0x7f0c0007;
         public static final int progress_horizontal=0x7f0c0008;
+        public static final int rLayout=0x7f0c0056;
         public static final int radio=0x7f0c003f;
         public static final int sandbox=0x7f0c0013;
         public static final int satellite=0x7f0c000e;
@@ -2145,7 +2161,7 @@ containing a value of this type.
         public static final int search_src_text=0x7f0c004e;
         public static final int search_voice_btn=0x7f0c0052;
         public static final int selectionDetails=0x7f0c0016;
-        public static final int shareButton=0x7f0c005d;
+        public static final int shareButton=0x7f0c0063;
         public static final int shortcut=0x7f0c003e;
         public static final int showCustom=0x7f0c0024;
         public static final int showHome=0x7f0c0025;
@@ -2155,7 +2171,7 @@ containing a value of this type.
         public static final int submit_area=0x7f0c0050;
         public static final int tabMode=0x7f0c0021;
         public static final int terrain=0x7f0c000f;
-        public static final int textLabel=0x7f0c0057;
+        public static final int textLabel=0x7f0c005d;
         public static final int title=0x7f0c003b;
         public static final int up=0x7f0c0001;
         public static final int useLogo=0x7f0c0027;
@@ -2212,16 +2228,18 @@ containing a value of this type.
         public static final int abc_search_dropdown_item_icons_2line=0x7f030014;
         public static final int abc_search_view=0x7f030015;
         public static final int abc_simple_dropdown_hint=0x7f030016;
-        public static final int contact_list_item_layout=0x7f030017;
-        public static final int first_use_code_control_layout=0x7f030018;
-        public static final int first_use_layout=0x7f030019;
-        public static final int follow_activity_layout=0x7f03001a;
-        public static final int main_activity_layout=0x7f03001b;
-        public static final int share_activity_layout=0x7f03001c;
-        public static final int support_simple_spinner_dropdown_item=0x7f03001d;
+        public static final int choose_contacts_for_sharing_layout=0x7f030017;
+        public static final int contact_list_item_layout=0x7f030018;
+        public static final int first_use_code_control_layout=0x7f030019;
+        public static final int first_use_layout=0x7f03001a;
+        public static final int follow_activity_layout=0x7f03001b;
+        public static final int main_activity_layout=0x7f03001c;
+        public static final int share_layout=0x7f03001d;
+        public static final int support_simple_spinner_dropdown_item=0x7f03001e;
     }
     public static final class menu {
         public static final int activity_main_actions=0x7f0d0000;
+        public static final int share=0x7f0d0001;
     }
     public static final class raw {
         public static final int gtm_analytics=0x7f050000;
@@ -2287,6 +2305,7 @@ containing a value of this type.
         public static final int action_help=0x7f070036;
         public static final int action_location_found=0x7f070034;
         public static final int action_refresh=0x7f070035;
+        public static final int action_settings=0x7f070039;
         public static final int app_name=0x7f070033;
         /**   Text for notification shown when the Android Wear apps needs to be updated. Only shown on the wearable. [CHAR LIMIT=NONE] 
          */
@@ -2390,8 +2409,10 @@ containing a value of this type.
         public static final int create_calendar_message=0x7f070005;
         public static final int create_calendar_title=0x7f070004;
         public static final int decline=0x7f070003;
+        public static final int hello_world=0x7f070038;
         public static final int store_picture_message=0x7f070001;
         public static final int store_picture_title=0x7f070000;
+        public static final int title_activity_share=0x7f070037;
         /**  Text on a placeholder buy button when Google Play services is not
          available or up-to-date 
          */

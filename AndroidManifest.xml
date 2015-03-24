@@ -1,28 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.followme"
     android:versionCode="1"
     android:versionName="1.0" >
-	
+
     <uses-sdk
         android:minSdkVersion="8"
         android:targetSdkVersion="21" />
-    
+
     <uses-feature
         android:glEsVersion="0x00020000"
-        android:required="true"/>
-    
+        android:required="true" />
+
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
-    <uses-permission android:name="android.permission.READ_CONTACTS"/>
-    <uses-permission android:name="android.permission.SEND_SMS"/>
-    <uses-permission android:name="android.permission.WRITE_SMS"/>
-    <uses-permission android:name="android.permission.READ_SMS"/>
-    
+    <uses-permission android:name="android.permission.READ_CONTACTS" />
+    <uses-permission android:name="android.permission.SEND_SMS" />
+    <uses-permission android:name="android.permission.WRITE_SMS" />
+    <uses-permission android:name="android.permission.READ_SMS" />
 
     <application
         android:allowBackup="true"
@@ -33,34 +33,40 @@
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
         <meta-data
-    		android:name="com.google.android.maps.v2.API_KEY"
-    		android:value="AIzaSyB707EmgunnkxWrXrTKxLdcFFBSjy4isPc"/>
-        <activity 
-            android:name="com.example.followme.MainActivity"
+            android:name="com.google.android.maps.v2.API_KEY"
+            android:value="AIzaSyB707EmgunnkxWrXrTKxLdcFFBSjy4isPc" />
+
+        <activity
+            android:name=".MainActivity"
             android:label="@string/app_name"
             android:theme="@style/Theme.AppCompat.Light" >
-            <intent-filter> 
-                <action android:name="android.intent.action.MAIN"/>
-                <category android:name="android.intent.category.LAUNCHER"/>
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity 
-            android:name="com.example.followme.FirstUseActivity"
-            android:label="@string/app_name">
+        <activity
+            android:name=".FirstUseActivity"
+            android:label="@string/app_name" >
         </activity>
-        <activity 
-            android:name="com.example.followme.FirstUseCodeControlActivity"
-            android:label="@string/app_name">
+        <activity
+            android:name=".FirstUseCodeControlActivity"
+            android:label="@string/app_name" >
         </activity>
-        <activity 
-            android:name="com.example.followme.ShareActivity"
+        <activity
+            android:name=".ChooseContactsForSharingActivity"
             android:label="@string/app_name"
             android:theme="@style/Theme.AppCompat.Light" >
         </activity>
-        <activity 
-            android:name="com.example.followme.FollowActivity"
+        <activity
+            android:name=".FollowActivity"
             android:label="@string/app_name"
             android:theme="@style/Theme.AppCompat.Light" >
+        </activity>
+        <activity
+            android:name=".ShareActivity"
+            android:label="@string/title_activity_share" >
         </activity>
     </application>
 

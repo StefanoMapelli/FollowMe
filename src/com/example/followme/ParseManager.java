@@ -176,23 +176,29 @@ public class ParseManager {
 		return requests;
 	}
 	
-	public static List<Contact> selectContacts(Context context, List<Contact> inputList)
+	public static List<String> allPhoneNumbers(Context context)
 	{
-		List<Contact> outputList = new ArrayList<Contact>();
+		List<String> allNumbers = new ArrayList<String>();
+		List<ParseObject> objects = null;
+		Parse.initialize(context,"x9hwNnRfTCCYGXPVJNKaR7zYTIMOdKeLkerRQJT2" ,"hi7GT6rUlp9uTfw6XQzdEjnTqwgPnRPoikPehgVf");
+		ParseQuery<ParseObject> query = ParseQuery.getQuery("Utente");
 		
-		Iterator<Contact> i = inputList.iterator();
-		Contact c;
+		try {
+			objects=query.find();
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+		
+		Iterator<ParseObject> i = objects.iterator();
+		ParseObject po;
 		
 		while(i.hasNext())
 		{
-			c=i.next();
-			if(phoneNumberExists(context,c.getPhoneNumber()))
-			{
-				outputList.add(c);
-			}
+			po = i.next();
+			allNumbers.add(po.getString("numero"));
 		}
 		
-		return outputList;
+		return allNumbers;
 	}
 	
 }
