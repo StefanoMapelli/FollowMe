@@ -1,6 +1,10 @@
 package com.example.followme;
 
-public class Contact {
+import java.io.Serializable;
+
+public class Contact implements Serializable {
+
+	private static final long serialVersionUID = 4885357467297891708L;
 	
 	private String name;
 	private String phoneNumber;

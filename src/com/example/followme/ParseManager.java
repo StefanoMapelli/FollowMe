@@ -63,7 +63,7 @@ public class ParseManager {
 		newReq.put("tipoRichiesta", type);
 		newReq.put("idMittente", senderPo);
 		newReq.put("idDestinatario", receiverPo);
-		newReq.put("accettata", false);
+		newReq.put("stato", "non visualizzata");
 		newReq.saveInBackground();
 	}
 	
@@ -154,6 +154,7 @@ public class ParseManager {
 	
 		ParseQuery<ParseObject> query = ParseQuery.getQuery("Richiesta");
 		query.whereEqualTo("idDestinatario", user);
+		query.whereEqualTo("stato", "non visualizzata");
 		
 		try {
 			objects=query.find();
@@ -170,12 +171,15 @@ public class ParseManager {
 			po=i.next();
 			senderId=po.getParseObject("idMittente").getObjectId();
 			
-			requests.add(new Request(po.getObjectId(), po.getString("tipoRichiesta"), po.getBoolean("accettata"), new User(getUser(context, senderId)), new User(user)));
+			requests.add(new Request(po.getObjectId(), po.getString("tipoRichiesta"), po.getString("stato"), new User(getUser(context, senderId)), new User(user)));
 		}
 		
 		return requests;
 	}
-	
+	/**
+	 * Method that return the phone numbers of all the users present on parse db
+	 * @return a list of phone numbers
+	 */
 	public static List<String> allPhoneNumbers(Context context)
 	{
 		List<String> allNumbers = new ArrayList<String>();

@@ -7,6 +7,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
+import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.TextView;
 
 public class ContactCustomAdapter extends ArrayAdapter<Contact>{
@@ -22,7 +24,7 @@ public class ContactCustomAdapter extends ArrayAdapter<Contact>{
 	}
 	
 	@Override
-	public View getView(int position, View convertView, ViewGroup parent)
+	public View getView(final int position, View convertView, ViewGroup parent)
 	{
 		LayoutInflater inflater = ((Activity) context).getLayoutInflater();
 		convertView = inflater.inflate(R.layout.contact_list_item_layout, parent, false);
@@ -39,6 +41,15 @@ public class ContactCustomAdapter extends ArrayAdapter<Contact>{
 		{
 			cb.setChecked(false);
 		}
+		
+		cb.setOnCheckedChangeListener(new OnCheckedChangeListener() 
+		{
+			@Override
+			public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) 
+			{
+				contacts[position].setChecked(isChecked);
+			}
+        });
 		
 		return convertView;	
 	}

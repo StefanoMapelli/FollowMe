@@ -4,16 +4,16 @@ public class Request {
 	
 	private String id;
 	private String type;
-	private boolean accepted;
+	private String state;
 	private User sender;
 	private User receiver;
 	
-	public Request(String id, String type, boolean accepted, User sender,User reciever) 
+	public Request(String id, String type, String state, User sender,User reciever) 
 	{
 		super();
 		this.id = id;
 		this.type = type;
-		this.accepted = accepted;
+		this.state = state;
 		this.sender = sender;
 		this.receiver = reciever;
 	}
@@ -42,10 +42,12 @@ public class Request {
 	public void setType(String type) {
 		this.type = type;
 	}
-	public boolean getAccepted() {
-		return accepted;
+
+	public String getState() {
+		return state;
 	}
-	public void setAccepted(boolean accepted) {
-		this.accepted = accepted;
+
+	public void setState(String state) {
+		this.state = state;
 	}
 }

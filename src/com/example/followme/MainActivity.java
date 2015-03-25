@@ -69,7 +69,7 @@ public class MainActivity extends ActionBarActivity  {
 			{
 				//intent per l'attività di share
 				Intent intent = new Intent(MainActivity.this,ChooseContactsForSharingActivity.class);
-				startActivityForResult(intent, 1);
+				startActivity(intent);
 			}
 			
 		});
@@ -82,7 +82,7 @@ public class MainActivity extends ActionBarActivity  {
 			{
 				//intent per l'attività di follow
 				Intent intent = new Intent(MainActivity.this,FollowActivity.class);
-				startActivityForResult(intent, 1);
+				startActivity(intent);
 			}
 			
 		});
@@ -130,6 +130,8 @@ public class MainActivity extends ActionBarActivity  {
 					if(!requestsList.isEmpty())
 					{
 						//notificare l'utente della presenza di richieste
+						RequestDialogFragment rdf = new RequestDialogFragment();
+						rdf.show(getFragmentManager(), null);
 					}
 				}
 								

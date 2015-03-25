@@ -28,7 +28,7 @@ public class ChooseContactsForSharingActivity extends ActionBarActivity
 		
 		lv = (ListView) this.findViewById(R.id.contactList);
 	
-		List<Contact> contacts = Utils.phoneContactsOnParse(this, DeviceDataManager.allContacts(this), ParseManager.allPhoneNumbers(this));
+		List<Contact> contacts = Utils.phoneContactsOnParse(DeviceDataManager.allContacts(this), ParseManager.allPhoneNumbers(this));
 		
 		Iterator<Contact> i = contacts.iterator();
 		Contact c;
@@ -55,7 +55,8 @@ public class ChooseContactsForSharingActivity extends ActionBarActivity
 				//intent per l'attività di share
 				Intent intent = new Intent(ChooseContactsForSharingActivity.this,ShareActivity.class);
 				//passaggio parametri all'intent
-				//...
+				List<Contact> selectedContacts = Utils.selectedContacts(contactsItems);
+				intent.putExtra("selectedContacts", selectedContacts.toArray());
 				startActivity(intent);
 			}
 			

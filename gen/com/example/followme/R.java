@@ -2072,7 +2072,8 @@ containing a value of this type.
         public static final int powered_by_google_light=0x7f020053;
     }
     public static final class id {
-        public static final int GridLayout1=0x7f0c0053;
+        public static final int LinearLayout1=0x7f0c0053;
+        public static final int LinearLayoutButton=0x7f0c0062;
         public static final int RelativeLayout1=0x7f0c0059;
         public static final int Space1=0x7f0c0060;
         public static final int action_bar=0x7f0c0045;
@@ -2122,7 +2123,6 @@ containing a value of this type.
         public static final int expanded_menu=0x7f0c003c;
         public static final int followButton=0x7f0c0064;
         public static final int grayscale=0x7f0c001e;
-        public static final int gridLayout=0x7f0c0062;
         public static final int holo_dark=0x7f0c0010;
         public static final int holo_light=0x7f0c0011;
         public static final int home=0x7f0c0000;
@@ -2305,7 +2305,7 @@ containing a value of this type.
         public static final int action_help=0x7f070036;
         public static final int action_location_found=0x7f070034;
         public static final int action_refresh=0x7f070035;
-        public static final int action_settings=0x7f070039;
+        public static final int action_settings=0x7f070038;
         public static final int app_name=0x7f070033;
         /**   Text for notification shown when the Android Wear apps needs to be updated. Only shown on the wearable. [CHAR LIMIT=NONE] 
          */
@@ -2409,7 +2409,9 @@ containing a value of this type.
         public static final int create_calendar_message=0x7f070005;
         public static final int create_calendar_title=0x7f070004;
         public static final int decline=0x7f070003;
-        public static final int hello_world=0x7f070038;
+        public static final int ignore_request=0x7f07003b;
+        public static final int request_dialog=0x7f070039;
+        public static final int show_request=0x7f07003a;
         public static final int store_picture_message=0x7f070001;
         public static final int store_picture_title=0x7f070000;
         public static final int title_activity_share=0x7f070037;
