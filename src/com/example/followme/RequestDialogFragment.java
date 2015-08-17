@@ -1,5 +1,7 @@
 package com.example.followme;
 
+import java.util.List;
+
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
@@ -8,6 +10,14 @@ import android.os.Bundle;
 
 public class RequestDialogFragment extends DialogFragment
 {
+	private List<Request> requests;
+
+	public RequestDialogFragment(List<Request> requests) 
+	{
+		super();
+		this.requests = requests;
+	}
+	
 	@Override
 	public Dialog onCreateDialog(Bundle savedInstanceState)
 	{

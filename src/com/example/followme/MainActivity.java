@@ -130,7 +130,7 @@ public class MainActivity extends ActionBarActivity  {
 					if(!requestsList.isEmpty())
 					{
 						//notificare l'utente della presenza di richieste
-						RequestDialogFragment rdf = new RequestDialogFragment();
+						RequestDialogFragment rdf = new RequestDialogFragment(requestsList);
 						rdf.show(getFragmentManager(), null);
 					}
 				}
