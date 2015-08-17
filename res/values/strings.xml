@@ -8,7 +8,9 @@
     <string name="title_activity_share">ShareActivity</string>
     <string name="action_settings">Settings</string>
     <string name="request_dialog">There is a request for you!</string>
-	<string name="show_request">Show</string>
-	<string name="ignore_request">Ignore</string>
-    
+    <string name="show_request">Show</string>
+    <string name="ignore_request">Ignore</string>
+    <string name="title_activity_requests_list">RequestsListActivity</string>
+    <string name="hello_world">Hello world!</string>
+
 </resources>

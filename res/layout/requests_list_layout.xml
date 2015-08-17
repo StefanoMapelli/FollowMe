@@ -4,19 +4,11 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical" >
-
+    
     <ListView
-        android:id="@+id/contactList"
+        android:id="@+id/requestsList"
         android:layout_width="match_parent"
-        android:layout_height="406dp"
-        android:layout_gravity="left|top" >
+   		android:layout_height="match_parent">
     </ListView>
-
-    <Button
-        android:id="@+id/contactSelectButton"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:layout_gravity="center"
-        android:text="Share" />
-
+    
 </LinearLayout>
