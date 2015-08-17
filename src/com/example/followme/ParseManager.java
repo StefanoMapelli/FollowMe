@@ -6,6 +6,7 @@ import java.util.List;
 
 import android.content.Context;
 
+import com.parse.GetCallback;
 import com.parse.Parse;
 import com.parse.ParseException;
 import com.parse.ParseObject;
@@ -180,6 +181,49 @@ public class ParseManager {
 		
 		return requests;
 	}
+	
+	/**
+	 * Method that update the state of the requests visualized from non visualizzata to visualizzata.
+	 * @param context 
+	 * @param requests : list of requests to update
+	 */
+	public static void visualizeRquests(Context context, List<Request> requests)
+	{
+		Parse.initialize(context,"x9hwNnRfTCCYGXPVJNKaR7zYTIMOdKeLkerRQJT2" ,"hi7GT6rUlp9uTfw6XQzdEjnTqwgPnRPoikPehgVf");
+		
+		for(Request r : requests)
+		{
+			ParseQuery<ParseObject> query = ParseQuery.getQuery("Richiesta");
+			query.getInBackground(r.getId(), new GetCallback<ParseObject>() {
+			  public void done(ParseObject po, ParseException e) {
+			    if (e == null) {
+			    	po.put("stato", "visualizzata");
+			    	po.saveInBackground();
+			    }
+			  }
+			});
+		}
+	}
+	
+	/**
+	 * Delete the request with the given id.
+	 * @param context
+	 * @param id : id of the request to delete.
+	 */
+	public static void deleteRequest(Context context, String id)
+	{
+		Parse.initialize(context,"x9hwNnRfTCCYGXPVJNKaR7zYTIMOdKeLkerRQJT2" ,"hi7GT6rUlp9uTfw6XQzdEjnTqwgPnRPoikPehgVf");
+
+		ParseQuery<ParseObject> query = ParseQuery.getQuery("Richiesta");
+		query.getInBackground(id, new GetCallback<ParseObject>() {
+		  public void done(ParseObject po, ParseException e) {
+		    if (e == null) {
+		    	po.deleteInBackground();
+		    }
+		  }
+		});
+	}
+	
 	/**
 	 * Method that return the phone numbers of all the users present on parse db
 	 * @return a list of phone numbers

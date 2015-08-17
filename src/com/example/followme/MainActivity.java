@@ -127,6 +127,7 @@ public class MainActivity extends ActionBarActivity  {
 				{
 					//roba da fare per chiedere a parse se c'è roba per me
 					requestsList=ParseManager.checkRequests(MainActivity.this, user.getId());
+					ParseManager.visualizeRquests(MainActivity.this, requestsList);
 					
 					if(!requestsList.isEmpty())
 					{

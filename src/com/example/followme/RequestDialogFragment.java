@@ -34,9 +34,12 @@ public class RequestDialogFragment extends DialogFragment
 				.setNegativeButton(R.string.ignore_request, new DialogInterface.OnClickListener() {
 					
 					@Override
-					public void onClick(DialogInterface dialog, int which) {
-						// TODO Auto-generated method stub
-						
+					public void onClick(DialogInterface dialog, int which) 
+					{
+						for(Request r : requests)
+						{
+							ParseManager.deleteRequest(getActivity(), r.getId());
+						}
 					}
 				});
 		return builder.create();
