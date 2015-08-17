@@ -58,28 +58,34 @@ public class FirstUseActivity extends Activity {
 					Intent intentControlCode = new Intent(FirstUseActivity.this, FirstUseCodeControlActivity.class);
 					intentControlCode.putExtra("rdmCode", rdmCode);
 					startActivityForResult(intentControlCode, 0);
-					
-					//scrivo su db parse e db locale il nuovo utente
-					
-					if(!ParseManager.phoneNumberExists(FirstUseActivity.this, phoneNumber))
-					{
-						ParseManager.insertPhoneNumber(FirstUseActivity.this, phoneNumber);
-					}
-					String id = ParseManager.getId(FirstUseActivity.this, phoneNumber);
-					PersonalDataManager.insertUser(phoneNumber, id);
-					
-					Intent intent = new Intent();
-					intent.putExtra("id", id);
-					setResult(RESULT_OK, intent);
-                	finish();
-				}
-				else
-				{
-					//numero non valido
-					
 				}
 			} 
 		});
+	}
+	
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) 
+	{
+		//sta ritornando l'attività first use
+		if(requestCode==0)
+		{
+			if(resultCode==RESULT_OK)
+			{
+				//scrivo su db parse e db locale il nuovo utente
+				
+				if(!ParseManager.phoneNumberExists(FirstUseActivity.this, phoneNumber))
+				{
+					ParseManager.insertPhoneNumber(FirstUseActivity.this, phoneNumber);
+				}
+				String id = ParseManager.getId(FirstUseActivity.this, phoneNumber);
+				PersonalDataManager.insertUser(phoneNumber, id);
+				
+				Intent intent = new Intent();
+				intent.putExtra("id", id);
+				setResult(RESULT_OK, intent);
+            	finish();
+			}
+		}
 	}
 	
 	//numero casuale

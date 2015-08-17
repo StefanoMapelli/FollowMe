@@ -171,7 +171,11 @@ public class ParseManager {
 			po=i.next();
 			senderId=po.getParseObject("idMittente").getObjectId();
 			
-			requests.add(new Request(po.getObjectId(), po.getString("tipoRichiesta"), po.getString("stato"), new User(getUser(context, senderId)), new User(user)));
+			requests.add(new Request(po.getObjectId(),
+					po.getString("tipoRichiesta"),
+					po.getString("stato"),
+					new User(getUser(context, senderId)),
+					new User(user)));
 		}
 		
 		return requests;

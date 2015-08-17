@@ -18,6 +18,7 @@ public class MainActivity extends ActionBarActivity  {
 	
 	private Button shareButton;
 	private Button followButton;
+	private Button loadButton;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
@@ -26,6 +27,7 @@ public class MainActivity extends ActionBarActivity  {
 		setContentView(R.layout.main_activity_layout);
 		shareButton = (Button) findViewById(R.id.shareButton);
 		followButton = (Button) findViewById(R.id.followButton);
+		loadButton = (Button) findViewById(R.id.loadButton);
 		
 		boolean esito;
 		try
@@ -47,8 +49,7 @@ public class MainActivity extends ActionBarActivity  {
 			
 			//intent per l'attività del primo utilizzo
 			Intent intent = new Intent(this,FirstUseActivity.class);
-			startActivityForResult(intent, 1);
-			
+			startActivityForResult(intent, 1);			
 		}
 		else
 		{

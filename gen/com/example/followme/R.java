@@ -2073,9 +2073,8 @@ containing a value of this type.
     }
     public static final class id {
         public static final int LinearLayout1=0x7f0c0053;
-        public static final int LinearLayoutButton=0x7f0c0062;
+        public static final int LinearLayoutButton=0x7f0c0061;
         public static final int RelativeLayout1=0x7f0c0059;
-        public static final int Space1=0x7f0c0060;
         public static final int action_bar=0x7f0c0045;
         public static final int action_bar_activity_content=0x7f0c0003;
         public static final int action_bar_container=0x7f0c0044;
@@ -2133,7 +2132,8 @@ containing a value of this type.
         public static final int image=0x7f0c0037;
         public static final int listMode=0x7f0c0020;
         public static final int list_item=0x7f0c0039;
-        public static final int map=0x7f0c0061;
+        public static final int loadButton=0x7f0c0062;
+        public static final int map=0x7f0c0060;
         public static final int match_parent=0x7f0c0017;
         public static final int middle=0x7f0c0031;
         public static final int monochrome=0x7f0c001f;

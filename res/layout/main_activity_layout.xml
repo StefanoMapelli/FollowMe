@@ -1,48 +1,46 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/RelativeLayout1"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:columnCount="3"
-    android:orientation="horizontal" >
-
-    <Space
-        android:id="@+id/Space1"
-        android:layout_width="1dp"
-        android:layout_height="15dp"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="true" />
+    android:weightSum="1"
+    android:orientation="vertical" >
 
     <fragment
         android:id="@+id/map"
         android:name="com.google.android.gms.maps.MapFragment"
-        android:layout_width="wrap_content"
-        android:layout_height="438dp"
-        android:layout_alignParentTop="true" />
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="0.2"/>
 
     <LinearLayout
         android:id="@+id/LinearLayoutButton"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_alignParentLeft="true"
-        android:layout_below="@+id/map" >
+        android:weightSum="1"
+        android:layout_weight="0.8" >
 
         <Button
-            android:id="@+id/shareButton"
-            android:layout_width="142dp"
+            android:id="@+id/loadButton"
+            android:layout_width="fill_parent"
             android:layout_height="match_parent"
-            android:layout_gravity="left"
-            android:layout_weight="1"
+            android:layout_weight="0.33"
+            android:text="Load" />
+        
+        <Button
+            android:id="@+id/shareButton"
+            android:layout_width="fill_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="0.33"
             android:text="Share" />
 
         <Button
             android:id="@+id/followButton"
-            android:layout_width="143dp"
+            android:layout_width="fill_parent"
             android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:gravity="center_vertical|center_horizontal"
+            android:layout_weight="0.33"
             android:text="Follow" />
 
     </LinearLayout>
 
-</RelativeLayout>
+</LinearLayout>
