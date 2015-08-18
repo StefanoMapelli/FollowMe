@@ -70,6 +70,7 @@ public class MainActivity extends ActionBarActivity  {
 			{
 				//intent per l'attività di share
 				Intent intent = new Intent(MainActivity.this,ChooseContactsForSharingActivity.class);
+				intent.putExtra("userId", user.getId());
 				startActivity(intent);
 			}
 			

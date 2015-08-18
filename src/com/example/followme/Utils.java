@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import android.content.Context;
-
 public class Utils {
 	
 	/**
@@ -15,13 +13,13 @@ public class Utils {
 	 * @param allUsers : all the phone numbers that are present in parse db
 	 * @return
 	 */
-	public static List<Contact> phoneContactsOnParse(List<Contact> allContacts, List<String> allUsers)
+	public static List<Contact> phoneContactsOnParse(List<Contact> allContacts, List<Contact> allUsers)
 	{
 		List<Contact> output = new ArrayList<Contact>();
 		Iterator<Contact> i = allContacts.iterator();
-		Iterator<String> j = allUsers.iterator();
+		Iterator<Contact> j = allUsers.iterator();
 		Contact c;
-		String number;
+		Contact number;
 		
 		while(i.hasNext())
 		{
@@ -32,8 +30,9 @@ public class Utils {
 			{
 				number = j.next();
 				
-				if(c.getPhoneNumber().compareTo(number) == 0)
+				if(c.getPhoneNumber().compareTo(number.getPhoneNumber()) == 0)
 				{
+					c.setId(number.getId());
 					output.add(c);
 				}
 			}

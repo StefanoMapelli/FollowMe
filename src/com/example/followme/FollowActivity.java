@@ -15,7 +15,7 @@ private List<Contact> contacts;
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.choose_contacts_for_sharing_layout);
 	
-		contacts = Utils.phoneContactsOnParse(DeviceDataManager.allContacts(this), ParseManager.allPhoneNumbers(this));
+		contacts = Utils.phoneContactsOnParse(DeviceDataManager.allContacts(this), ParseManager.allContactsOnParse(this));
 	}
 
 }

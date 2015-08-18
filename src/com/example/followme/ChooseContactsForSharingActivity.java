@@ -23,12 +23,12 @@ public class ChooseContactsForSharingActivity extends ActionBarActivity
 	protected void onCreate(Bundle savedInstanceState)
 	{
 		super.onCreate(savedInstanceState);
+		final String userId = getIntent().getStringExtra("userId");
 		setContentView(R.layout.choose_contacts_for_sharing_layout);
-		contactSelectButton = (Button) findViewById(R.id.contactSelectButton);
-		
+		contactSelectButton = (Button) findViewById(R.id.contactSelectButton);		
 		lv = (ListView) this.findViewById(R.id.contactList);
 	
-		List<Contact> contacts = Utils.phoneContactsOnParse(DeviceDataManager.allContacts(this), ParseManager.allPhoneNumbers(this));
+		List<Contact> contacts = Utils.phoneContactsOnParse(DeviceDataManager.allContacts(this), ParseManager.allContactsOnParse(this));
 		
 		Iterator<Contact> i = contacts.iterator();
 		Contact c;
@@ -57,6 +57,7 @@ public class ChooseContactsForSharingActivity extends ActionBarActivity
 				//passaggio parametri all'intent
 				List<Contact> selectedContacts = Utils.selectedContacts(contactsItems);
 				intent.putExtra("selectedContacts", selectedContacts.toArray());
+				intent.putExtra("userId", userId);
 				startActivity(intent);
 			}
 			

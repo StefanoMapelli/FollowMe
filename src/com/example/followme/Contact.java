@@ -6,6 +6,7 @@ public class Contact implements Serializable {
 
 	private static final long serialVersionUID = 4885357467297891708L;
 	
+	private String id;
 	private String name;
 	private String phoneNumber;
 	private boolean checked = false;
@@ -18,8 +19,9 @@ public class Contact implements Serializable {
 		this.checked = checked;
 	}
 
-	public Contact(String n , String pn)
+	public Contact(String i, String n , String pn)
 	{
+		id = i;
 		name = n;
 		phoneNumber = pn;
 	}
@@ -35,6 +37,14 @@ public class Contact implements Serializable {
 	}
 	public void setPhoneNumber(String phoneNumber) {
 		this.phoneNumber = phoneNumber;
+	}
+
+	public String getId() {
+		return id;
+	}
+
+	public void setId(String id) {
+		this.id = id;
 	}
 
 }

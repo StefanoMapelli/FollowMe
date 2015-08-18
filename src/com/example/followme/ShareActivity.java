@@ -7,10 +7,20 @@ import android.view.MenuItem;
 
 public class ShareActivity extends ActionBarActivity {
 
+	private Contact[] contacts = null;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.share_layout);
+		contacts = (Contact[]) getIntent().getSerializableExtra("selectedContacts");
+		String userId = getIntent().getStringExtra("userId");
+		
+		for(int i=0; i<contacts.length; i++)
+		{
+			ParseManager.insertRequest(this, "condivisione", userId, contacts[i].getId());
+		}
+		
 	}
 
 	@Override

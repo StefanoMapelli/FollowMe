@@ -33,33 +33,33 @@ public class ParseManager {
 	 * @param sender
 	 * @param receiver
 	 */
-	public static void insertRequest(Context context, String type, User sender, User receiver)
+	public static void insertRequest(Context context, String type, String senderId, String receiverId)
 	{
 		List<ParseObject> objects = null;	
 		Parse.initialize(context,"x9hwNnRfTCCYGXPVJNKaR7zYTIMOdKeLkerRQJT2" ,"hi7GT6rUlp9uTfw6XQzdEjnTqwgPnRPoikPehgVf");
 		ParseQuery<ParseObject> query = ParseQuery.getQuery("Utente");
-		query.whereEqualTo("objectId", sender.getId());
-		ParseObject senderPo=null;
 		
+		//get sender parse object
+		query.whereEqualTo("objectId", senderId);
+		ParseObject senderPo=null;		
 		try {
 			objects=query.find();
 			senderPo=objects.get(0);
 		} catch (ParseException e) {
 			e.printStackTrace();
 		}
-		query = ParseQuery.getQuery("Utente");
-		query.whereEqualTo("objectId", receiver.getId());
-		ParseObject receiverPo=null;
 		
+		//get receiver parse object
+		query = ParseQuery.getQuery("Utente");
+		query.whereEqualTo("objectId", receiverId);
+		ParseObject receiverPo=null;		
 		try {
 			objects=query.find();
 			receiverPo=objects.get(0);
 		} catch (ParseException e) {
 			e.printStackTrace();
 		}
-		
-		
-	
+			
 		ParseObject newReq = new ParseObject("Richiesta");
 		newReq.put("tipoRichiesta", type);
 		newReq.put("idMittente", senderPo);
@@ -226,11 +226,11 @@ public class ParseManager {
 	
 	/**
 	 * Method that return the phone numbers of all the users present on parse db
-	 * @return a list of phone numbers
+	 * @return a list of contacts
 	 */
-	public static List<String> allPhoneNumbers(Context context)
+	public static List<Contact> allContactsOnParse(Context context)
 	{
-		List<String> allNumbers = new ArrayList<String>();
+		List<Contact> allNumbers = new ArrayList<Contact>();
 		List<ParseObject> objects = null;
 		Parse.initialize(context,"x9hwNnRfTCCYGXPVJNKaR7zYTIMOdKeLkerRQJT2" ,"hi7GT6rUlp9uTfw6XQzdEjnTqwgPnRPoikPehgVf");
 		ParseQuery<ParseObject> query = ParseQuery.getQuery("Utente");
@@ -243,11 +243,13 @@ public class ParseManager {
 		
 		Iterator<ParseObject> i = objects.iterator();
 		ParseObject po;
+		Contact c;
 		
 		while(i.hasNext())
 		{
 			po = i.next();
-			allNumbers.add(po.getString("numero"));
+			c=new Contact(po.getObjectId(), null, po.getString("numero"));
+			allNumbers.add(c);
 		}
 		
 		return allNumbers;

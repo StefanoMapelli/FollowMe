@@ -32,7 +32,7 @@ public class DeviceDataManager {
 		    if(!has_phone.endsWith("0")) 
 		    {
 		    	 phone_number = getPhoneNumber(a,name);
-				 allContacts.add(new Contact(name, phone_number));
+				 allContacts.add(new Contact(null, name, phone_number));
 		    }
 		}
 		return allContacts;
