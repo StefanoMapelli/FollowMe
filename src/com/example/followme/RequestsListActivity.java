@@ -1,8 +1,5 @@
 package com.example.followme;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
 
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
@@ -25,19 +22,12 @@ public class RequestsListActivity extends ActionBarActivity {
 		//get listview
 		listViewRequests = (ListView) this.findViewById(R.id.requestsList);
 	
-		ArrayList<Request> requests = new ArrayList<Request>();
+		Object[] objects = (Object[]) getIntent().getSerializableExtra("incomingRequests");
+		requestsItems = new Request[objects.length];
 		
-		Iterator<Request> iter = requests.iterator();
-		Request r;
-		int j=0;
-		requestsItems = new Request[requests.size()];
-		
-		while(iter.hasNext())
+		for(int i=0; i < objects.length; i++)
 		{
-			r = iter.next();
-			
-			requestsItems[j] = r;
-			j++;
+			requestsItems[i] = (Request) objects[i];
 		}
 		
 		//set the adapter

@@ -1,6 +1,10 @@
 package com.example.followme;
 
-public class Request {
+import java.io.Serializable;
+
+public class Request implements Serializable
+{
+	private static final long serialVersionUID = 3618865785363227401L;
 	
 	private String id;
 	private String type;

@@ -13,7 +13,14 @@ public class ShareActivity extends ActionBarActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.share_layout);
-		contacts = (Contact[]) getIntent().getSerializableExtra("selectedContacts");
+		Object[] objects = (Object[]) getIntent().getSerializableExtra("selectedContacts");
+		contacts = new Contact[objects.length];
+		
+		for(int i=0; i < objects.length; i++)
+		{
+			contacts[i] = (Contact) objects[i];
+		}
+		
 		String userId = getIntent().getStringExtra("userId");
 		
 		for(int i=0; i<contacts.length; i++)

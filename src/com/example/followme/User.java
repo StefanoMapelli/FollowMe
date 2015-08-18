@@ -1,8 +1,12 @@
 package com.example.followme;
 
+import java.io.Serializable;
+
 import com.parse.ParseObject;
 
-public class User {
+public class User implements Serializable{
+	
+	private static final long serialVersionUID = -4789454514782770104L;
 	
 	private String id;
 	private String phoneNumber;

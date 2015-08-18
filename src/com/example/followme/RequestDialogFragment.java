@@ -6,6 +6,7 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 
 public class RequestDialogFragment extends DialogFragment
@@ -26,9 +27,11 @@ public class RequestDialogFragment extends DialogFragment
 			   .setPositiveButton(R.string.show_request, new DialogInterface.OnClickListener() {
 				
 				@Override
-				public void onClick(DialogInterface dialog, int which) {
-					// TODO Auto-generated method stub
-					
+				public void onClick(DialogInterface dialog, int which) 
+				{
+					Intent intent = new Intent(getActivity(),RequestsListActivity.class);
+					intent.putExtra("incomingRequests", requests.toArray());
+					startActivity(intent);
 				}
 			})
 				.setNegativeButton(R.string.ignore_request, new DialogInterface.OnClickListener() {
