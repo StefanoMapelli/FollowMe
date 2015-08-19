@@ -2084,15 +2084,15 @@ containing a value of this type.
         public static final int action_bar_subtitle=0x7f0c0033;
         public static final int action_bar_title=0x7f0c0032;
         public static final int action_context_bar=0x7f0c0046;
-        public static final int action_help=0x7f0c006c;
-        public static final int action_location_found=0x7f0c006a;
+        public static final int action_help=0x7f0c006d;
+        public static final int action_location_found=0x7f0c006b;
         public static final int action_menu_divider=0x7f0c0005;
         public static final int action_menu_presenter=0x7f0c0006;
         public static final int action_mode_bar=0x7f0c0042;
         public static final int action_mode_bar_stub=0x7f0c0041;
         public static final int action_mode_close_button=0x7f0c0034;
-        public static final int action_refresh=0x7f0c006b;
-        public static final int action_settings=0x7f0c006d;
+        public static final int action_refresh=0x7f0c006c;
+        public static final int action_settings=0x7f0c006e;
         public static final int activity_chooser_view_content=0x7f0c0035;
         public static final int adjust_height=0x7f0c0009;
         public static final int adjust_width=0x7f0c000a;
@@ -2152,7 +2152,7 @@ containing a value of this type.
         public static final int radio=0x7f0c003f;
         public static final int requestSender=0x7f0c0066;
         public static final int requestType=0x7f0c0065;
-        public static final int requestsList=0x7f0c0069;
+        public static final int requestsList=0x7f0c006a;
         public static final int sandbox=0x7f0c0013;
         public static final int satellite=0x7f0c000e;
         public static final int search_badge=0x7f0c0049;
@@ -2169,6 +2169,7 @@ containing a value of this type.
         public static final int shareButton=0x7f0c0063;
         public static final int shortcut=0x7f0c003e;
         public static final int showCustom=0x7f0c0024;
+        public static final int showDetailsRequestButton=0x7f0c0069;
         public static final int showHome=0x7f0c0025;
         public static final int showTitle=0x7f0c0026;
         public static final int split_action_bar=0x7f0c0004;
@@ -2242,12 +2243,14 @@ containing a value of this type.
         public static final int request_list_item_layout=0x7f03001d;
         public static final int requests_list_layout=0x7f03001e;
         public static final int share_layout=0x7f03001f;
-        public static final int support_simple_spinner_dropdown_item=0x7f030020;
+        public static final int show_details_layout=0x7f030020;
+        public static final int support_simple_spinner_dropdown_item=0x7f030021;
     }
     public static final class menu {
         public static final int activity_main_actions=0x7f0d0000;
         public static final int requests_list=0x7f0d0001;
         public static final int share=0x7f0d0002;
+        public static final int show_details=0x7f0d0003;
     }
     public static final class raw {
         public static final int gtm_analytics=0x7f050000;
@@ -2425,6 +2428,7 @@ containing a value of this type.
         public static final int store_picture_title=0x7f070000;
         public static final int title_activity_requests_list=0x7f07003c;
         public static final int title_activity_share=0x7f070037;
+        public static final int title_activity_show_details=0x7f07003e;
         /**  Text on a placeholder buy button when Google Play services is not
          available or up-to-date 
          */

@@ -72,6 +72,10 @@
             android:name=".RequestsListActivity"
             android:label="@string/title_activity_requests_list" >
         </activity>
+        <activity
+            android:name=".ShowDetailsActivity"
+            android:label="@string/title_activity_show_details" >
+        </activity>
     </application>
 
 </manifest>

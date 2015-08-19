@@ -2,15 +2,19 @@ package com.example.followme;
 
 
 import android.support.v7.app.ActionBarActivity;
+import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.ListView;
 
 public class RequestsListActivity extends ActionBarActivity {
 	
 	private ListView listViewRequests;
 	private Request[] requestsItems;
+	RequestCustomAdapter adapter;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -31,10 +35,81 @@ public class RequestsListActivity extends ActionBarActivity {
 		}
 		
 		//set the adapter
-		RequestCustomAdapter adapter = new RequestCustomAdapter(this, requestsItems);
+		adapter = new RequestCustomAdapter(this, requestsItems);
 		listViewRequests.setAdapter(adapter);
 		
+		
+		
 	}
+	
+	
+	//onClickHandler quando viene accettata una richiesta
+	public void acceptRequestOnClickHandler(View v) 
+	{
+		
+		//quando viene accettata una richiesta viene mostrata la nuova attività a seconda del 
+		//tipo di richiesta
+		
+		Request itemToShow = (Request)v.getTag();
+		
+		String typeOfRequest = itemToShow.getType();
+		
+		//valutiamo il tipo di richiesta
+		//-condivisione
+		//-percorso
+		//-recinto
+		//-destinazione
+		switch(typeOfRequest) 
+		{
+		
+	    case "condivisione":
+	    //apro activity condivisione
+	    	Log.i("typeOfRequest","condivisione");
+	    	return;
+	      
+	    case "percorso":
+	    //apro activity percorso
+	    	Log.i("typeOfRequest","percorso");
+	    	return;
+	      
+	    case "recinto":
+		//apro activity recinto
+	    	Log.i("typeOfRequest","recinto");
+	    	return;
+		  
+	    case "destinazione":
+	    //apro activity destinazione
+	    	Log.i("typeOfRequest","destinazione");
+	    	return;
+		}
+	    
+	  }
+	
+	//onClickHandler quando viene rifiutata una richiesta
+	public void declineRequestOnClickHandler(View v) {
+		
+		//quando viene rifiutata una richiesta essa viene tolta dalla lista delle richieste mostrate
+		Request itemToRemove = (Request)v.getTag();
+		//eliminare la richiesta da parse db
+		ParseManager.deleteRequest(this, itemToRemove.getId());
+		//rimuovere dalla listview
+		adapter.remove(itemToRemove);
+
+	}
+	
+	//onClickHandler quando vengono aperti i dettagli di una richiesta
+	public void showDetailsRequestOnClickHandler(View v) 
+	{
+		//quando apriamo i dettagli di una richiesta si apre la nuova attività che mostra i dettagli
+		Request itemToShow = (Request)v.getTag();
+		
+		Intent intent = new Intent(RequestsListActivity.this,ShowDetailsActivity.class);
+		intent.putExtra("requestShow", itemToShow);
+		startActivity(intent);
+		
+	}
+	
+	
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
