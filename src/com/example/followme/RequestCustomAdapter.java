@@ -15,10 +15,10 @@ import android.widget.CompoundButton.OnCheckedChangeListener;
 
 public class RequestCustomAdapter extends ArrayAdapter<Request>{
 	
-	private Request[] requests = null;
+	private List<Request> requests= null;
 	private Context context;
 
-	public RequestCustomAdapter(Context context, Request[] resource) 
+	public RequestCustomAdapter(Context context, List<Request> resource) 
 	{		
 		super(context, R.layout.request_list_item_layout, resource);
 		
@@ -37,8 +37,8 @@ public class RequestCustomAdapter extends ArrayAdapter<Request>{
 		
 		//per ogni elemento della lista setto il testo della text view type con il tipo di richiesta
 		//per ogni elemento della lista setto il testo della text view sender con il mittente
-		typeRequest.setText("Type: "+ requests[position].getType());
-		senderRequest.setText("Sender: "+ requests[position].getSender().getPhoneNumber());
+		typeRequest.setText("Type: "+ requests.get(position).getType());
+		senderRequest.setText("Sender: "+ requests.get(position).getSender().getPhoneNumber());
 				
 		return convertView;	
 	}

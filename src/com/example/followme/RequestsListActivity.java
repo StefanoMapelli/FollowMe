@@ -1,6 +1,9 @@
 package com.example.followme;
 
 
+import java.util.ArrayList;
+import java.util.List;
+
 import android.support.v7.app.ActionBarActivity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -13,7 +16,7 @@ import android.widget.ListView;
 public class RequestsListActivity extends ActionBarActivity {
 	
 	private ListView listViewRequests;
-	private Request[] requestsItems;
+	private List<Request> requestsItems;
 	RequestCustomAdapter adapter;
 
 	@Override
@@ -27,11 +30,11 @@ public class RequestsListActivity extends ActionBarActivity {
 		listViewRequests = (ListView) this.findViewById(R.id.requestsList);
 	
 		Object[] objects = (Object[]) getIntent().getSerializableExtra("incomingRequests");
-		requestsItems = new Request[objects.length];
+		requestsItems = new ArrayList<Request>();
 		
 		for(int i=0; i < objects.length; i++)
 		{
-			requestsItems[i] = (Request) objects[i];
+			requestsItems.add((Request) objects[i]);
 		}
 		
 		//set the adapter
@@ -89,7 +92,11 @@ public class RequestsListActivity extends ActionBarActivity {
 	public void declineRequestOnClickHandler(View v) {
 		
 		//quando viene rifiutata una richiesta essa viene tolta dalla lista delle richieste mostrate
-		Request itemToRemove = (Request)v.getTag();
+		
+		View parentRow = (View) v.getParent();
+		int position = listViewRequests.getPositionForView(parentRow);
+		Request itemToRemove = requestsItems.get(position);
+		
 		//eliminare la richiesta da parse db
 		ParseManager.deleteRequest(this, itemToRemove.getId());
 		//rimuovere dalla listview
