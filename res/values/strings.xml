@@ -12,5 +12,6 @@
     <string name="ignore_request">Ignore</string>
     <string name="title_activity_requests_list">RequestsListActivity</string>
     <string name="hello_world">Hello world!</string>
+    <string name="title_activity_show_details">ShowDetailsActivity</string>
 
 </resources>

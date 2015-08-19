@@ -32,15 +32,26 @@
             android:id="@+id/acceptRequestButton"
             android:layout_width="fill_parent"
             android:layout_height="match_parent"
-            android:layout_weight="0.50"
+            android:layout_weight="0.33"
+            android:onClick="acceptRequestOnClickHandler"
             android:text="Accept" />
+    	
         
     	<Button
             android:id="@+id/declineRequestButton"
             android:layout_width="fill_parent"
             android:layout_height="match_parent"
-            android:layout_weight="0.50"
+            android:layout_weight="0.33"
+            android:onClick="declineRequestOnClickHandler"
             android:text="Decline" />
+    	
+    	<Button
+            android:id="@+id/showDetailsRequestButton"
+            android:layout_width="fill_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="0.33"
+            android:onClick="showDetailsRequestOnClickHandler"
+            android:text="Details" />
     	
     </LinearLayout>
     
