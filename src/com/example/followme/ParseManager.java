@@ -318,16 +318,21 @@ public class ParseManager {
 	 */
 	public static void deleteRequest(Context context, String id)
 	{
+		List<ParseObject> objects = null;	
 		Parse.initialize(context,"x9hwNnRfTCCYGXPVJNKaR7zYTIMOdKeLkerRQJT2" ,"hi7GT6rUlp9uTfw6XQzdEjnTqwgPnRPoikPehgVf");
-
 		ParseQuery<ParseObject> query = ParseQuery.getQuery("Richiesta");
-		query.getInBackground(id, new GetCallback<ParseObject>() {
-		  public void done(ParseObject po, ParseException e) {
-		    if (e == null) {
-		    	po.deleteInBackground();
-		    }
-		  }
-		});
+		
+		//get sender parse object
+		query.whereEqualTo("objectId", id);
+		ParseObject po=null;		
+		try {
+			objects=query.find();
+			po=objects.get(0);
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+		
+		po.deleteInBackground();
 	}
 	
 	/**
