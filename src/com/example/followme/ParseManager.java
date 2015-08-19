@@ -16,8 +16,6 @@ import com.parse.SaveCallback;
 
 public class ParseManager {
 	
-	private static boolean queryDone = false;
-	
 	/**
 	 * Method that inserts the phone number in parse database.
 	 * @param phoneNumber : phone number to update or insert
@@ -42,6 +40,7 @@ public class ParseManager {
 		List<ParseObject> objects = null;	
 		Parse.initialize(context,"x9hwNnRfTCCYGXPVJNKaR7zYTIMOdKeLkerRQJT2" ,"hi7GT6rUlp9uTfw6XQzdEjnTqwgPnRPoikPehgVf");
 		ParseQuery<ParseObject> query = ParseQuery.getQuery("Utente");
+		ParseObject newReq = new ParseObject("Richiesta");
 		
 		//get sender parse object
 		query.whereEqualTo("objectId", senderId);
@@ -75,7 +74,8 @@ public class ParseManager {
 				pathPo=objects.get(0);
 			} catch (ParseException e) {
 				e.printStackTrace();
-			}	
+			}
+			newReq.put("idPercorso", pathPo);
 		}
 
 		//get destination parse object
@@ -90,6 +90,7 @@ public class ParseManager {
 			} catch (ParseException e) {
 				e.printStackTrace();
 			}	
+			newReq.put("idDestinazione", destinationPo);
 		}
 		
 		//get fence parse object
@@ -103,17 +104,14 @@ public class ParseManager {
 				fencePo=objects.get(0);
 			} catch (ParseException e) {
 				e.printStackTrace();
-			}	
+			}
+			newReq.put("idRecinto", fencePo);
 		}
 				
-		ParseObject newReq = new ParseObject("Richiesta");
 		newReq.put("tipoRichiesta", type);
 		newReq.put("idMittente", senderPo);
 		newReq.put("idDestinatario", receiverPo);
 		newReq.put("stato", "non visualizzata");
-		newReq.put("idPercorso", pathPo);
-		newReq.put("idDestinazione", destinationPo);
-		newReq.put("idRecinto", fencePo);
 		newReq.saveInBackground();
 	}
 	
@@ -126,23 +124,12 @@ public class ParseManager {
 	{
 		Parse.initialize(context,"x9hwNnRfTCCYGXPVJNKaR7zYTIMOdKeLkerRQJT2" ,"hi7GT6rUlp9uTfw6XQzdEjnTqwgPnRPoikPehgVf");
 		ParseObject newPath = new ParseObject("Percorso");
-		newPath.saveInBackground(new SaveCallback() {
-	        public void done(ParseException e) {
-	            if (e == null) {
-	                // Saved successfully.
-	            	queryDone = true;
-	            }
-	        }
-	    });
-		
-		while(true)
-		{
-			if(queryDone)
-			{
-				queryDone = false;
-				return newPath.getObjectId();
-			}
+		try {
+			newPath.save();
+		} catch (ParseException e) {
+			e.printStackTrace();
 		}
+		return newPath.getObjectId();
 	}
 	
 	/**

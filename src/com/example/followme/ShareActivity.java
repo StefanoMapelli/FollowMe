@@ -4,21 +4,19 @@ import android.content.ContentResolver;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.util.Log;
 import android.view.Menu;
-import android.view.MenuItem;
-import android.widget.Toast; 
+import android.view.MenuItem; 
 
 public class ShareActivity extends ActionBarActivity {
 
 	private Contact[] contacts = null;
 	private LocationManager locationManager=null;  
 	private LocationListener locationListener=null;  
-	private double longitude;
-	private double latitude;
+	private double longitude = 0;
+	private double latitude = 0;
 	private String pathId;
 	
 	@Override
@@ -44,11 +42,10 @@ public class ShareActivity extends ActionBarActivity {
 		 
 		if (displayGpsStatus()) 
 		{
-			locationListener = new MyLocationListener();  
+			locationListener = new MyLocationListener(); 
+			locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
 			locationManager.requestLocationUpdates(LocationManager  
 		    .GPS_PROVIDER, 5000, 10,locationListener); 
-			
-			new NetworkActivity().execute();
 		} 
 		else
 		{
@@ -89,37 +86,20 @@ public class ShareActivity extends ActionBarActivity {
 	   return false;  
 	  }  
 	 }  
-	 
-	 private class NetworkActivity extends AsyncTask<Void, Integer, String>
-	    {
-			@Override
-			protected String doInBackground(Void... params) 
-			{	
-				while(true)
-				{	
-					ParseManager.insertPosition(ShareActivity.this, pathId, latitude, longitude);
-					
-					try {
-						Thread.sleep(5000);
-					} catch (InterruptedException e) {
-						e.printStackTrace();
-					}									
-				}
-			}
-	    }
 	
 	/*----------Listener class to get coordinates ------------- */  
 	 private class MyLocationListener implements LocationListener 
 	 {  
 		 @Override  
-	     public void onLocationChanged(Location loc) 
-	     {  
-			 Toast.makeText(getBaseContext(),"Location changed : Lat: " +  
-	         loc.getLatitude()+ " Lng: " + loc.getLongitude(),  
-	         Toast.LENGTH_SHORT).show();  
-			 longitude = loc.getLongitude();      
-	         latitude = loc.getLatitude(); 
-	         Log.i("LOCATION", "latitudine: "+latitude+" , longitude: "+longitude);
+	     public void onLocationChanged(Location loc) 	     
+		 {   	
+			 if(Math.abs(longitude - loc.getLongitude()) > 0.0001 ||
+			    Math.abs(latitude - loc.getLatitude()) > 0.0001)
+			 {
+				 longitude = loc.getLongitude();      
+		         latitude  = loc.getLatitude(); 
+				 ParseManager.insertPosition(ShareActivity.this, pathId, latitude, longitude);
+			 }
 	     }
 	          
 	     @Override  
