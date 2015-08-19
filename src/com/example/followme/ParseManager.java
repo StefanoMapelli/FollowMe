@@ -9,10 +9,14 @@ import android.content.Context;
 import com.parse.GetCallback;
 import com.parse.Parse;
 import com.parse.ParseException;
+import com.parse.ParseGeoPoint;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
+import com.parse.SaveCallback;
 
 public class ParseManager {
+	
+	private static boolean queryDone = false;
 	
 	/**
 	 * Method that inserts the phone number in parse database.
@@ -33,7 +37,7 @@ public class ParseManager {
 	 * @param sender
 	 * @param receiver
 	 */
-	public static void insertRequest(Context context, String type, String senderId, String receiverId)
+	public static void insertRequest(Context context, String type, String senderId, String receiverId, String pathId, String destinationId, String fenceId)
 	{
 		List<ParseObject> objects = null;	
 		Parse.initialize(context,"x9hwNnRfTCCYGXPVJNKaR7zYTIMOdKeLkerRQJT2" ,"hi7GT6rUlp9uTfw6XQzdEjnTqwgPnRPoikPehgVf");
@@ -59,13 +63,115 @@ public class ParseManager {
 		} catch (ParseException e) {
 			e.printStackTrace();
 		}
-			
+		
+		//get path parse object
+		ParseObject pathPo=null;
+		if(pathId != null)
+		{
+			query = ParseQuery.getQuery("Percorso");
+			query.whereEqualTo("objectId", pathId);		
+			try {
+				objects=query.find();
+				pathPo=objects.get(0);
+			} catch (ParseException e) {
+				e.printStackTrace();
+			}	
+		}
+
+		//get destination parse object
+		ParseObject destinationPo=null;				
+		if(destinationId != null)
+		{
+			query = ParseQuery.getQuery("Destinazione");
+			query.whereEqualTo("objectId", destinationId);	
+			try {
+				objects=query.find();
+				destinationPo=objects.get(0);
+			} catch (ParseException e) {
+				e.printStackTrace();
+			}	
+		}
+		
+		//get fence parse object
+		ParseObject fencePo=null;	
+		if(fenceId != null)
+		{
+			query = ParseQuery.getQuery("Recinto");
+			query.whereEqualTo("objectId", fenceId);	
+			try {
+				objects=query.find();
+				fencePo=objects.get(0);
+			} catch (ParseException e) {
+				e.printStackTrace();
+			}	
+		}
+				
 		ParseObject newReq = new ParseObject("Richiesta");
 		newReq.put("tipoRichiesta", type);
 		newReq.put("idMittente", senderPo);
 		newReq.put("idDestinatario", receiverPo);
 		newReq.put("stato", "non visualizzata");
+		newReq.put("idPercorso", pathPo);
+		newReq.put("idDestinazione", destinationPo);
+		newReq.put("idRecinto", fencePo);
 		newReq.saveInBackground();
+	}
+	
+	/**
+	 * Method that insert a new path in the Parse db.
+	 * @param context
+	 * @return : the objectId of the inserted path.
+	 */
+	public static String insertPath(Context context)
+	{
+		Parse.initialize(context,"x9hwNnRfTCCYGXPVJNKaR7zYTIMOdKeLkerRQJT2" ,"hi7GT6rUlp9uTfw6XQzdEjnTqwgPnRPoikPehgVf");
+		ParseObject newPath = new ParseObject("Percorso");
+		newPath.saveInBackground(new SaveCallback() {
+	        public void done(ParseException e) {
+	            if (e == null) {
+	                // Saved successfully.
+	            	queryDone = true;
+	            }
+	        }
+	    });
+		
+		while(true)
+		{
+			if(queryDone)
+			{
+				queryDone = false;
+				return newPath.getObjectId();
+			}
+		}
+	}
+	
+	/**
+	 * Insert a position in the parse db using parameter data.
+	 * @param context
+	 * @param pId : path id .
+	 * @param latitude
+	 * @param longitude
+	 */
+	public static void insertPosition(Context context, String pId, double latitude, double longitude)
+	{
+		Parse.initialize(context,"x9hwNnRfTCCYGXPVJNKaR7zYTIMOdKeLkerRQJT2" ,"hi7GT6rUlp9uTfw6XQzdEjnTqwgPnRPoikPehgVf");
+		
+		List<ParseObject> objects = null;	
+		ParseObject pathPo=null;
+		ParseQuery<ParseObject> query = ParseQuery.getQuery("Percorso");
+		query.whereEqualTo("objectId", pId);		
+		try {
+			objects=query.find();
+			pathPo=objects.get(0);
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+		
+		ParseObject newPos = new ParseObject("Posizione");
+		ParseGeoPoint position = new ParseGeoPoint(latitude, longitude);	
+		newPos.put("idPercorso", pathPo);
+		newPos.put("posizione", position);
+		newPos.saveInBackground();
 	}
 	
 	/**
