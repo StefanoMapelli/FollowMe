@@ -1,10 +1,17 @@
 package com.followme.activity;
+import java.util.ArrayList;
+
 import com.followme.activity.R;
 import com.followme.manager.ParseManager;
 import com.followme.object.Contact;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.MapView;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.PolylineOptions;
 
 import android.support.v7.app.ActionBarActivity;
 import android.content.ContentResolver;
+import android.graphics.Color;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -22,11 +29,14 @@ public class ShareActivity extends ActionBarActivity {
 	private double longitude = 0;
 	private double latitude = 0;
 	private String pathId;
+	private GoogleMap map;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.share_layout);
+		map = ((MapView) findViewById(R.id.map1)).getMap();
+		
 		Object[] objects = (Object[]) getIntent().getSerializableExtra("selectedContacts");
 		contacts = new Contact[objects.length];
 		
@@ -76,6 +86,19 @@ public class ShareActivity extends ActionBarActivity {
 		return super.onOptionsItemSelected(item);
 	}
 	
+	private void drawPrimaryLinePath(Location loc1, Location loc2)
+	{
+	    PolylineOptions options = new PolylineOptions();
+
+	    options.color( Color.parseColor( "#CC0000FF" ) );
+	    options.width( 5 );
+	    options.visible( true );
+	    options.add( new LatLng( loc1.getLatitude(), loc1.getLongitude() ) );
+	    options.add( new LatLng( loc2.getLatitude(), loc2.getLongitude() ) );
+	    map.addPolyline( options );
+
+	}
+	
 	/*----Method to Check GPS is enable or disable ----- */  
 	 private Boolean displayGpsStatus() {  
 	  ContentResolver contentResolver = getBaseContext()  
@@ -103,6 +126,10 @@ public class ShareActivity extends ActionBarActivity {
 				 longitude = loc.getLongitude();      
 		         latitude  = loc.getLatitude(); 
 				 ParseManager.insertPosition(ShareActivity.this, pathId, latitude, longitude);
+				 Location newLoc = new Location("");
+				 newLoc.setLatitude(latitude);
+				 newLoc.setLongitude(longitude);
+				 drawPrimaryLinePath(loc , newLoc);
 			 }
 	     }
 	          
