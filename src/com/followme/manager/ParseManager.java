@@ -1,4 +1,4 @@
-package com.example.followme;
+package com.followme.manager;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -6,6 +6,9 @@ import java.util.List;
 
 import android.content.Context;
 
+import com.followme.object.Contact;
+import com.followme.object.Request;
+import com.followme.object.User;
 import com.parse.GetCallback;
 import com.parse.Parse;
 import com.parse.ParseException;

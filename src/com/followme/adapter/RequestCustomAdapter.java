@@ -1,6 +1,9 @@
-package com.example.followme;
+package com.followme.adapter;
 
 import java.util.List;
+
+import com.followme.activity.R;
+import com.followme.object.Request;
 
 import android.app.Activity;
 import android.content.Context;

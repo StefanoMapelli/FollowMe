@@ -1,8 +1,13 @@
-package com.example.followme;
+package com.followme.activity;
 
 
 import java.util.ArrayList;
 import java.util.List;
+
+import com.followme.activity.R;
+import com.followme.adapter.RequestCustomAdapter;
+import com.followme.manager.ParseManager;
+import com.followme.object.Request;
 
 import android.support.v7.app.ActionBarActivity;
 import android.content.Intent;

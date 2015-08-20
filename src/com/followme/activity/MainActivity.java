@@ -1,6 +1,14 @@
-package com.example.followme;
+package com.followme.activity;
 
 import java.util.List;
+
+import com.followme.activity.R;
+
+import com.followme.fragment.RequestDialogFragment;
+import com.followme.manager.ParseManager;
+import com.followme.manager.PersonalDataManager;
+import com.followme.object.Request;
+import com.followme.object.User;
 
 import android.content.Intent;
 import android.os.AsyncTask;

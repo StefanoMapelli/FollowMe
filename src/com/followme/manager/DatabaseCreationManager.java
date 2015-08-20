@@ -1,4 +1,4 @@
-package com.example.followme;
+package com.followme.manager;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;

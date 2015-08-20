@@ -1,7 +1,11 @@
-package com.example.followme;
+package com.followme.activity;
 
 
 import java.util.Random;
+
+import com.followme.activity.R;
+import com.followme.manager.ParseManager;
+import com.followme.manager.PersonalDataManager;
 
 import android.app.Activity;
 import android.content.ContentValues;

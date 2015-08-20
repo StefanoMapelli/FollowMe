@@ -1,7 +1,14 @@
-package com.example.followme;
+package com.followme.activity;
 
 import java.util.Iterator;
 import java.util.List;
+
+import com.followme.activity.R;
+import com.followme.adapter.ContactCustomAdapter;
+import com.followme.manager.DeviceDataManager;
+import com.followme.manager.ParseManager;
+import com.followme.manager.Utils;
+import com.followme.object.Contact;
 
 import android.content.Intent;
 import android.os.Bundle;

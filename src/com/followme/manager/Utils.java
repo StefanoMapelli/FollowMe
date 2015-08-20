@@ -1,8 +1,10 @@
-package com.example.followme;
+package com.followme.manager;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+
+import com.followme.object.Contact;
 
 public class Utils {
 	

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.followme"
+    package="com.followme.activity"
     android:versionCode="1"
     android:versionName="1.0" >
 
@@ -37,7 +37,7 @@
             android:value="AIzaSyB707EmgunnkxWrXrTKxLdcFFBSjy4isPc" />
 
         <activity
-            android:name=".MainActivity"
+            android:name="com.followme.activity.MainActivity"
             android:label="@string/app_name"
             android:theme="@style/Theme.AppCompat.Light" >
             <intent-filter>
@@ -47,33 +47,33 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".FirstUseActivity"
+            android:name="com.followme.activity.FirstUseActivity"
             android:label="@string/app_name" >
         </activity>
         <activity
-            android:name=".FirstUseCodeControlActivity"
+     		android:name="com.followme.activity.FirstUseCodeControlActivity"
             android:label="@string/app_name" >
         </activity>
         <activity
-            android:name=".ChooseContactsForSharingActivity"
+   			android:name="com.followme.activity.ChooseContactsForSharingActivity"
             android:label="@string/app_name"
             android:theme="@style/Theme.AppCompat.Light" >
         </activity>
         <activity
-            android:name=".FollowActivity"
+   			android:name="com.followme.activity.FollowActivity"
             android:label="@string/app_name"
             android:theme="@style/Theme.AppCompat.Light" >
         </activity>
-        <activity
-            android:name=".ShareActivity"
+        <activity            
+   			android:name="com.followme.activity.ShareActivity"
             android:label="@string/title_activity_share" >
         </activity>
         <activity
-            android:name=".RequestsListActivity"
+  			android:name="com.followme.activity.RequestsListActivity"
             android:label="@string/title_activity_requests_list" >
         </activity>
         <activity
-            android:name=".ShowDetailsActivity"
+            android:name="com.followme.activity.ShowDetailsActivity"
             android:label="@string/title_activity_show_details" >
         </activity>
     </application>

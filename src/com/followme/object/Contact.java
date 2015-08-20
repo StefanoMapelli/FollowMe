@@ -1,4 +1,4 @@
-package com.example.followme;
+package com.followme.object;
 
 import java.io.Serializable;
 

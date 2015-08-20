@@ -1,4 +1,4 @@
-package com.example.followme;
+package com.followme.manager;
 
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;

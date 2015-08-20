@@ -1,4 +1,8 @@
-package com.example.followme;
+package com.followme.activity;
+import com.followme.activity.R;
+import com.followme.manager.ParseManager;
+import com.followme.object.Contact;
+
 import android.support.v7.app.ActionBarActivity;
 import android.content.ContentResolver;
 import android.location.Location;

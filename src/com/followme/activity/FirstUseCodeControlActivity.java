@@ -1,4 +1,6 @@
-package com.example.followme;
+package com.followme.activity;
+
+import com.followme.activity.R;
 
 import android.app.Activity;
 import android.content.Intent;
