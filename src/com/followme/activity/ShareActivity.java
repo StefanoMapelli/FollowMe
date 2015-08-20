@@ -1,13 +1,14 @@
 package com.followme.activity;
-import java.util.ArrayList;
 
 import com.followme.activity.R;
 import com.followme.manager.ParseManager;
 import com.followme.object.Contact;
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.MapView;
+import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.PolylineOptions;
+import com.google.android.gms.maps.SupportMapFragment;
 
 import android.support.v7.app.ActionBarActivity;
 import android.content.ContentResolver;
@@ -35,7 +36,7 @@ public class ShareActivity extends ActionBarActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.share_layout);
-		map = ((MapView) findViewById(R.id.map1)).getMap();
+		map = ((SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map1)).getMap();
 		
 		Object[] objects = (Object[]) getIntent().getSerializableExtra("selectedContacts");
 		contacts = new Contact[objects.length];
@@ -53,7 +54,16 @@ public class ShareActivity extends ActionBarActivity {
 		{
 			ParseManager.insertRequest(this, "condivisione", userId, contacts[i].getId(), pathId, null, null);
 		}
-		 
+		
+		/*Location l = new Location("");
+		 l.setLatitude(0);
+		 l.setLongitude(0);
+		 Location l1 = new Location("");
+		 l1.setLatitude(90);
+		 l1.setLongitude(90);
+		
+		drawPrimaryLinePath(l,l1);*/
+		
 		if (displayGpsStatus()) 
 		{
 			locationListener = new MyLocationListener(); 
@@ -120,8 +130,8 @@ public class ShareActivity extends ActionBarActivity {
 		 @Override  
 	     public void onLocationChanged(Location loc) 	     
 		 {   	
-			 if(Math.abs(longitude - loc.getLongitude()) > 0.0001 ||
-			    Math.abs(latitude - loc.getLatitude()) > 0.0001)
+			 if(Math.abs(longitude - loc.getLongitude()) > 0.00001 ||
+			    Math.abs(latitude - loc.getLatitude()) > 0.00001)
 			 {
 				 longitude = loc.getLongitude();      
 		         latitude  = loc.getLatitude(); 
@@ -129,6 +139,13 @@ public class ShareActivity extends ActionBarActivity {
 				 Location newLoc = new Location("");
 				 newLoc.setLatitude(latitude);
 				 newLoc.setLongitude(longitude);
+				 CameraPosition cameraPosition = new CameraPosition.Builder()
+				 .target(new LatLng(newLoc.getLatitude(),newLoc.getLongitude()))
+				 .zoom(18)
+				 .bearing(0)           
+				 .tilt(0)             
+				 .build();
+				 map.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
 				 drawPrimaryLinePath(loc , newLoc);
 			 }
 	     }
