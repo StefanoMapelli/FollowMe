@@ -326,10 +326,74 @@ public class ParseManager {
 	}
 	
 	/**
+	 * Method that get the path of a relative request, if it exists
+	 * @return a list of contacts
+	 */
+	public static List<Contact> getPathOfRequest(Context context, Request request)
+	{
+		List<Contact> allNumbers = new ArrayList<Contact>();
+		List<ParseObject> objects = null;
+		Parse.initialize(context,"x9hwNnRfTCCYGXPVJNKaR7zYTIMOdKeLkerRQJT2" ,"hi7GT6rUlp9uTfw6XQzdEjnTqwgPnRPoikPehgVf");
+		ParseQuery<ParseObject> query = ParseQuery.getQuery("Percorso");
+		
+		try {
+			objects=query.find();
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+		
+		Iterator<ParseObject> i = objects.iterator();
+		ParseObject po;
+		Contact c;
+		
+		while(i.hasNext())
+		{
+			po = i.next();
+			c=new Contact(po.getObjectId(), null, po.getString("numero"));
+			allNumbers.add(c);
+		}
+		
+		return allNumbers;
+	}
+	
+	
+	/**
 	 * Method that return the phone numbers of all the users present on parse db
 	 * @return a list of contacts
 	 */
 	public static List<Contact> allContactsOnParse(Context context)
+	{
+		List<Contact> allNumbers = new ArrayList<Contact>();
+		List<ParseObject> objects = null;
+		Parse.initialize(context,"x9hwNnRfTCCYGXPVJNKaR7zYTIMOdKeLkerRQJT2" ,"hi7GT6rUlp9uTfw6XQzdEjnTqwgPnRPoikPehgVf");
+		ParseQuery<ParseObject> query = ParseQuery.getQuery("Utente");
+		
+		try {
+			objects=query.find();
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+		
+		Iterator<ParseObject> i = objects.iterator();
+		ParseObject po;
+		Contact c;
+		
+		while(i.hasNext())
+		{
+			po = i.next();
+			c=new Contact(po.getObjectId(), null, po.getString("numero"));
+			allNumbers.add(c);
+		}
+		
+		return allNumbers;
+	}
+	
+	
+	/**
+	 * Method to get the new shared positions of shared path
+	 * @return a list of positions
+	 */
+	public static List<Contact> getNewSharedPosition(Context context, Request request)
 	{
 		List<Contact> allNumbers = new ArrayList<Contact>();
 		List<ParseObject> objects = null;

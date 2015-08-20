@@ -37,7 +37,7 @@
             android:value="AIzaSyB707EmgunnkxWrXrTKxLdcFFBSjy4isPc" />
 
         <activity
-            android:name="com.followme.activity.MainActivity"
+            android:name=".MainActivity"
             android:label="@string/app_name"
             android:theme="@style/Theme.AppCompat.Light" >
             <intent-filter>
@@ -47,34 +47,38 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.followme.activity.FirstUseActivity"
+            android:name=".FirstUseActivity"
             android:label="@string/app_name" >
         </activity>
         <activity
-     		android:name="com.followme.activity.FirstUseCodeControlActivity"
+            android:name=".FirstUseCodeControlActivity"
             android:label="@string/app_name" >
         </activity>
         <activity
-   			android:name="com.followme.activity.ChooseContactsForSharingActivity"
+            android:name=".ChooseContactsForSharingActivity"
             android:label="@string/app_name"
             android:theme="@style/Theme.AppCompat.Light" >
         </activity>
         <activity
-   			android:name="com.followme.activity.FollowActivity"
+            android:name=".FollowActivity"
             android:label="@string/app_name"
             android:theme="@style/Theme.AppCompat.Light" >
         </activity>
-        <activity            
-   			android:name="com.followme.activity.ShareActivity"
+        <activity
+            android:name=".ShareActivity"
             android:label="@string/title_activity_share" >
         </activity>
         <activity
-  			android:name="com.followme.activity.RequestsListActivity"
+            android:name=".RequestsListActivity"
             android:label="@string/title_activity_requests_list" >
         </activity>
         <activity
-            android:name="com.followme.activity.ShowDetailsActivity"
+            android:name=".ShowDetailsActivity"
             android:label="@string/title_activity_show_details" >
+        </activity>
+        <activity
+            android:name=".SharingReceiverActivity"
+            android:label="@string/title_activity_sharing_receiver" >
         </activity>
     </application>
 
