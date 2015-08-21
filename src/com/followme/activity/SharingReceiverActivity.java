@@ -4,6 +4,8 @@ import java.util.Iterator;
 import java.util.List;
 
 
+
+import com.followme.manager.MapManager;
 import com.followme.manager.ParseManager;
 import com.followme.object.Position;
 import com.followme.object.Request;
@@ -57,8 +59,7 @@ public class SharingReceiverActivity extends ActionBarActivity {
 		protected String doInBackground(Void... params) 
 		{	
 			List<Position> positionList;
-			GoogleMap map = ((SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map1)).getMap();
-			
+			GoogleMap map = ((SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.mapSharingReceiver)).getMap();
 			
 			while(true)
 			{	
@@ -68,22 +69,12 @@ public class SharingReceiverActivity extends ActionBarActivity {
 				
 				if(positionList.size()>0)
 				{
-					Iterator<Position> i = positionList.iterator();
-					Position posItem=null;
-					
-					while(i.hasNext())
-					{
-						posItem = i.next();
-						
-						polyopt.add(new LatLng(posItem.getLatitude(),posItem.getLongitude()));
-						
-					}
-					counterPosition=posItem.getCounter();
-					map.addPolyline(polyopt);
+					MapManager.drawPolygonPath(positionList, map);
+					counterPosition=positionList.get(positionList.size()-1).getCounter();
 				}
 					
 				try {
-					Thread.sleep(4000);
+					Thread.sleep(5000);
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}

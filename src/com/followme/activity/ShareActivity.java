@@ -1,6 +1,7 @@
 package com.followme.activity;
 
 import com.followme.activity.R;
+import com.followme.manager.MapManager;
 import com.followme.manager.ParseManager;
 import com.followme.object.Contact;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -98,19 +99,6 @@ public class ShareActivity extends ActionBarActivity {
 		return super.onOptionsItemSelected(item);
 	}
 	
-	private void drawPrimaryLinePath(Location loc1, Location loc2)
-	{
-	    PolylineOptions options = new PolylineOptions();
-
-	    options.color( Color.parseColor( "#CC0000FF" ) );
-	    options.width( 5 );
-	    options.visible( true );
-	    options.geodesic( true );
-	    options.add( new LatLng( loc1.getLatitude(), loc1.getLongitude() ) );
-	    options.add( new LatLng( loc2.getLatitude(), loc2.getLongitude() ) );
-	    map.addPolyline( options );
-
-	}
 	
 	/*----Method to Check GPS is enable or disable ----- */  
 	 private Boolean displayGpsStatus() {  
@@ -155,7 +143,10 @@ public class ShareActivity extends ActionBarActivity {
 						.tilt(0)             
 						.build();
 						map.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
-						drawPrimaryLinePath(location , loc);
+						MapManager.drawPrimaryLinePath(
+								new LatLng(location.getLatitude(),location.getLongitude()) ,
+								new LatLng(loc.getLatitude(),loc.getLongitude()),
+								map);
 						location = loc;
 					} 
 			 }
