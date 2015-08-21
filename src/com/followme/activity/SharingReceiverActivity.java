@@ -5,6 +5,7 @@ import java.util.List;
 
 
 
+
 import com.followme.manager.MapManager;
 import com.followme.manager.ParseManager;
 import com.followme.object.Position;
@@ -13,6 +14,7 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.PolylineOptions;
+import com.parse.ParseObject;
 
 import android.support.v7.app.ActionBarActivity;
 import android.os.AsyncTask;
@@ -23,7 +25,7 @@ import android.view.MenuItem;
 public class SharingReceiverActivity extends ActionBarActivity {
 	
 	private Request request;
-	private String pathId;
+	private ParseObject path;
 	private int counterPosition;
 
 	@Override
@@ -35,10 +37,10 @@ public class SharingReceiverActivity extends ActionBarActivity {
 		counterPosition=-1;
 		
 		//recupero l'id del percorso relativo alla richiesta
-		pathId=ParseManager.getPathOfRequest(this, request);
+		path=ParseManager.getPathOfRequest(this, request);
 		
 		//verifico che ci siano posizioni relative alla mia request su parse
-		if(pathId!=null)
+		if(path!=null)
 		{
 			//parte il thread per il controllo delle nuove posizioni nel db
 			new FindNewPositions().execute();
@@ -65,7 +67,7 @@ public class SharingReceiverActivity extends ActionBarActivity {
 			{	
 				PolylineOptions polyopt=new PolylineOptions().geodesic(true);
 				//ricerco le nuove posizioni
-				positionList=ParseManager.getNewSharedPosition(SharingReceiverActivity.this, pathId, counterPosition);
+				positionList=ParseManager.getNewSharedPosition(SharingReceiverActivity.this, path, counterPosition);
 				
 				if(positionList.size()>0)
 				{

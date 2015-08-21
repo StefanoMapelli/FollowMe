@@ -10,6 +10,7 @@ import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.parse.ParseObject;
 
 import android.support.v7.app.ActionBarActivity;
 import android.content.ContentResolver;
@@ -29,7 +30,7 @@ public class ShareActivity extends ActionBarActivity {
 	private LocationManager locationManager=null;  
 	private LocationListener locationListener=null;  
 	private Location location = null;
-	private String pathId;
+	private ParseObject path;
 	private int counter;
 	private GoogleMap map;
 	
@@ -50,20 +51,12 @@ public class ShareActivity extends ActionBarActivity {
 		
 		//create a path and insert requests for the users receivers for that path
 		String userId = getIntent().getStringExtra("userId");
-		pathId = ParseManager.insertPath(this);
+		String pathId = ParseManager.insertPath(this);
+		path = ParseManager.getPathbyId(this, pathId);
 		for(int i=0; i<contacts.length; i++)
 		{
 			ParseManager.insertRequest(this, "condivisione", userId, contacts[i].getId(), pathId, null, null);
 		}
-		
-		/*Location l = new Location("");
-		 l.setLatitude(0);
-		 l.setLongitude(0);
-		 Location l1 = new Location("");
-		 l1.setLatitude(90);
-		 l1.setLongitude(90);
-		
-		drawPrimaryLinePath(l,l1);*/
 		
 		if (displayGpsStatus()) 
 		{
@@ -125,7 +118,7 @@ public class ShareActivity extends ActionBarActivity {
 			 {
 				 Log.i("GPS", "FIRST LOCATION");
 				 location = loc;
-				 ParseManager.insertPosition(ShareActivity.this, pathId, location.getLatitude(), location.getLongitude(), counter);
+				 ParseManager.insertPosition(ShareActivity.this, path, location.getLatitude(), location.getLongitude(), counter);
 				 counter++;
 			 }
 			 else
@@ -134,7 +127,7 @@ public class ShareActivity extends ActionBarActivity {
 				    Math.abs(location.getLatitude() - loc.getLatitude()) > 0.00001)
 				 	{
 					 	Log.i("GPS", "LOCATION FOUND");
-					    ParseManager.insertPosition(ShareActivity.this, pathId, loc.getLatitude(), loc.getLongitude(), counter);
+					    ParseManager.insertPosition(ShareActivity.this, path, loc.getLatitude(), loc.getLongitude(), counter);
 					    counter++;
 					    CameraPosition cameraPosition = new CameraPosition.Builder()
 						.target(new LatLng(loc.getLatitude(),loc.getLongitude()))
