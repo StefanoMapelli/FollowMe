@@ -1,21 +1,19 @@
 package com.followme.activity;
 
-import java.util.Iterator;
 import java.util.List;
-
-
-
 
 import com.followme.manager.MapManager;
 import com.followme.manager.ParseManager;
 import com.followme.object.Position;
 import com.followme.object.Request;
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.PolylineOptions;
 import com.parse.ParseObject;
 
+import android.support.v4.app.FragmentManager;
 import android.support.v7.app.ActionBarActivity;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -27,11 +25,15 @@ public class SharingReceiverActivity extends ActionBarActivity {
 	private Request request;
 	private ParseObject path;
 	private int counterPosition;
+	private GoogleMap map;
+	private List<Position> positionList;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.sharing_receiver_layout);
+		FragmentManager fm = getSupportFragmentManager();
+		map = ((SupportMapFragment) fm.findFragmentById(R.id.mapSharingReceiver)).getMap();
 		
 		request = (Request) getIntent().getSerializableExtra("acceptedRequest");
 		counterPosition=-1;
@@ -43,7 +45,7 @@ public class SharingReceiverActivity extends ActionBarActivity {
 		if(path!=null)
 		{
 			//parte il thread per il controllo delle nuove posizioni nel db
-			new FindNewPositions().execute();
+			new FindNewPositions().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 		}
 		else
 		{
@@ -59,22 +61,13 @@ public class SharingReceiverActivity extends ActionBarActivity {
 
 		@Override
 		protected String doInBackground(Void... params) 
-		{	
-			List<Position> positionList;
-			GoogleMap map = ((SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.mapSharingReceiver)).getMap();
-			
+		{				
 			while(true)
 			{	
-				PolylineOptions polyopt=new PolylineOptions().geodesic(true);
 				//ricerco le nuove posizioni
-				positionList=ParseManager.getNewSharedPosition(SharingReceiverActivity.this, path, counterPosition);
+				positionList=ParseManager.getNewSharedPosition(SharingReceiverActivity.this, path, counterPosition);				
+				publishProgress(0);
 				
-				if(positionList.size()>0)
-				{
-					MapManager.drawPolygonPath(positionList, map);
-					counterPosition=positionList.get(positionList.size()-1).getCounter();
-				}
-					
 				try {
 					Thread.sleep(5000);
 				} catch (InterruptedException e) {
@@ -82,6 +75,25 @@ public class SharingReceiverActivity extends ActionBarActivity {
 				}
 			}
 		}
+		
+		@Override
+		protected void onProgressUpdate(Integer... progress) 
+		{
+			if(positionList.size()>0)
+			{
+				CameraPosition cameraPosition = new CameraPosition.Builder()
+				.target(new LatLng(positionList.get(positionList.size()-1).getLatitude(),
+									positionList.get(positionList.size()-1).getLongitude()))
+				.zoom(18)
+				.bearing(0)           
+				.tilt(0)             
+				.build();
+				map.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+				
+				MapManager.drawPolygonPath(positionList, map);
+				counterPosition=positionList.get(positionList.size()-1).getCounter();
+			}
+	    }
     }
 	
 	

@@ -68,7 +68,7 @@ public class MainActivity extends ActionBarActivity  {
 			user.setId(ParseManager.getId(this, PersonalDataManager.getPhoneNumber()));
 		}
 		
-		new NetworkActivity().execute();
+		new NetworkActivity().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 		
 		shareButton.setOnClickListener(new OnClickListener()
 		{
