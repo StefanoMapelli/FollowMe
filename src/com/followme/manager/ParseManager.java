@@ -7,6 +7,7 @@ import java.util.List;
 import android.content.Context;
 
 import com.followme.object.Contact;
+import com.followme.object.Position;
 import com.followme.object.Request;
 import com.followme.object.User;
 import com.parse.GetCallback;
@@ -142,7 +143,7 @@ public class ParseManager {
 	 * @param latitude
 	 * @param longitude
 	 */
-	public static void insertPosition(Context context, String pId, double latitude, double longitude)
+	public static void insertPosition(Context context, String pId, double latitude, double longitude, int counter)
 	{
 		Parse.initialize(context,"x9hwNnRfTCCYGXPVJNKaR7zYTIMOdKeLkerRQJT2" ,"hi7GT6rUlp9uTfw6XQzdEjnTqwgPnRPoikPehgVf");
 		
@@ -161,6 +162,7 @@ public class ParseManager {
 		ParseGeoPoint position = new ParseGeoPoint(latitude, longitude);	
 		newPos.put("idPercorso", pathPo);
 		newPos.put("posizione", position);
+		newPos.put("contatore", counter);
 		newPos.saveInBackground();
 	}
 	
@@ -326,34 +328,33 @@ public class ParseManager {
 	}
 	
 	/**
-	 * Method that get the path of a relative request, if it exists
+	 * Method that gets the path of a relative request, if it exists
 	 * @return a list of contacts
 	 */
-	public static List<Contact> getPathOfRequest(Context context, Request request)
+	public static String getPathOfRequest(Context context, Request request)
 	{
-		List<Contact> allNumbers = new ArrayList<Contact>();
+		String idPath=null;
 		List<ParseObject> objects = null;
 		Parse.initialize(context,"x9hwNnRfTCCYGXPVJNKaR7zYTIMOdKeLkerRQJT2" ,"hi7GT6rUlp9uTfw6XQzdEjnTqwgPnRPoikPehgVf");
-		ParseQuery<ParseObject> query = ParseQuery.getQuery("Percorso");
 		
+		
+		ParseQuery<ParseObject> query = ParseQuery.getQuery("Richiesta");
+		
+		query.whereEqualTo("objectId", request.getId());
 		try {
 			objects=query.find();
+			Iterator<ParseObject> i = objects.iterator();
+			ParseObject po;			
+			if(i.hasNext())
+			{
+				po = i.next();
+				idPath=po.getString("idPercorso");		
+			}
+			
 		} catch (ParseException e) {
 			e.printStackTrace();
-		}
-		
-		Iterator<ParseObject> i = objects.iterator();
-		ParseObject po;
-		Contact c;
-		
-		while(i.hasNext())
-		{
-			po = i.next();
-			c=new Contact(po.getObjectId(), null, po.getString("numero"));
-			allNumbers.add(c);
-		}
-		
-		return allNumbers;
+		}	
+		return idPath;
 	}
 	
 	
@@ -393,12 +394,15 @@ public class ParseManager {
 	 * Method to get the new shared positions of shared path
 	 * @return a list of positions
 	 */
-	public static List<Contact> getNewSharedPosition(Context context, Request request)
+	public static List<Position> getNewSharedPosition(Context context, String idPath, int counter)
 	{
-		List<Contact> allNumbers = new ArrayList<Contact>();
+		List<Position> newPositions=new ArrayList<Position>();
 		List<ParseObject> objects = null;
 		Parse.initialize(context,"x9hwNnRfTCCYGXPVJNKaR7zYTIMOdKeLkerRQJT2" ,"hi7GT6rUlp9uTfw6XQzdEjnTqwgPnRPoikPehgVf");
-		ParseQuery<ParseObject> query = ParseQuery.getQuery("Utente");
+		
+		ParseQuery<ParseObject> query = ParseQuery.getQuery("Posizione");
+		query.whereEqualTo("idPercorso", idPath);
+		query.whereGreaterThan("contatore", counter);
 		
 		try {
 			objects=query.find();
@@ -408,16 +412,18 @@ public class ParseManager {
 		
 		Iterator<ParseObject> i = objects.iterator();
 		ParseObject po;
-		Contact c;
+		Position posItem;
 		
 		while(i.hasNext())
 		{
 			po = i.next();
-			c=new Contact(po.getObjectId(), null, po.getString("numero"));
-			allNumbers.add(c);
+			posItem=new Position(po.getParseGeoPoint("posizione").getLatitude(),
+					po.getParseGeoPoint("posizione").getLongitude(),
+					po.getInt("contatore"));
+			newPositions.add(posItem);
 		}
 		
-		return allNumbers;
+		return newPositions;
 	}
 	
 }
