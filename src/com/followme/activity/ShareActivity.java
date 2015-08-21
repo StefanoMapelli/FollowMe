@@ -27,9 +27,9 @@ public class ShareActivity extends ActionBarActivity {
 	private Contact[] contacts = null;
 	private LocationManager locationManager=null;  
 	private LocationListener locationListener=null;  
-	private double longitude = 0;
-	private double latitude = 0;
+	private Location location = null;
 	private String pathId;
+	private int counter;
 	private GoogleMap map;
 	
 	@Override
@@ -37,7 +37,7 @@ public class ShareActivity extends ActionBarActivity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.share_layout);
 		map = ((SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map1)).getMap();
-		
+		counter = 0;
 		Object[] objects = (Object[]) getIntent().getSerializableExtra("selectedContacts");
 		contacts = new Contact[objects.length];
 		
@@ -70,6 +70,8 @@ public class ShareActivity extends ActionBarActivity {
 			locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
 			locationManager.requestLocationUpdates(LocationManager  
 		    .GPS_PROVIDER, 5000, 10,locationListener); 
+			
+			map.setMyLocationEnabled(true);
 		} 
 		else
 		{
@@ -103,6 +105,7 @@ public class ShareActivity extends ActionBarActivity {
 	    options.color( Color.parseColor( "#CC0000FF" ) );
 	    options.width( 5 );
 	    options.visible( true );
+	    options.geodesic( true );
 	    options.add( new LatLng( loc1.getLatitude(), loc1.getLongitude() ) );
 	    options.add( new LatLng( loc2.getLatitude(), loc2.getLongitude() ) );
 	    map.addPolyline( options );
@@ -129,24 +132,32 @@ public class ShareActivity extends ActionBarActivity {
 	 {  
 		 @Override  
 	     public void onLocationChanged(Location loc) 	     
-		 {   	
-			 if(Math.abs(longitude - loc.getLongitude()) > 0.00001 ||
-			    Math.abs(latitude - loc.getLatitude()) > 0.00001)
+		 {  
+			 if(location == null)
 			 {
-				 longitude = loc.getLongitude();      
-		         latitude  = loc.getLatitude(); 
-				 ParseManager.insertPosition(ShareActivity.this, pathId, latitude, longitude);
-				 Location newLoc = new Location("");
-				 newLoc.setLatitude(latitude);
-				 newLoc.setLongitude(longitude);
-				 CameraPosition cameraPosition = new CameraPosition.Builder()
-				 .target(new LatLng(newLoc.getLatitude(),newLoc.getLongitude()))
-				 .zoom(18)
-				 .bearing(0)           
-				 .tilt(0)             
-				 .build();
-				 map.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
-				 drawPrimaryLinePath(loc , newLoc);
+				 Log.i("GPS", "FIRST LOCATION");
+				 location = loc;
+				 ParseManager.insertPosition(ShareActivity.this, pathId, location.getLatitude(), location.getLongitude(), counter);
+				 counter++;
+			 }
+			 else
+			 {
+				 if(Math.abs(location.getLongitude() - loc.getLongitude()) > 0.00001 ||
+				    Math.abs(location.getLatitude() - loc.getLatitude()) > 0.00001)
+				 	{
+					 	Log.i("GPS", "LOCATION FOUND");
+					    ParseManager.insertPosition(ShareActivity.this, pathId, loc.getLatitude(), loc.getLongitude(), counter);
+					    counter++;
+					    CameraPosition cameraPosition = new CameraPosition.Builder()
+						.target(new LatLng(loc.getLatitude(),loc.getLongitude()))
+						.zoom(18)
+						.bearing(0)           
+						.tilt(0)             
+						.build();
+						map.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+						drawPrimaryLinePath(location , loc);
+						location = loc;
+					} 
 			 }
 	     }
 	          
