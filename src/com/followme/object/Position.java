@@ -1,7 +1,15 @@
 package com.followme.object;
 
-public class Position {
+import java.io.Serializable;
+
+public class Position implements Serializable{
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -657863294709893140L;
+	private String id;
+	private String path;
 	private double latitude;
 	private double longitude;
 	private int counter;
@@ -31,6 +39,26 @@ public class Position {
 	}
 	public void setLatitude(double latitude) {
 		this.latitude = latitude;
+	}
+
+
+	public String getId() {
+		return id;
+	}
+
+
+	public void setId(String id) {
+		this.id = id;
+	}
+
+
+	public String getPath() {
+		return path;
+	}
+
+
+	public void setPath(String path) {
+		this.path = path;
 	}
 	
 	
