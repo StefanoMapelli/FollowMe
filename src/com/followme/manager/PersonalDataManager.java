@@ -1,11 +1,12 @@
 package com.followme.manager;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
 import com.followme.object.Media;
+import com.followme.object.Path;
 import com.followme.object.Position;
-import com.google.android.gms.maps.model.LatLng;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -68,6 +69,38 @@ public class PersonalDataManager {
 		  return (int) pathId;
 	  }
 	  
+	  
+	  /**
+	   * Get all the paths in the database, in the table of path.
+	   * @return list of all the path in the db
+	   */
+	  public static List<Path> getAllPaths() 
+	  {
+		  List<Path> pathList=new ArrayList<Path>();  
+		  
+		  String[] allPathColumns = new String[3];
+		  allPathColumns[0]=DatabaseCreationManager.COLUMN_PATH_ID;
+		  allPathColumns[1]=DatabaseCreationManager.COLUMN_OWNER;
+		  allPathColumns[2]=DatabaseCreationManager.COLUMN_TITLE;
+		  
+		  Cursor cursor =database.query(DatabaseCreationManager.TABLE_PATH, allPathColumns, null, null, null, null, null);
+		  
+		  cursor.moveToFirst();
+	  
+		  do
+		  {
+			  Path pathObject=new Path();
+			  pathObject.setId(cursor.getInt(0)+"");
+			  pathObject.setOwner(cursor.getString(1));
+			  pathObject.setTitle(cursor.getString(2));
+			  pathList.add(pathObject);
+			  cursor.moveToNext();
+		  }
+		  while(!cursor.isAfterLast());
+		  
+		  return pathList;
+	  }
+	  
 	  /**
 	   * Insertion of a list of position in the database
 	   * @param poistionList list of position to be inserted
@@ -88,6 +121,40 @@ public class PersonalDataManager {
 			  values.put(DatabaseCreationManager.COLUMN_PATH, path);
 			  database.insert(DatabaseCreationManager.TABLE_POSITION, null,values);
 		  }
+	  }
+	  
+	  
+	  /**
+	   * Get all the position of a path in the database, in the table of position.
+	   * @param idPath id of the searched path
+	   * @return list of all the position of the selected path in the db
+	   */
+	  public static List<Position> getAllPositionsOfPath(String idPath) 
+	  {
+		  List<Position> positionList=new ArrayList<Position>();  
+		  
+		  String[] allPositionColumns = new String[5];
+		  allPositionColumns[0]=DatabaseCreationManager.COLUMN_POSITION_ID;
+		  allPositionColumns[1]=DatabaseCreationManager.COLUMN_PATH;
+		  allPositionColumns[2]=DatabaseCreationManager.COLUMN_COUNTER;
+		  allPositionColumns[3]=DatabaseCreationManager.COLUMN_LATITUDE_POSITION;
+		  allPositionColumns[4]=DatabaseCreationManager.COLUMN_LONGITUDE_POSITION;
+		  
+		  Cursor cursor =database.query(DatabaseCreationManager.TABLE_PATH, allPositionColumns, "id_path="+idPath, null, null, null, "counter asc");
+		  
+		  cursor.moveToFirst();
+	  
+		  do
+		  {
+			  Position positionObject=new Position(cursor.getDouble(3),cursor.getDouble(4),cursor.getInt(2));
+			  positionObject.setId(cursor.getInt(0)+"");
+			  positionObject.setId(cursor.getInt(1)+"");
+			  positionList.add(positionObject);
+			  cursor.moveToNext();
+		  }
+		  while(!cursor.isAfterLast());
+		  
+		  return positionList;
 	  }
 	  
 	  /**
@@ -119,6 +186,36 @@ public class PersonalDataManager {
 			  //inserisco la foto nel db
 			  database.insert(DatabaseCreationManager.TABLE_PHOTO, null, values);
 		  }
+	  }
+	  
+	  
+	  /**
+	   * Get all the photos of a path in the database, in the table of photo.
+	   * @param idPath id of the searched path
+	   * @return list of all the photos of the selected path in the db
+	   */
+	  public static List<Media> getAllPhotosOfPath(String idPath) 
+	  {
+		  List<Media> photoList=new ArrayList<Media>();  
+		  	  
+		  Cursor cursor=database.rawQuery("SELECT photo.id_photo, photo.position, photo.title, photo.file, position.id_position, position.counter, position.latitude, position.longitude FROM photo, position WHERE photo.position=position.id_position AND position.id_path="+idPath, null);
+		  
+		  cursor.moveToFirst();
+	  
+		  do
+		  {
+			  Media mediaObject=new Media();
+			  Position position=new Position(cursor.getDouble(6),cursor.getDouble(7),cursor.getInt(5));
+			  position.setId(cursor.getInt(4)+"");
+			  mediaObject.setPosition(position);
+			  mediaObject.setMediaString(cursor.getString(3));
+			  mediaObject.setTitle(cursor.getString(2));
+			  photoList.add(mediaObject);
+			  cursor.moveToNext();
+		  }
+		  while(!cursor.isAfterLast());
+		  
+		  return photoList;
 	  }
 	  
 	  /**
@@ -153,6 +250,38 @@ public class PersonalDataManager {
 	  }
 	  
 	  
+	  
+	  
+	  /**
+	   * Get all the videos of a path in the database, in the table of photo.
+	   * @param idPath id of the searched path
+	   * @return list of all the videos of the selected path in the db
+	   */
+	  public static List<Media> getAllVideosOfPath(String idPath) 
+	  {
+		  List<Media> videoList=new ArrayList<Media>();  
+		  	  
+		  Cursor cursor=database.rawQuery("SELECT video.id_video, video.position, video.title, video.file, position.id_position, position.counter, position.latitude, position.longitude FROM video, position WHERE video.position=position.id_position AND position.id_path="+idPath, null);
+		  
+		  cursor.moveToFirst();
+	  
+		  do
+		  {
+			  Media mediaObject=new Media();
+			  Position position=new Position(cursor.getDouble(6),cursor.getDouble(7),cursor.getInt(5));
+			  position.setId(cursor.getInt(4)+"");
+			  mediaObject.setPosition(position);
+			  mediaObject.setMediaString(cursor.getString(3));
+			  mediaObject.setTitle(cursor.getString(2));
+			  videoList.add(mediaObject);
+			  cursor.moveToNext();
+		  }
+		  while(!cursor.isAfterLast());
+		  
+		  return videoList;
+	  }
+	  
+	  
 	  /**
 	   * Insertion of a list of audios in the database
 	   * @param list of video objects
@@ -182,6 +311,36 @@ public class PersonalDataManager {
 			  //inserisco la foto nel db
 			  database.insert(DatabaseCreationManager.TABLE_AUDIO, null, values);
 		  }
+	  }
+	  
+	  
+	  /**
+	   * Get all the audios of a path in the database, in the table of photo.
+	   * @param idPath id of the searched path
+	   * @return list of all the audios of the selected path in the db
+	   */
+	  public static List<Media> getAllAudiosOfPath(String idPath) 
+	  {
+		  List<Media> audioList=new ArrayList<Media>();  
+		  	  
+		  Cursor cursor=database.rawQuery("SELECT audio.id_audio, audio.position, audio.title, audio.file, position.id_position, position.counter, position.latitude, position.longitude FROM video, position WHERE audio.position=position.id_position AND position.id_path="+idPath, null);
+		  
+		  cursor.moveToFirst();
+	  
+		  do
+		  {
+			  Media mediaObject=new Media();
+			  Position position=new Position(cursor.getDouble(6),cursor.getDouble(7),cursor.getInt(5));
+			  position.setId(cursor.getInt(4)+"");
+			  mediaObject.setPosition(position);
+			  mediaObject.setMediaString(cursor.getString(3));
+			  mediaObject.setTitle(cursor.getString(2));
+			  audioList.add(mediaObject);
+			  cursor.moveToNext();
+		  }
+		  while(!cursor.isAfterLast());
+		  
+		  return audioList;
 	  }
 	  
 	  
