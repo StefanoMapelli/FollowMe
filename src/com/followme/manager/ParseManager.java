@@ -7,6 +7,7 @@ import java.util.List;
 
 import android.content.Context;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.followme.object.Contact;
 import com.followme.object.Media;
@@ -163,7 +164,7 @@ public class ParseManager {
 	 * @param context
 	 * @param photo
 	 */
-	public static void insertPhoto(Context context, final Media photo)
+	public static void insertPhoto(final Context context, Media photo)
 	{
 		Parse.initialize(context,"x9hwNnRfTCCYGXPVJNKaR7zYTIMOdKeLkerRQJT2" ,"hi7GT6rUlp9uTfw6XQzdEjnTqwgPnRPoikPehgVf");
 
@@ -175,18 +176,18 @@ public class ParseManager {
 			po = getPositionbyId(context, photo.getPosition().getId());
 			newPhoto.put("idPosizione", po);
 		}
-		Date dt = new Date();
-		final ParseFile file = new ParseFile(dt.toString()+".jpg", photo.getMedia());
+		final ParseFile file = new ParseFile("photo.jpg", photo.getMedia());
+		final String title = photo.getTitle();
 		file.saveInBackground(new SaveCallback() {
 			  public void done(ParseException e) {
 				  newPhoto.put("file", file);
-					newPhoto.put("didascalia", photo.getTitle());
-					newPhoto.saveInBackground();
-			  }
-			}, new ProgressCallback() {
-				  public void done(Integer percentDone) {
-			    // Update your progress spinner here. percentDone will be between 0 and 100.
-				  Log.i("PROGRESS", percentDone.toString());
+					newPhoto.put("didascalia", title);
+					newPhoto.saveInBackground(new SaveCallback(){
+						public void done(ParseException e)
+						{
+							Toast.makeText(context, "Image uploaded!", Toast.LENGTH_LONG).show();
+						}
+					});
 			  }
 			});	
 	}

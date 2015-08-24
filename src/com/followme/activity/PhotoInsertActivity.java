@@ -1,27 +1,16 @@
 package com.followme.activity;
 
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
-
-import org.apache.commons.io.IOUtils;
-
-import com.followme.object.Media;
-import com.followme.object.Position;
+import com.followme.manager.Utils;
 
 import android.support.v7.app.ActionBarActivity;
 import android.app.Activity;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.Bundle;
-import android.util.Base64;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.ViewTreeObserver;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -40,9 +29,19 @@ public class PhotoInsertActivity extends ActionBarActivity {
 		saveButton = (Button) findViewById(R.id.saveButton);
 		title = (EditText) findViewById(R.id.inputTitle);
 		
-		String fileName = getIntent().getStringExtra("fileName");	
-		Bitmap bitmap = BitmapFactory.decodeFile(fileName);
-	    imageView.setImageBitmap(bitmap);
+		final String fileName = getIntent().getStringExtra("fileName");
+		
+		ViewTreeObserver vto = imageView.getViewTreeObserver();
+		vto.addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
+		    public boolean onPreDraw() {
+		    	imageView.getViewTreeObserver().removeOnPreDrawListener(this);
+		        int finalHeight = imageView.getMeasuredHeight();
+		        int finalWidth = imageView.getMeasuredWidth();
+		        Utils.setPic(finalWidth, finalHeight, imageView, fileName);
+		    		        
+		        return true;
+		    }
+		});	
 	 			
 		saveButton.setOnClickListener(new OnClickListener()
 		{
@@ -75,30 +74,5 @@ public class PhotoInsertActivity extends ActionBarActivity {
 			return true;
 		}
 		return super.onOptionsItemSelected(item);
-	}
-	
-	
-	private void setPic(ImageView mImageView, String mCurrentPhotoPath) {
-	    // Get the dimensions of the View
-	    int targetW = mImageView.getWidth();
-	    int targetH = mImageView.getHeight();
-
-	    // Get the dimensions of the bitmap
-	    BitmapFactory.Options bmOptions = new BitmapFactory.Options();
-	    bmOptions.inJustDecodeBounds = true;
-	    BitmapFactory.decodeFile(mCurrentPhotoPath, bmOptions);
-	    int photoW = bmOptions.outWidth;
-	    int photoH = bmOptions.outHeight;
-
-	    // Determine how much to scale down the image
-	    int scaleFactor = Math.min(photoW/targetW, photoH/targetH);
-
-	    // Decode the image file into a Bitmap sized to fill the View
-	    bmOptions.inJustDecodeBounds = false;
-	    bmOptions.inSampleSize = scaleFactor;
-	    bmOptions.inPurgeable = true;
-
-	    Bitmap bitmap = BitmapFactory.decodeFile(mCurrentPhotoPath, bmOptions);
-	    mImageView.setImageBitmap(bitmap);
 	}
 }

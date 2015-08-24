@@ -1,8 +1,6 @@
 package com.followme.activity;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -14,6 +12,7 @@ import org.apache.commons.io.IOUtils;
 import com.followme.activity.R;
 import com.followme.manager.MapManager;
 import com.followme.manager.ParseManager;
+import com.followme.manager.Utils;
 import com.followme.object.Contact;
 import com.followme.object.Media;
 import com.followme.object.Position;
@@ -25,10 +24,7 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.parse.ParseObject;
 
 import android.support.v7.app.ActionBarActivity;
-import android.content.ContentResolver;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -36,7 +32,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
-import android.provider.Settings;
 import android.util.Base64;
 import android.util.Log;
 import android.view.Menu;
@@ -44,7 +39,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
-import android.widget.ImageView;
+import android.widget.Toast;
 
 public class ShareActivity extends ActionBarActivity {
 
@@ -92,12 +87,34 @@ public class ShareActivity extends ActionBarActivity {
 			ParseManager.insertRequest(this, "condivisione", userId, contacts[i].getId(), pathId, null, null);
 		}
 		
-		if (displayGpsStatus()) 
+		if (Utils.displayGpsStatus(this)) 
 		{
 			locationListener = new MyLocationListener(); 
 			locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
 			locationManager.requestLocationUpdates(LocationManager  
 		    .GPS_PROVIDER, 5000, 10,locationListener); 
+			
+			location = locationManager.getLastKnownLocation(LocationManager  
+		    .GPS_PROVIDER);
+			
+			if(location != null)
+			{
+				Log.i("GPS", "FIRST LOCATION");
+				String id = ParseManager.insertPosition(ShareActivity.this, path, location.getLatitude(), location.getLongitude(), counter);
+				 
+				lastPosition = new Position(location.getLatitude(),location.getLongitude(), counter);
+				lastPosition.setId(id);
+				 
+				counter++;
+				 
+				CameraPosition cameraPosition = new CameraPosition.Builder()
+				.target(new LatLng(location.getLatitude(),location.getLongitude()))
+				.zoom(18)
+				.bearing(0)           
+				.tilt(0)             
+				.build();
+				map.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+			}
 			
 			map.setMyLocationEnabled(true);
 		} 
@@ -183,14 +200,12 @@ public class ShareActivity extends ActionBarActivity {
 	    //ACTIVITY PHOTOINSERT
 	    if (requestCode == 2) {
 	        if (resultCode == RESULT_OK)
-	        {  
-	        	Bitmap bitmap = BitmapFactory.decodeFile(fileName);
-				ByteArrayOutputStream stream = new ByteArrayOutputStream();
-				bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
-				byte[] image = stream.toByteArray();
+	        {  	
+				byte[] image = Utils.getSmallBitmap(fileName).toByteArray();
 				
-	    		//String encodedImage = Base64.encodeToString(inputData, Base64.DEFAULT);	
-	    		
+				File file = new File(fileName);
+				file.delete();
+				
 	    		Media photo = new Media(image, data.getStringExtra("title"), lastPosition);
 	        	ParseManager.insertPhoto(this, photo);
 	        	photos.add(photo);
@@ -224,68 +239,41 @@ public class ShareActivity extends ActionBarActivity {
 		return super.onOptionsItemSelected(item);
 	}
 	
-	/*----Method to Check GPS is enable or disable ----- */  
-	 private Boolean displayGpsStatus() {  
-	  ContentResolver contentResolver = getBaseContext()  
-	  .getContentResolver();  
-	  boolean gpsStatus = Settings.Secure  
-	  .isLocationProviderEnabled(contentResolver,   
-	  LocationManager.GPS_PROVIDER);  
-	  if (gpsStatus) {  
-	   return true;  
-	  
-	  } else {  
-	   return false;  
-	  }  
-	 }  
-	
 	/*----------Listener class to get coordinates ------------- */  
 	 private class MyLocationListener implements LocationListener 
 	 {  
 		 @Override  
 	     public void onLocationChanged(Location loc) 	     
-		 {  
-			 if(location == null)
-			 {
-				 Log.i("GPS", "FIRST LOCATION");
-				 location = loc;
-				 String id = ParseManager.insertPosition(ShareActivity.this, path, location.getLatitude(), location.getLongitude(), counter);
-				 
-				 lastPosition = new Position(location.getLatitude(),location.getLongitude(), counter);
-				 lastPosition.setId(id);
-				 
-				 counter++;
-			 }
-			 else
-			 {
-				 if(Math.abs(location.getLongitude() - loc.getLongitude()) > 0.00001 ||
-				    Math.abs(location.getLatitude() - loc.getLatitude()) > 0.00001)
-				 	{
-					 	Log.i("GPS", "LOCATION FOUND");
+		 {  				 
+			 if((Math.abs(location.getLongitude() - loc.getLongitude()) > 0.00001 ||
+				  Math.abs(location.getLatitude() - loc.getLatitude()) > 0.00001) &&
+				  loc.getSpeed() > 1 && loc.getAccuracy() < 50)
+				 {
+					Toast.makeText(ShareActivity.this, "speed: "+loc.getSpeed()+" accuracy: "+loc.getAccuracy(), Toast.LENGTH_LONG).show();
+					Log.i("GPS", "LOCATION FOUND");
 					    
-					 	String id = ParseManager.insertPosition(ShareActivity.this, path, loc.getLatitude(), loc.getLongitude(), counter);
+					String id = ParseManager.insertPosition(ShareActivity.this, path, loc.getLatitude(), loc.getLongitude(), counter);
 					    
-					    lastPosition = new Position(location.getLatitude(),location.getLongitude(), counter);
-						lastPosition.setId(id);
+					lastPosition = new Position(location.getLatitude(),location.getLongitude(), counter);
+					lastPosition.setId(id);
 					    
-					    counter++;
+					counter++;
 					    
-					    CameraPosition cameraPosition = new CameraPosition.Builder()
-						.target(new LatLng(loc.getLatitude(),loc.getLongitude()))
-						.zoom(18)
-						.bearing(0)           
-						.tilt(0)             
-						.build();
-						map.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+					CameraPosition cameraPosition = new CameraPosition.Builder()
+					.target(new LatLng(loc.getLatitude(),loc.getLongitude()))
+					.zoom(18)
+					.bearing(0)           
+					.tilt(0)             
+					.build();
+					map.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
 						
-						MapManager.drawPrimaryLinePath(
-								new LatLng(location.getLatitude(),location.getLongitude()) ,
-								new LatLng(loc.getLatitude(),loc.getLongitude()),
-								map);
+					MapManager.drawPrimaryLinePath(
+							new LatLng(location.getLatitude(),location.getLongitude()) ,
+							new LatLng(loc.getLatitude(),loc.getLongitude()),
+							map);
 						
-						location = loc;
-					} 
-			 }
+					location = loc;
+				} 
 	     }
 	          
 	     @Override  
