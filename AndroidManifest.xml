@@ -23,12 +23,14 @@
     <uses-permission android:name="android.permission.SEND_SMS" />
     <uses-permission android:name="android.permission.WRITE_SMS" />
     <uses-permission android:name="android.permission.READ_SMS" />
-	<uses-permission android:name="com.google.android.providers.gsf.permission.READ_GSERVICES" />
+    <uses-permission android:name="com.google.android.providers.gsf.permission.READ_GSERVICES" />
+
     <permission
-    android:name="com.followme.activity.permission.MAPS_RECEIVE"
-    android:protectionLevel="signature" />
+        android:name="com.followme.activity.permission.MAPS_RECEIVE"
+        android:protectionLevel="signature" />
+
     <uses-permission android:name="com.followme.activity.permission.MAPS_RECEIVE" />
-	
+
     <application
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
@@ -84,6 +86,10 @@
         <activity
             android:name=".SharingReceiverActivity"
             android:label="@string/title_activity_sharing_receiver" >
+        </activity>
+        <activity
+            android:name=".PhotoInsertActivity"
+            android:label="@string/title_activity_photo_insert" >
         </activity>
     </application>
 

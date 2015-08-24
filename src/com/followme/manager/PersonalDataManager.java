@@ -105,7 +105,7 @@ public class PersonalDataManager {
 		  {
 			  ContentValues values = new ContentValues();
 			  photoItem = i.next();
-			  values.put(DatabaseCreationManager.COLUMN_FILE, photoItem.getMediaString());
+			  //values.put(DatabaseCreationManager.COLUMN_FILE, photoItem.getMediaString());TODO
 			  values.put(DatabaseCreationManager.COLUMN_TITLE, photoItem.getTitle());
 			 
 			  //ricerco la posizione della foto nel database e ne prendo l'id per l'inserimento
@@ -136,7 +136,7 @@ public class PersonalDataManager {
 		  {
 			  ContentValues values = new ContentValues();
 			  videoItem = i.next();
-			  values.put(DatabaseCreationManager.COLUMN_FILE, videoItem.getMediaString());
+			  //values.put(DatabaseCreationManager.COLUMN_FILE, videoItem.getMediaString());TODO
 			  values.put(DatabaseCreationManager.COLUMN_TITLE, videoItem.getTitle());
 			 
 			  //ricerco la posizione della foto nel database e ne prendo l'id per l'inserimento
@@ -168,7 +168,7 @@ public class PersonalDataManager {
 		  {
 			  ContentValues values = new ContentValues();
 			  audioItem = i.next();
-			  values.put(DatabaseCreationManager.COLUMN_FILE, audioItem.getMediaString());
+			  //values.put(DatabaseCreationManager.COLUMN_FILE, audioItem.getMediaString());/TODO
 			  values.put(DatabaseCreationManager.COLUMN_TITLE, audioItem.getTitle());
 			 
 			  //ricerco la posizione della foto nel database e ne prendo l'id per l'inserimento

@@ -1,21 +1,26 @@
 package com.followme.manager;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
 import android.content.Context;
+import android.util.Log;
 
 import com.followme.object.Contact;
+import com.followme.object.Media;
 import com.followme.object.Position;
 import com.followme.object.Request;
 import com.followme.object.User;
 import com.parse.GetCallback;
 import com.parse.Parse;
 import com.parse.ParseException;
+import com.parse.ParseFile;
 import com.parse.ParseGeoPoint;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
+import com.parse.ProgressCallback;
 import com.parse.SaveCallback;
 
 public class ParseManager {
@@ -136,7 +141,7 @@ public class ParseManager {
 	 * @param latitude
 	 * @param longitude
 	 */
-	public static void insertPosition(Context context, ParseObject pathPo, double latitude, double longitude, int counter)
+	public static String insertPosition(Context context, ParseObject pathPo, double latitude, double longitude, int counter)
 	{
 		Parse.initialize(context,"x9hwNnRfTCCYGXPVJNKaR7zYTIMOdKeLkerRQJT2" ,"hi7GT6rUlp9uTfw6XQzdEjnTqwgPnRPoikPehgVf");
 		
@@ -145,7 +150,45 @@ public class ParseManager {
 		newPos.put("idPercorso", pathPo);
 		newPos.put("posizione", position);
 		newPos.put("contatore", counter);
-		newPos.saveInBackground();
+		try {
+			newPos.save();
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+		return newPos.getObjectId();
+	}
+	
+	/**
+	 * Insert a new photo in the parse db.
+	 * @param context
+	 * @param photo
+	 */
+	public static void insertPhoto(Context context, final Media photo)
+	{
+		Parse.initialize(context,"x9hwNnRfTCCYGXPVJNKaR7zYTIMOdKeLkerRQJT2" ,"hi7GT6rUlp9uTfw6XQzdEjnTqwgPnRPoikPehgVf");
+
+		final ParseObject newPhoto = new ParseObject("Foto");
+		//get position parse object
+		if(photo.getPosition() != null)
+		{
+			ParseObject po=null;
+			po = getPositionbyId(context, photo.getPosition().getId());
+			newPhoto.put("idPosizione", po);
+		}
+		Date dt = new Date();
+		final ParseFile file = new ParseFile(dt.toString()+".jpg", photo.getMedia());
+		file.saveInBackground(new SaveCallback() {
+			  public void done(ParseException e) {
+				  newPhoto.put("file", file);
+					newPhoto.put("didascalia", photo.getTitle());
+					newPhoto.saveInBackground();
+			  }
+			}, new ProgressCallback() {
+				  public void done(Integer percentDone) {
+			    // Update your progress spinner here. percentDone will be between 0 and 100.
+				  Log.i("PROGRESS", percentDone.toString());
+			  }
+			});	
 	}
 	
 	/**
@@ -315,6 +358,22 @@ public class ParseManager {
 		ParseObject pathPo=null;
 		ParseQuery<ParseObject> query = ParseQuery.getQuery("Percorso");
 		query.whereEqualTo("objectId", pathId);		
+		try {
+			objects=query.find();
+			pathPo=objects.get(0);
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+		
+		return pathPo;
+	}
+	
+	public static ParseObject getPositionbyId(Context context, String positionId)
+	{
+		List<ParseObject> objects = null;
+		ParseObject pathPo=null;
+		ParseQuery<ParseObject> query = ParseQuery.getQuery("Posizione");
+		query.whereEqualTo("objectId", positionId);		
 		try {
 			objects=query.find();
 			pathPo=objects.get(0);

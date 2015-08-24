@@ -14,5 +14,6 @@
     <string name="hello_world">Hello world!</string>
     <string name="title_activity_show_details">ShowDetailsActivity</string>
     <string name="title_activity_sharing_receiver">SharingReceiverActivity</string>
+    <string name="title_activity_photo_insert">PhotoInsertActivity</string>
 
 </resources>

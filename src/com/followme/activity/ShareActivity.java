@@ -1,28 +1,50 @@
 package com.followme.activity;
 
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Date;
+
+import org.apache.commons.io.IOUtils;
+
 import com.followme.activity.R;
 import com.followme.manager.MapManager;
 import com.followme.manager.ParseManager;
 import com.followme.object.Contact;
+import com.followme.object.Media;
+import com.followme.object.Position;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.parse.ParseObject;
 
 import android.support.v7.app.ActionBarActivity;
 import android.content.ContentResolver;
-import android.graphics.Color;
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
+import android.provider.MediaStore;
 import android.provider.Settings;
+import android.util.Base64;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem; 
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.widget.Button;
+import android.widget.ImageView;
 
 public class ShareActivity extends ActionBarActivity {
 
@@ -30,15 +52,27 @@ public class ShareActivity extends ActionBarActivity {
 	private LocationManager locationManager=null;  
 	private LocationListener locationListener=null;  
 	private Location location = null;
+	private Position lastPosition = null;
 	private ParseObject path;
 	private int counter;
 	private GoogleMap map;
+	private Button photoButton;
+	private Button videoButton;
+	private String fileName;
+	private ArrayList<Media> photos = new ArrayList<Media>();
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		Log.i("CREATE", "FATTA CREATE");
 		setContentView(R.layout.share_layout);
-		map = ((SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map1)).getMap();
+		map = ((SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.shareMap)).getMap();
+		photoButton = (Button) findViewById(R.id.photoButton);
+		videoButton = (Button) findViewById(R.id.videoButton);
+		
+		if (savedInstanceState != null)
+			  fileName = savedInstanceState.getString("fileName");
+		
 		counter = 0;
 		Object[] objects = (Object[]) getIntent().getSerializableExtra("selectedContacts");
 		contacts = new Contact[objects.length];
@@ -71,8 +105,106 @@ public class ShareActivity extends ActionBarActivity {
 		{
 			Log.i("GPS", "gps not enabled");
 		}
+		
+		photoButton.setOnClickListener(new OnClickListener()
+		{
+
+			@Override
+			public void onClick(View v) 
+			{			
+				Date dt = new Date();
+				File tempFile = new File(Environment.getExternalStorageDirectory(),
+	                      dt.toString()+".jpg");
+				fileName = tempFile.getAbsolutePath();
+				Uri uri = Uri.fromFile(tempFile);
+				
+				Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+				intent.putExtra(MediaStore.EXTRA_OUTPUT, uri);
+				startActivityForResult(intent,0);
+			}
+			
+		});
+		
+		videoButton.setOnClickListener(new OnClickListener()
+		{
+			@Override
+			public void onClick(View v) 
+			{
+				//intent per l'attività di video
+				File tempFile = null;
+				try {
+					tempFile = File.createTempFile("my_video", ".mp4");
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+				fileName = tempFile.getAbsolutePath();
+				Uri uri = Uri.fromFile(tempFile);
+				Intent intent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
+				intent.putExtra(MediaStore.EXTRA_OUTPUT, uri);
+				startActivityForResult(intent,1);
+			}
+		});
+		
 	}
 
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+	    //ACTIVITY PHOTO
+		if (requestCode == 0) {
+	        if (resultCode == RESULT_OK) {
+	            // Image captured and saved to fileUri specified in the Intent	        					
+				Intent intent = new Intent(ShareActivity.this, PhotoInsertActivity.class);
+				intent.putExtra("position",lastPosition);
+				intent.putExtra("fileName", fileName);	        	
+				startActivityForResult(intent,2);
+	        }
+	    }
+		//ACTIVITY VIDEO
+	    if (requestCode == 1) {
+	        if (resultCode == RESULT_OK) {
+	            // Video captured and saved to fileUri specified in the Intent
+	        	Uri videoUri = data.getData();
+	        	InputStream iStream=null;
+				try {
+					iStream = getContentResolver().openInputStream(videoUri);
+				} catch (FileNotFoundException e) {
+					e.printStackTrace();
+				}
+	        	byte[] inputData=null;
+				try {
+					inputData = IOUtils.toByteArray(iStream); 
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+	        		
+	        	String encodedVideo = Base64.encodeToString(inputData, Base64.DEFAULT);	        	
+	        }
+	    }
+	    //ACTIVITY PHOTOINSERT
+	    if (requestCode == 2) {
+	        if (resultCode == RESULT_OK)
+	        {  
+	        	Bitmap bitmap = BitmapFactory.decodeFile(fileName);
+				ByteArrayOutputStream stream = new ByteArrayOutputStream();
+				bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
+				byte[] image = stream.toByteArray();
+				
+	    		//String encodedImage = Base64.encodeToString(inputData, Base64.DEFAULT);	
+	    		
+	    		Media photo = new Media(image, data.getStringExtra("title"), lastPosition);
+	        	ParseManager.insertPhoto(this, photo);
+	        	photos.add(photo);
+	        }
+	    }
+	}
+	
+	@Override
+	public void onSaveInstanceState(Bundle bundle)
+	{
+	 super.onSaveInstanceState(bundle);
+	 bundle.putString("fileName", fileName);
+	}
+	
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
@@ -91,7 +223,6 @@ public class ShareActivity extends ActionBarActivity {
 		}
 		return super.onOptionsItemSelected(item);
 	}
-	
 	
 	/*----Method to Check GPS is enable or disable ----- */  
 	 private Boolean displayGpsStatus() {  
@@ -118,7 +249,11 @@ public class ShareActivity extends ActionBarActivity {
 			 {
 				 Log.i("GPS", "FIRST LOCATION");
 				 location = loc;
-				 ParseManager.insertPosition(ShareActivity.this, path, location.getLatitude(), location.getLongitude(), counter);
+				 String id = ParseManager.insertPosition(ShareActivity.this, path, location.getLatitude(), location.getLongitude(), counter);
+				 
+				 lastPosition = new Position(location.getLatitude(),location.getLongitude(), counter);
+				 lastPosition.setId(id);
+				 
 				 counter++;
 			 }
 			 else
@@ -127,8 +262,14 @@ public class ShareActivity extends ActionBarActivity {
 				    Math.abs(location.getLatitude() - loc.getLatitude()) > 0.00001)
 				 	{
 					 	Log.i("GPS", "LOCATION FOUND");
-					    ParseManager.insertPosition(ShareActivity.this, path, loc.getLatitude(), loc.getLongitude(), counter);
+					    
+					 	String id = ParseManager.insertPosition(ShareActivity.this, path, loc.getLatitude(), loc.getLongitude(), counter);
+					    
+					    lastPosition = new Position(location.getLatitude(),location.getLongitude(), counter);
+						lastPosition.setId(id);
+					    
 					    counter++;
+					    
 					    CameraPosition cameraPosition = new CameraPosition.Builder()
 						.target(new LatLng(loc.getLatitude(),loc.getLongitude()))
 						.zoom(18)
@@ -136,10 +277,12 @@ public class ShareActivity extends ActionBarActivity {
 						.tilt(0)             
 						.build();
 						map.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+						
 						MapManager.drawPrimaryLinePath(
 								new LatLng(location.getLatitude(),location.getLongitude()) ,
 								new LatLng(loc.getLatitude(),loc.getLongitude()),
 								map);
+						
 						location = loc;
 					} 
 			 }
