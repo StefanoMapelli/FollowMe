@@ -172,7 +172,7 @@ public class PersonalDataManager {
 		  {
 			  ContentValues values = new ContentValues();
 			  photoItem = i.next();
-			  //values.put(DatabaseCreationManager.COLUMN_FILE, photoItem.getMediaString());TODO
+			  values.put(DatabaseCreationManager.COLUMN_FILE, photoItem.getMedia());
 			  values.put(DatabaseCreationManager.COLUMN_TITLE, photoItem.getTitle());
 			 
 			  //ricerco la posizione della foto nel database e ne prendo l'id per l'inserimento
@@ -208,7 +208,7 @@ public class PersonalDataManager {
 			  Position position=new Position(cursor.getDouble(6),cursor.getDouble(7),cursor.getInt(5));
 			  position.setId(cursor.getInt(4)+"");
 			  mediaObject.setPosition(position);
-			  //mediaObject.setMediaString(cursor.getString(3));TODO
+			  mediaObject.setMedia(cursor.getBlob(3));
 			  mediaObject.setTitle(cursor.getString(2));
 			  photoList.add(mediaObject);
 			  cursor.moveToNext();
@@ -233,7 +233,7 @@ public class PersonalDataManager {
 		  {
 			  ContentValues values = new ContentValues();
 			  videoItem = i.next();
-			  //values.put(DatabaseCreationManager.COLUMN_FILE, videoItem.getMediaString());TODO
+			  values.put(DatabaseCreationManager.COLUMN_FILE, videoItem.getMedia());
 			  values.put(DatabaseCreationManager.COLUMN_TITLE, videoItem.getTitle());
 			 
 			  //ricerco la posizione della foto nel database e ne prendo l'id per l'inserimento
@@ -271,7 +271,7 @@ public class PersonalDataManager {
 			  Position position=new Position(cursor.getDouble(6),cursor.getDouble(7),cursor.getInt(5));
 			  position.setId(cursor.getInt(4)+"");
 			  mediaObject.setPosition(position);
-			  //mediaObject.setMediaString(cursor.getString(3));TODO
+			  mediaObject.setMedia(cursor.getBlob(3));
 			  mediaObject.setTitle(cursor.getString(2));
 			  videoList.add(mediaObject);
 			  cursor.moveToNext();
@@ -297,7 +297,7 @@ public class PersonalDataManager {
 		  {
 			  ContentValues values = new ContentValues();
 			  audioItem = i.next();
-			  //values.put(DatabaseCreationManager.COLUMN_FILE, audioItem.getMediaString());/TODO
+			  values.put(DatabaseCreationManager.COLUMN_FILE, audioItem.getMedia());
 			  values.put(DatabaseCreationManager.COLUMN_TITLE, audioItem.getTitle());
 			 
 			  //ricerco la posizione della foto nel database e ne prendo l'id per l'inserimento
@@ -333,7 +333,7 @@ public class PersonalDataManager {
 			  Position position=new Position(cursor.getDouble(6),cursor.getDouble(7),cursor.getInt(5));
 			  position.setId(cursor.getInt(4)+"");
 			  mediaObject.setPosition(position);
-			  //mediaObject.setMediaString(cursor.getString(3)); TODO
+			  mediaObject.setMedia(cursor.getBlob(3));
 			  mediaObject.setTitle(cursor.getString(2));
 			  audioList.add(mediaObject);
 			  cursor.moveToNext();

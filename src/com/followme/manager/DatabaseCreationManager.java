@@ -72,21 +72,21 @@ public class DatabaseCreationManager extends SQLiteOpenHelper {
 		      + "(" + COLUMN_PHOTO_ID + " INTEGER primary key autoincrement, " 
 		      + COLUMN_POSITION + " INTEGER not null, "
 		      + COLUMN_TITLE + " TEXT not null, "
-		      + COLUMN_FILE + " TEXT not null;";
+		      + COLUMN_FILE + " BLOB not null;";
 	
 	private static final String VIDEO_CREATE  = "create table "
 		      + TABLE_VIDEO 
 		      + "(" + COLUMN_VIDEO_ID + " INTEGER primary key autoincrement, " 
 		      + COLUMN_POSITION + " INTEGER not null, "
 		      + COLUMN_TITLE + " TEXT not null, "
-		      + COLUMN_FILE + " TEXT not null;";
+		      + COLUMN_FILE + " BLOB not null;";
 	
 	private static final String AUDIO_CREATE  = "create table "
 		      + TABLE_AUDIO 
 		      + "(" + COLUMN_AUDIO_ID + " INTEGER primary key autoincrement, " 
 		      + COLUMN_POSITION + " INTEGER not null, "
 		      + COLUMN_TITLE + " TEXT not null, "
-		      + COLUMN_FILE + " TEXT not null;";
+		      + COLUMN_FILE + " BLOB not null;";
 
 	public DatabaseCreationManager(Context context, String name, CursorFactory factory,
 			int version) {
