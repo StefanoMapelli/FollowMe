@@ -208,7 +208,7 @@ public class PersonalDataManager {
 			  Position position=new Position(cursor.getDouble(6),cursor.getDouble(7),cursor.getInt(5));
 			  position.setId(cursor.getInt(4)+"");
 			  mediaObject.setPosition(position);
-			  mediaObject.setMediaString(cursor.getString(3));
+			  //mediaObject.setMediaString(cursor.getString(3));TODO
 			  mediaObject.setTitle(cursor.getString(2));
 			  photoList.add(mediaObject);
 			  cursor.moveToNext();
@@ -271,7 +271,7 @@ public class PersonalDataManager {
 			  Position position=new Position(cursor.getDouble(6),cursor.getDouble(7),cursor.getInt(5));
 			  position.setId(cursor.getInt(4)+"");
 			  mediaObject.setPosition(position);
-			  mediaObject.setMediaString(cursor.getString(3));
+			  //mediaObject.setMediaString(cursor.getString(3));TODO
 			  mediaObject.setTitle(cursor.getString(2));
 			  videoList.add(mediaObject);
 			  cursor.moveToNext();
@@ -333,7 +333,7 @@ public class PersonalDataManager {
 			  Position position=new Position(cursor.getDouble(6),cursor.getDouble(7),cursor.getInt(5));
 			  position.setId(cursor.getInt(4)+"");
 			  mediaObject.setPosition(position);
-			  mediaObject.setMediaString(cursor.getString(3));
+			  //mediaObject.setMediaString(cursor.getString(3)); TODO
 			  mediaObject.setTitle(cursor.getString(2));
 			  audioList.add(mediaObject);
 			  cursor.moveToNext();

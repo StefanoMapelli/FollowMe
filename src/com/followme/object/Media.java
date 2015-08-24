@@ -12,6 +12,11 @@ public class Media implements Serializable{
 	private String title;
 	private Position position;
 	
+	public Media()
+	{
+		
+	}
+	
 	public Media(byte[] media, String title, Position position) {
 		super();
 		this.media = media;
