@@ -91,6 +91,18 @@
             android:name=".PhotoInsertActivity"
             android:label="@string/title_activity_photo_insert" >
         </activity>
+        <activity
+            android:name=".ChooseContactsForFollowActivity"
+            android:label="@string/title_activity_choose_contacts_for_follow" >
+        </activity>
+        <activity
+            android:name=".FenceSettingActivity"
+            android:label="@string/title_activity_fence_setting" >
+        </activity>
+        <activity
+            android:name=".DestinationSettingActivity"
+            android:label="@string/title_activity_destination_setting" >
+        </activity>
     </application>
 
 </manifest>

@@ -8,20 +8,46 @@ import com.followme.manager.ParseManager;
 import com.followme.manager.Utils;
 import com.followme.object.Contact;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
+import android.view.View;
 
 public class FollowActivity extends ActionBarActivity{
-	
-private List<Contact> contacts;
-	
+
+	private List<Contact> contacts;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
 	{
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.choose_contacts_for_sharing_layout);
-	
-		contacts = Utils.phoneContactsOnParse(DeviceDataManager.allContacts(this), ParseManager.allContactsOnParse(this));
+		setContentView(R.layout.follow_activity_layout);
+
 	}
+
+	//onClickHandler quando viene selezionata la modalità fence
+	public void startFenceOnClickHandler(View v) 
+	{
+		Intent intent = new Intent(FollowActivity.this,FenceSettingActivity.class);
+		startActivity(intent);
+	}
+
+
+	//onClickHandler quando viene selezionata la modalità di destination
+	public void startDestinationOnClickHandler(View v) 
+	{
+		Intent intent = new Intent(FollowActivity.this,DestinationSettingActivity.class);
+		startActivity(intent);
+	}
+
+
+	//onClickHandler quando viene selezionata la modalità di follow path
+	public void startPathOnClickHandler(View v) 
+	{
+		//Intent che manda alla ricezione del percorso del followato
+		//Intent intent = new Intent(FollowActivity.this,DestinationSettingActivity.class);
+		//startActivity(intent);
+	}
+
 
 }

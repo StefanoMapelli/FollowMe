@@ -1,8 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ListView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@android:id/list"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/RelativeLayout1"
     android:layout_width="match_parent"
-    android:layout_height="match_parent" >
-    
+    android:layout_height="match_parent"
+    android:weightSum="1"
+    android:orientation="vertical" >
+        <Button
+            android:id="@+id/fenceButton"
+            android:layout_width="fill_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="0.33"
+            android:onClick="startFenceOnClickHandler"
+            android:text="Fence ###" />
+        
+        <Button
+            android:id="@+id/destinationButton"
+            android:layout_width="fill_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="0.33"
+            android:onClick="startDestinationOnClickHandler"
+            android:text="Destination  --> O" />
 
-</ListView>
+        <Button
+            android:id="@+id/pathButton"
+            android:layout_width="fill_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="0.33"
+            android:onClick="startPathOnClickHandler"
+            android:text="Path" />
+</LinearLayout>

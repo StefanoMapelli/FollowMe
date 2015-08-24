@@ -8,10 +8,24 @@ import android.location.Location;
 
 import com.followme.object.Position;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.model.Circle;
+import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.PolylineOptions;
 
 public class MapManager {
+	
+	
+	public static Circle drawCircle(LatLng center, int radius, GoogleMap map)
+	{
+	    return map.addCircle(new CircleOptions()
+        .center(center)
+        .radius(radius)
+        .strokeColor(Color.RED)
+        .fillColor(Color.BLUE));
+
+	}
+	
 	
 	
 	/**

@@ -15,5 +15,8 @@
     <string name="title_activity_show_details">ShowDetailsActivity</string>
     <string name="title_activity_sharing_receiver">SharingReceiverActivity</string>
     <string name="title_activity_photo_insert">PhotoInsertActivity</string>
+    <string name="title_activity_choose_contacts_for_follow">ChooseContactsForFollowActivity</string>
+    <string name="title_activity_fence_setting">FenceSettingActivity</string>
+    <string name="title_activity_destination_setting">DestinationSettingActivity</string>
 
 </resources>
