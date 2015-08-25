@@ -18,8 +18,10 @@ import com.followme.object.Media;
 import com.followme.object.Position;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.parse.ParseObject;
 
@@ -32,7 +34,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
-import android.util.Base64;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem; 
@@ -53,8 +54,10 @@ public class ShareActivity extends ActionBarActivity {
 	private GoogleMap map;
 	private Button photoButton;
 	private Button videoButton;
-	private String fileName;
+	private String photoFileName;
+	private Uri videoUri;
 	private ArrayList<Media> photos = new ArrayList<Media>();
+	private ArrayList<Media> videos = new ArrayList<Media>();
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -66,7 +69,7 @@ public class ShareActivity extends ActionBarActivity {
 		videoButton = (Button) findViewById(R.id.videoButton);
 		
 		if (savedInstanceState != null)
-			  fileName = savedInstanceState.getString("fileName");
+			  photoFileName = savedInstanceState.getString("fileName");
 		
 		counter = 0;
 		Object[] objects = (Object[]) getIntent().getSerializableExtra("selectedContacts");
@@ -132,7 +135,7 @@ public class ShareActivity extends ActionBarActivity {
 				Date dt = new Date();
 				File tempFile = new File(Environment.getExternalStorageDirectory(),
 	                      dt.toString()+".jpg");
-				fileName = tempFile.getAbsolutePath();
+				photoFileName = tempFile.getAbsolutePath();
 				Uri uri = Uri.fromFile(tempFile);
 				
 				Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
@@ -148,16 +151,9 @@ public class ShareActivity extends ActionBarActivity {
 			public void onClick(View v) 
 			{
 				//intent per l'attività di video
-				File tempFile = null;
-				try {
-					tempFile = File.createTempFile("my_video", ".mp4");
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-				fileName = tempFile.getAbsolutePath();
-				Uri uri = Uri.fromFile(tempFile);
 				Intent intent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
-				intent.putExtra(MediaStore.EXTRA_OUTPUT, uri);
+				intent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY, 0);
+				intent.putExtra(MediaStore.EXTRA_SIZE_LIMIT, 10485760L);
 				startActivityForResult(intent,1);
 			}
 		});
@@ -171,8 +167,7 @@ public class ShareActivity extends ActionBarActivity {
 	        if (resultCode == RESULT_OK) {
 	            // Image captured and saved to fileUri specified in the Intent	        					
 				Intent intent = new Intent(ShareActivity.this, PhotoInsertActivity.class);
-				intent.putExtra("position",lastPosition);
-				intent.putExtra("fileName", fileName);	        	
+				intent.putExtra("fileName", photoFileName);	        	
 				startActivityForResult(intent,2);
 	        }
 	    }
@@ -180,7 +175,36 @@ public class ShareActivity extends ActionBarActivity {
 	    if (requestCode == 1) {
 	        if (resultCode == RESULT_OK) {
 	            // Video captured and saved to fileUri specified in the Intent
-	        	Uri videoUri = data.getData();
+	        	videoUri = data.getData();				
+				Intent intent = new Intent(ShareActivity.this, VideoInsertActivity.class);
+				intent.putExtra("imageUri", videoUri.toString());	
+				startActivityForResult(intent,3);
+	        }
+	    }
+	    //ACTIVITY PHOTOINSERT
+	    if (requestCode == 2) {
+	        if (resultCode == RESULT_OK)
+	        {  	
+				byte[] image = Utils.getSmallBitmap(photoFileName).toByteArray();
+				
+				File file = new File(photoFileName);
+				file.delete();
+				
+	    		Media photo = new Media(image, data.getStringExtra("title"), lastPosition);
+	        	ParseManager.insertPhoto(this, photo);
+	        	photos.add(photo);
+	        	
+	        	map.addMarker(new MarkerOptions()
+	            .position(new LatLng(photo.getPosition().getLatitude(),
+	            					 photo.getPosition().getLongitude()))
+	            .title(photo.getTitle())
+	            .icon(BitmapDescriptorFactory.fromFile(photoFileName)));
+	        }
+	    }
+	    //ACTIVITY VIDEOINSERT
+	    if (requestCode == 3) {
+	        if (resultCode == RESULT_OK)
+	        {  	
 	        	InputStream iStream=null;
 				try {
 					iStream = getContentResolver().openInputStream(videoUri);
@@ -189,26 +213,14 @@ public class ShareActivity extends ActionBarActivity {
 				}
 	        	byte[] inputData=null;
 				try {
-					inputData = IOUtils.toByteArray(iStream); 
+					inputData = Utils.getBytes(iStream); 
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
-	        		
-	        	String encodedVideo = Base64.encodeToString(inputData, Base64.DEFAULT);	        	
-	        }
-	    }
-	    //ACTIVITY PHOTOINSERT
-	    if (requestCode == 2) {
-	        if (resultCode == RESULT_OK)
-	        {  	
-				byte[] image = Utils.getSmallBitmap(fileName).toByteArray();
 				
-				File file = new File(fileName);
-				file.delete();
-				
-	    		Media photo = new Media(image, data.getStringExtra("title"), lastPosition);
-	        	ParseManager.insertPhoto(this, photo);
-	        	photos.add(photo);
+				Media video = new Media(inputData, data.getStringExtra("title"), lastPosition);
+				ParseManager.insertVideo(this, video);
+				videos.add(video);
 	        }
 	    }
 	}
@@ -217,7 +229,7 @@ public class ShareActivity extends ActionBarActivity {
 	public void onSaveInstanceState(Bundle bundle)
 	{
 	 super.onSaveInstanceState(bundle);
-	 bundle.putString("fileName", fileName);
+	 bundle.putString("fileName", photoFileName);
 	}
 	
 	@Override

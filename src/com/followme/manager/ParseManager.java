@@ -136,6 +136,23 @@ public class ParseManager {
 	}
 	
 	/**
+	 * Method that insert a new fence in the Parse db.
+	 * @param context
+	 * @return : the objectId of the inserted fence.
+	 */
+	public static String insertFence(Context context)
+	{
+		Parse.initialize(context,"x9hwNnRfTCCYGXPVJNKaR7zYTIMOdKeLkerRQJT2" ,"hi7GT6rUlp9uTfw6XQzdEjnTqwgPnRPoikPehgVf");
+		ParseObject newPath = new ParseObject("Recinto");
+		try {
+			newPath.save();
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+		return newPath.getObjectId();
+	}
+	
+	/**
 	 * Insert a position in the parse db using parameter data.
 	 * @param context
 	 * @param pId : path id .
@@ -190,6 +207,45 @@ public class ParseManager {
 					});
 			  }
 			});	
+	}
+	
+	/**
+	 * Insert a new video in the parse db.
+	 * @param context
+	 * @param video
+	 */
+	public static void insertVideo(final Context context, Media video)
+	{
+		Parse.initialize(context,"x9hwNnRfTCCYGXPVJNKaR7zYTIMOdKeLkerRQJT2" ,"hi7GT6rUlp9uTfw6XQzdEjnTqwgPnRPoikPehgVf");
+
+		final ParseObject newPhoto = new ParseObject("Video");
+		//get position parse object
+		if(video.getPosition() != null)
+		{
+			ParseObject po=null;
+			po = getPositionbyId(context, video.getPosition().getId());
+			newPhoto.put("idPosizione", po);
+		}
+		final ParseFile file = new ParseFile("video.mp4", video.getMedia());
+		final String title = video.getTitle();
+		Log.i("UPLOAD","ORA INIZIO UPLOAD:"+new Date().toString());
+		file.saveInBackground(new SaveCallback() {
+			  public void done(ParseException e) {
+				  newPhoto.put("file", file);
+					newPhoto.put("didascalia", title);
+					newPhoto.saveInBackground(new SaveCallback(){
+						public void done(ParseException e)
+						{
+							Log.i("UPLOAD","ORA FINE UPLOAD:"+new Date().toString());
+							Toast.makeText(context, "Video uploaded!", Toast.LENGTH_LONG).show();
+						}
+					});
+			  }
+		}, new ProgressCallback(){
+			public void done(Integer percentDone) {
+				Log.i("PROGRESS",percentDone.toString());
+			}				 
+		});	
 	}
 	
 	/**
@@ -353,6 +409,12 @@ public class ParseManager {
 		po.deleteInBackground();
 	}
 	
+	/**
+	 * Method that get the path parse object given his id.
+	 * @param context
+	 * @param pathId
+	 * @return
+	 */
 	public static ParseObject getPathbyId(Context context, String pathId)
 	{
 		List<ParseObject> objects = null;
@@ -369,6 +431,34 @@ public class ParseManager {
 		return pathPo;
 	}
 	
+	/**
+	 * Method that give the fence parse object given his id.
+	 * @param context
+	 * @param id
+	 * @return
+	 */
+	public static ParseObject getFencebyId(Context context, String id)
+	{
+		List<ParseObject> objects = null;
+		ParseObject pathPo=null;
+		ParseQuery<ParseObject> query = ParseQuery.getQuery("Recinto");
+		query.whereEqualTo("objectId", id);		
+		try {
+			objects=query.find();
+			pathPo=objects.get(0);
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+		
+		return pathPo;
+	}
+	
+	/**
+	 * Method that give the position parse object given his id.
+	 * @param context
+	 * @param positionId
+	 * @return
+	 */
 	public static ParseObject getPositionbyId(Context context, String positionId)
 	{
 		List<ParseObject> objects = null;

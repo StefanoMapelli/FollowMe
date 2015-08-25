@@ -1,48 +1,52 @@
 package com.followme.activity;
 
-import com.followme.manager.Utils;
-
 import android.support.v7.app.ActionBarActivity;
 import android.app.Activity;
 import android.content.Intent;
+import android.media.MediaPlayer;
+import android.media.MediaPlayer.OnPreparedListener;
+import android.media.MediaPlayer.OnVideoSizeChangedListener;
+import android.net.Uri;
 import android.os.Bundle;
+import android.util.DisplayMetrics;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.ViewTreeObserver;
+import android.view.ViewGroup.LayoutParams;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageView;
+import android.widget.MediaController;
+import android.widget.VideoView;
 
-public class PhotoInsertActivity extends ActionBarActivity {
+public class VideoInsertActivity extends ActionBarActivity {
 
-	private ImageView imageView;
+	private VideoView videoView;
 	private Button saveButton;
 	private EditText titleEditText;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_photo_insert);
-		imageView = (ImageView) findViewById(R.id.imageViewToSave);
-		saveButton = (Button) findViewById(R.id.saveButtonPhoto);
-		titleEditText = (EditText) findViewById(R.id.inputTitlePhoto);
+		setContentView(R.layout.activity_video_insert);
+		videoView = (VideoView) findViewById(R.id.videoViewToSave);
+		saveButton = (Button) findViewById(R.id.saveButtonVideo);
+		titleEditText = (EditText) findViewById(R.id.inputTitleVideo);
 		
-		final String fileName = getIntent().getStringExtra("fileName");
+		Uri videoUri = Uri.parse(getIntent().getStringExtra("imageUri"));				
+		videoView.setVideoURI(videoUri);
+	 	
+		MediaController mc = new MediaController(VideoInsertActivity.this);
+        videoView.setMediaController(mc);
+        mc.setAnchorView(videoView);
+           
+        DisplayMetrics dm=new DisplayMetrics();            
+        this.getWindowManager().getDefaultDisplay().getMetrics(dm);
+        int width=dm.widthPixels;
+        videoView.setMinimumWidth(width);
+        
+        videoView.start();
 		
-		ViewTreeObserver vto = imageView.getViewTreeObserver();
-		vto.addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
-		    public boolean onPreDraw() {
-		    	imageView.getViewTreeObserver().removeOnPreDrawListener(this);
-		        int finalHeight = imageView.getMeasuredHeight();
-		        int finalWidth = imageView.getMeasuredWidth();
-		        Utils.setPic(finalWidth, finalHeight, imageView, fileName);
-		    		        
-		        return true;
-		    }
-		});	
-	 			
 		saveButton.setOnClickListener(new OnClickListener()
 		{
 			@Override
@@ -56,11 +60,11 @@ public class PhotoInsertActivity extends ActionBarActivity {
 			
 		}); 
 	}
-	
+
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.photo_insert, menu);
+		getMenuInflater().inflate(R.menu.video_insert, menu);
 		return true;
 	}
 

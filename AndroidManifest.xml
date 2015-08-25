@@ -103,6 +103,10 @@
             android:name=".DestinationSettingActivity"
             android:label="@string/title_activity_destination_setting" >
         </activity>
+        <activity
+            android:name=".VideoInsertActivity"
+            android:label="@string/title_activity_video_insert" >
+        </activity>
     </application>
 
 </manifest>
