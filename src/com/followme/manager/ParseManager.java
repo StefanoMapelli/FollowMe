@@ -326,12 +326,11 @@ public class ParseManager {
 	 * @param id : id of the user receiver of the requests 
 	 * @return a list of requests for the user with id id
 	 */
-	public static List<Request> checkRequests(Context context, String id)
+	public static List<Request> checkRequests(Context context, ParseObject user)
 	{
 		List<ParseObject> objects = null;
 		List<Request> requests = new ArrayList<Request>();
 		Parse.initialize(context,"x9hwNnRfTCCYGXPVJNKaR7zYTIMOdKeLkerRQJT2" ,"hi7GT6rUlp9uTfw6XQzdEjnTqwgPnRPoikPehgVf");
-		ParseObject user=getUser(context, id);
 	
 		ParseQuery<ParseObject> query = ParseQuery.getQuery("Richiesta");
 		query.whereEqualTo("idDestinatario", user);

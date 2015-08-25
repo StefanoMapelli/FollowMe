@@ -3,12 +3,12 @@ package com.followme.activity;
 import java.util.List;
 
 import com.followme.activity.R;
-
 import com.followme.fragment.RequestDialogFragment;
 import com.followme.manager.ParseManager;
 import com.followme.manager.PersonalDataManager;
 import com.followme.object.Request;
 import com.followme.object.User;
+import com.parse.ParseObject;
 
 import android.content.Intent;
 import android.os.AsyncTask;
@@ -23,6 +23,7 @@ import android.widget.Button;
 public class MainActivity extends ActionBarActivity  {
 	
 	private User user=new User("","");
+	private ParseObject userParseObject;
 	
 	private Button shareButton;
 	private Button followButton;
@@ -91,7 +92,7 @@ public class MainActivity extends ActionBarActivity  {
 			public void onClick(View v) 
 			{
 				//intent per l'attività di follow
-				Intent intent = new Intent(MainActivity.this,FollowActivity.class);
+				Intent intent = new Intent(MainActivity.this,ChooseContactsForFollowActivity.class);
 				startActivity(intent);
 			}
 			
@@ -111,6 +112,7 @@ public class MainActivity extends ActionBarActivity  {
 				user.setId(data.getStringExtra("id"));
 				//carico il numero di telefono salvato sul db
 				user.setPhoneNumber(PersonalDataManager.getPhoneNumber());
+				userParseObject=ParseManager.getUser(this,user.getId());
 			}
 		}
 	}
@@ -125,17 +127,20 @@ public class MainActivity extends ActionBarActivity  {
 	
 	private class NetworkActivity extends AsyncTask<Void, Integer, String>
     {
+		
+		
 
 		@Override
 		protected String doInBackground(Void... params) 
 		{	
 			List<Request> requestsList;
+			
 			while(true)
 			{	
 				if(!(user.getPhoneNumber().compareTo("")==0))
 				{
 					//roba da fare per chiedere a parse se c'è roba per me
-					requestsList=ParseManager.checkRequests(MainActivity.this, user.getId());
+					requestsList=ParseManager.checkRequests(MainActivity.this, userParseObject);
 					ParseManager.visualizeRquests(MainActivity.this, requestsList);
 					
 					if(!requestsList.isEmpty())
@@ -147,7 +152,7 @@ public class MainActivity extends ActionBarActivity  {
 				}
 								
 				try {
-					Thread.sleep(2000);
+					Thread.sleep(5000);
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}
