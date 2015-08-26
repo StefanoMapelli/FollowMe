@@ -11,6 +11,7 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.Circle;
 import com.google.android.gms.maps.model.LatLng;
+import com.parse.ParseObject;
 
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.ActionBarActivity;
@@ -31,6 +32,7 @@ import android.view.View;
 import android.view.View.OnTouchListener;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 public class FenceSettingActivity extends ActionBarActivity {
 	
@@ -65,7 +67,7 @@ public class FenceSettingActivity extends ActionBarActivity {
 		{
 			contactsList[i] = (Contact) objects[i];
 		}
-		String userId = getIntent().getStringExtra("userId");
+		userId = getIntent().getStringExtra("userId");
 		
 		if (displayGpsStatus()) 
 		{
@@ -110,6 +112,9 @@ public class FenceSettingActivity extends ActionBarActivity {
 		{
 			Log.i("GPS", "gps not enabled");
 		}
+		
+		Toast.makeText(this, "Hold tap to create your fence on the map",Toast.LENGTH_LONG).show();
+		
 		
 		radiusLabel.addTextChangedListener(new TextWatcher(){
 	        public void afterTextChanged(Editable s) {
@@ -164,7 +169,7 @@ public class FenceSettingActivity extends ActionBarActivity {
 		
 		if(fenceCircle!=null)
 		{
-			if(radius<2000)
+			if(radius<1000000)
 			{
 				radius++;
 			}
@@ -179,17 +184,18 @@ public class FenceSettingActivity extends ActionBarActivity {
 	{
 		if(fenceCircle!=null)
 		{
-			//String fenceId = ParseManager.insertFence(this);
-			//ParseObject fence = ParseManager.getPathbyId(this, fenceId);
+			String fenceId = ParseManager.insertFence(this, radius, fencePosition);
 			for(int i=0; i<contactsList.length; i++)
 			{
-				ParseManager.insertRequest(this, "recinto", userId, contactsList[i].getId(), null, null, null);
+				ParseManager.insertRequest(this, "recinto", userId, contactsList[i].getId(), null, null, fenceId);
 			}
 			
-			//TODO
-			Intent intent = new Intent(FenceSettingActivity.this,DestinationSettingActivity.class);
-			intent.putExtra("fencePosition", fencePosition);
+			Intent intent = new Intent(FenceSettingActivity.this,FenceControlActivity.class);
+			intent.putExtra("fenceLatitude", fencePosition.latitude);
+			intent.putExtra("fenceLongitude", fencePosition.longitude);
 			intent.putExtra("radius", radius);
+			intent.putExtra("contactsList", contactsList);
+			intent.putExtra("fenceId", fenceId);
 			startActivity(intent);
 		}
 	}

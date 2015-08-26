@@ -19,5 +19,6 @@
     <string name="title_activity_fence_setting">FenceSettingActivity</string>
     <string name="title_activity_destination_setting">DestinationSettingActivity</string>
     <string name="title_activity_video_insert">VideoInsertActivity</string>
+    <string name="title_activity_fence_control">Follow Me</string>
 
 </resources>

@@ -14,6 +14,7 @@ import com.followme.object.Media;
 import com.followme.object.Position;
 import com.followme.object.Request;
 import com.followme.object.User;
+import com.google.android.gms.maps.model.LatLng;
 import com.parse.GetCallback;
 import com.parse.Parse;
 import com.parse.ParseException;
@@ -140,16 +141,21 @@ public class ParseManager {
 	 * @param context
 	 * @return : the objectId of the inserted fence.
 	 */
-	public static String insertFence(Context context)
+	public static String insertFence(Context context, int radius, LatLng position)
 	{
 		Parse.initialize(context,"x9hwNnRfTCCYGXPVJNKaR7zYTIMOdKeLkerRQJT2" ,"hi7GT6rUlp9uTfw6XQzdEjnTqwgPnRPoikPehgVf");
-		ParseObject newPath = new ParseObject("Recinto");
+		ParseObject newFence = new ParseObject("Recinto");
 		try {
-			newPath.save();
+			ParseGeoPoint center = new ParseGeoPoint(position.latitude, position.longitude);
+			newFence.put("posizione", center);
+			newFence.put("raggio", radius);
+			newFence.put("uscito", false);
+			newFence.save();
 		} catch (ParseException e) {
 			e.printStackTrace();
 		}
-		return newPath.getObjectId();
+		
+		return newFence.getObjectId();
 	}
 	
 	/**
@@ -571,6 +577,33 @@ public class ParseManager {
 		}
 		
 		return newPositions;
+	}
+
+	public static boolean isInTheFence(Context context, String idFence) {
+		
+		List<ParseObject> objects = null;
+		Parse.initialize(context,"x9hwNnRfTCCYGXPVJNKaR7zYTIMOdKeLkerRQJT2" ,"hi7GT6rUlp9uTfw6XQzdEjnTqwgPnRPoikPehgVf");
+	
+		ParseQuery<ParseObject> query = ParseQuery.getQuery("Recinto");
+		query.whereEqualTo("objectId", idFence);
+		query.whereEqualTo("uscito", true);
+		
+		try {
+			objects=query.find();
+			if(objects.isEmpty())
+			{
+				return true;
+			}
+			else
+			{
+				return false;
+			}
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+		
+		return true;
+		
 	}
 	
 }

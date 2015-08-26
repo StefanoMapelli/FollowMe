@@ -29,6 +29,7 @@ public class FollowActivity extends ActionBarActivity{
 	{
 		Intent intent = new Intent(FollowActivity.this,FenceSettingActivity.class);
 		intent.putExtra("selectedContacts", getIntent().getSerializableExtra("selectedContacts"));
+		intent.putExtra("userId", getIntent().getStringExtra("userId"));
 		startActivity(intent);
 	}
 

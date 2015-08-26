@@ -93,6 +93,7 @@ public class MainActivity extends ActionBarActivity  {
 			{
 				//intent per l'attività di follow
 				Intent intent = new Intent(MainActivity.this,ChooseContactsForFollowActivity.class);
+				intent.putExtra("userId", user.getId());
 				startActivity(intent);
 			}
 			
