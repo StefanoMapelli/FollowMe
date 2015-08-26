@@ -25,15 +25,23 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:onClick="decRadiusFenceOnClickHandler"
-        android:layout_weight="0.5"
+        android:layout_weight="0.33"
         android:text="- Radius" />
+        
+        <EditText 
+		android:id="@+id/radiusLabel"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="0.33"
+        android:inputType="number">
+		</EditText>
         
         <Button
         android:id="@+id/incrementRadiusFenceButton"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:onClick="incRadiusFenceOnClickHandler"
-        android:layout_weight="0.5"
+        android:layout_weight="0.33"
         android:text="+ Radius" />
         
     </LinearLayout>

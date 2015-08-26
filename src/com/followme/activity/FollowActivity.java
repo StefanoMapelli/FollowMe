@@ -15,7 +15,6 @@ import android.view.View;
 
 public class FollowActivity extends ActionBarActivity{
 
-	private List<Contact> contacts;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
@@ -29,6 +28,7 @@ public class FollowActivity extends ActionBarActivity{
 	public void startFenceOnClickHandler(View v) 
 	{
 		Intent intent = new Intent(FollowActivity.this,FenceSettingActivity.class);
+		intent.putExtra("selectedContacts", getIntent().getSerializableExtra("selectedContacts"));
 		startActivity(intent);
 	}
 
@@ -37,6 +37,7 @@ public class FollowActivity extends ActionBarActivity{
 	public void startDestinationOnClickHandler(View v) 
 	{
 		Intent intent = new Intent(FollowActivity.this,DestinationSettingActivity.class);
+		intent.putExtra("selectedContacts", getIntent().getSerializableExtra("selectedContacts"));
 		startActivity(intent);
 	}
 

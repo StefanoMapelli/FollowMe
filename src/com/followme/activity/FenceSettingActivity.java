@@ -3,6 +3,7 @@ package com.followme.activity;
 
 import com.followme.manager.MapManager;
 import com.followme.manager.ParseManager;
+import com.followme.object.Contact;
 import com.followme.object.Position;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -13,6 +14,8 @@ import com.google.android.gms.maps.model.LatLng;
 
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.ActionBarActivity;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.content.ContentResolver;
 import android.content.Intent;
 import android.location.Location;
@@ -23,7 +26,11 @@ import android.provider.Settings;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.View.OnTouchListener;
+import android.widget.Button;
+import android.widget.EditText;
 
 public class FenceSettingActivity extends ActionBarActivity {
 	
@@ -34,7 +41,10 @@ public class FenceSettingActivity extends ActionBarActivity {
 	private Position lastPosition = null;
 	private LatLng fencePosition;
 	private Circle fenceCircle=null;
-	private int radius=25;
+	private int radius=60;
+	private EditText radiusLabel;
+	private Contact[] contactsList;
+	private String userId;
 	
 	
 	@Override
@@ -44,23 +54,37 @@ public class FenceSettingActivity extends ActionBarActivity {
 		FragmentManager fm = getSupportFragmentManager();
 		map = ((SupportMapFragment) fm.findFragmentById(R.id.mapFenceSetting)).getMap();
 		
+		radiusLabel=(EditText) findViewById(R.id.radiusLabel);			
+		
+		
+		//recupero i contatti selezionati per la follow e lo user
+		Object[] objects = (Object[]) getIntent().getSerializableExtra("selectedContacts");
+		contactsList = new Contact[objects.length];
+		//cast from object to contact
+		for(int i=0; i < objects.length; i++)
+		{
+			contactsList[i] = (Contact) objects[i];
+		}
+		String userId = getIntent().getStringExtra("userId");
+		
 		if (displayGpsStatus()) 
 		{
 			locationListener = new MyLocationListener(); 
 			locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
 			locationManager.requestLocationUpdates(LocationManager  
 		    .GPS_PROVIDER, 5000, 10,locationListener); 
-			myLocation=locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);	
-			map.setMyLocationEnabled(true);
-			
-			//posiziono la camera nel luogo dove mi trovo sulla mappa
-			CameraPosition cameraPosition = new CameraPosition.Builder()
-			.target(new LatLng(myLocation.getLatitude(),myLocation.getLongitude()))
-			.zoom(18)
-			.bearing(0)           
-			.tilt(0)             
-			.build();
-			map.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));	
+			myLocation=locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+			if(myLocation!=null)
+			{
+				//posiziono la camera nel luogo dove mi trovo sulla mappa
+				CameraPosition cameraPosition = new CameraPosition.Builder()
+				.target(new LatLng(myLocation.getLatitude(),myLocation.getLongitude()))
+				.zoom(17)
+				.bearing(0)           
+				.tilt(0)             
+				.build();
+				map.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));	
+			}
 			
 			
 			//quando un utente clicca in modo prolungato sulla mappa la posizione diventa centro 
@@ -77,6 +101,7 @@ public class FenceSettingActivity extends ActionBarActivity {
 		        	}
 		        	fencePosition=point;
 		        	fenceCircle=MapManager.drawCircle(fencePosition, radius, map);
+		        	radiusLabel.setText(radius+"");
 		          
 		        }
 		});
@@ -84,8 +109,37 @@ public class FenceSettingActivity extends ActionBarActivity {
 		else
 		{
 			Log.i("GPS", "gps not enabled");
-		}				
+		}
+		
+		radiusLabel.addTextChangedListener(new TextWatcher(){
+	        public void afterTextChanged(Editable s) {
+	            
+	        	if(s.toString().compareTo("")!=0)
+	        	{
+	        		
+	        		radius=Integer.parseInt(s.toString());
+	        		
+		        	if(fenceCircle!=null && (radius<1000000 && radius>25))
+		    		{
+		    			fenceCircle.setRadius(radius);
+		    		}
+	        	}
+	        	else
+	        	{
+	        		radius=30;
+		        	if(fenceCircle!=null)
+		    		{
+		    			fenceCircle.setRadius(radius);
+		    		}
+	        	}
+	        	
+	        }
+	        public void beforeTextChanged(CharSequence s, int start, int count, int after){}
+	        public void onTextChanged(CharSequence s, int start, int before, int count){}
+	    }); 
 	}
+	
+	
 	
 	
 	//evento click per decrementare il raggio del fence
@@ -94,11 +148,12 @@ public class FenceSettingActivity extends ActionBarActivity {
 		
 		if(fenceCircle!=null)
 		{
-			if(radius>15)
+			if(radius>30)
 			{
 				radius--;
 			}
 			fenceCircle.setRadius(radius);
+			radiusLabel.setText(radius+"");
 		}
 	}
 	
@@ -114,6 +169,7 @@ public class FenceSettingActivity extends ActionBarActivity {
 				radius++;
 			}
 			fenceCircle.setRadius(radius);
+			radiusLabel.setText(radius+"");
 		}
 	}
 	
@@ -123,6 +179,13 @@ public class FenceSettingActivity extends ActionBarActivity {
 	{
 		if(fenceCircle!=null)
 		{
+			//String fenceId = ParseManager.insertFence(this);
+			//ParseObject fence = ParseManager.getPathbyId(this, fenceId);
+			for(int i=0; i<contactsList.length; i++)
+			{
+				ParseManager.insertRequest(this, "recinto", userId, contactsList[i].getId(), null, null, null);
+			}
+			
 			//TODO
 			Intent intent = new Intent(FenceSettingActivity.this,DestinationSettingActivity.class);
 			intent.putExtra("fencePosition", fencePosition);

@@ -15,10 +15,14 @@ import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.location.LocationManager;
 import android.media.ExifInterface;
+import android.net.Uri;
 import android.provider.Settings;
+import android.view.View;
 import android.widget.ImageView;
 
 import com.followme.object.Contact;
+import com.followme.object.PhotoMarker;
+import com.followme.object.VideoMarker;
 
 public class Utils {
 	
@@ -77,11 +81,11 @@ public class Utils {
 	}
 	
 		/**
-		 * Resize image to 480x... and compress it.
+		 * Resize image to 480 width.
 		 * @param filePath
 		 * @return
 		 */
-	public static ByteArrayOutputStream getSmallBitmap(String filePath) 
+	public static Bitmap getSmallBitmap(String filePath) 
 	{
 		final BitmapFactory.Options options = new BitmapFactory.Options();
 	    options.inJustDecodeBounds = true;
@@ -97,10 +101,8 @@ public class Utils {
 		
 		//Handle orientation
 	    //rotateBitmap(filePath, compressedImage);
-	    
-		ByteArrayOutputStream stream = new ByteArrayOutputStream();
-		compressedImage.compress(Bitmap.CompressFormat.JPEG, 100, stream);
-		return stream;
+	  
+		return compressedImage;
 	}
 	
 	private static int calculateInSampleSize(BitmapFactory.Options options, int reqWidth) {
@@ -165,7 +167,13 @@ public class Utils {
 	    //Handle orientation
 	    //rotateBitmap(mCurrentPhotoPath, bitmap);
 	    
-	    int orientation = Utils.getOrientation(mCurrentPhotoPath);
+	    mImageView.setImageBitmap(bitmap);
+	    rotateImageView(mImageView, mCurrentPhotoPath);
+	}
+	
+	public static void rotateImageView(View view, String filePath)
+	{
+		int orientation = Utils.getOrientation(filePath);
         int angle = 0;
         if (orientation == 6) {
             angle = 90;
@@ -177,8 +185,7 @@ public class Utils {
         	angle = 270;
         }
 	    
-	    mImageView.setImageBitmap(bitmap);
-	    mImageView.setRotation(angle);
+        view.setRotation(angle);
 	}
 	
 	/**
@@ -231,5 +238,52 @@ public class Utils {
         }
         return byteBuffer.toByteArray();
     }
+	
+	/**
+	 * Method useful for marker visualization.
+	 * @param context
+	 * @param dp
+	 * @return
+	 */
+	public static int getPixelsFromDp(Context context, float dp) {
+        final float scale = context.getResources().getDisplayMetrics().density;
+        return (int)(dp * scale + 0.5f);
+	}
+	
+	/**
+	 * Method that search in the photo markers array list first occurrence of given marker with that title.
+	 * @param photoMarkers
+	 * @param title
+	 * @return
+	 */
+	public static Bitmap getBitmapOfPhotoMarker(ArrayList<PhotoMarker> photoMarkers, String title)
+	{
+		for(PhotoMarker pm : photoMarkers)
+		{
+			if(pm.getMarker().getTitle().compareTo(title) == 0)
+			{
+				return pm.getBitmap();
+			}
+		}
+		return null;
+	}
+	
+	/**
+	 * Method that search in the video markers array list first occurrence of given marker with that title.
+	 * @param videoMarkers
+	 * @param title
+	 * @return
+	 */
+	public static Uri getUriOfVideoMarker (ArrayList<VideoMarker> videoMarkers, String title)
+	{
+		for(VideoMarker vm : videoMarkers)
+		{
+			if(vm.getMarker().getTitle().compareTo(title) == 0)
+			{
+				return vm.getVideoUri();
+			}
+		}
+		return null;
+	}
 
 }
