@@ -2,20 +2,25 @@ package com.followme.manager;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
 import android.content.ContentResolver;
 import android.content.Context;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.location.LocationManager;
 import android.media.ExifInterface;
 import android.net.Uri;
+import android.provider.MediaStore;
 import android.provider.Settings;
 import android.view.View;
 import android.widget.ImageView;
@@ -256,13 +261,13 @@ public class Utils {
 	 * @param title
 	 * @return
 	 */
-	public static Bitmap getBitmapOfPhotoMarker(ArrayList<PhotoMarker> photoMarkers, String title)
+	public static PhotoMarker getPhotoMarkerByTitle(ArrayList<PhotoMarker> photoMarkers, String title)
 	{
 		for(PhotoMarker pm : photoMarkers)
 		{
 			if(pm.getMarker().getTitle().compareTo(title) == 0)
 			{
-				return pm.getBitmap();
+				return pm;
 			}
 		}
 		return null;
@@ -274,16 +279,45 @@ public class Utils {
 	 * @param title
 	 * @return
 	 */
-	public static Uri getUriOfVideoMarker (ArrayList<VideoMarker> videoMarkers, String title)
+	public static VideoMarker getVideoMarkerByTitle (ArrayList<VideoMarker> videoMarkers, String title)
 	{
 		for(VideoMarker vm : videoMarkers)
 		{
 			if(vm.getMarker().getTitle().compareTo(title) == 0)
 			{
-				return vm.getVideoUri();
+				return vm;
 			}
 		}
 		return null;
 	}
 
+	/**
+	 * Copy a file in another.
+	 * @param src
+	 * @param dst
+	 * @throws IOException
+	 */
+	public static void copyFile(File src, File dst) throws IOException {
+	    InputStream in = new FileInputStream(src);
+	    OutputStream out = new FileOutputStream(dst);
+
+	    // Transfer bytes from in to out
+	    byte[] buf = new byte[1024];
+	    int len;
+	    while ((len = in.read(buf)) > 0) {
+	        out.write(buf, 0, len);
+	    }
+	    in.close();
+	    out.close();
+	}
+	
+	public static String getPath(Context context,Uri uri) {
+	    String[] projection = { MediaStore.Images.Media.DATA };
+	Cursor cursor = context.getContentResolver().query(uri, projection, null, null, null);
+	    int column_index = cursor
+	            .getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+	    cursor.moveToFirst();
+	    return cursor.getString(column_index);
+	}
+	
 }

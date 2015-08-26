@@ -8,6 +8,8 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Date;
 
+import org.apache.commons.io.FilenameUtils;
+
 import com.google.android.gms.maps.model.Marker;
 import com.followme.activity.R;
 import com.followme.adapter.MapWrapperLayout;
@@ -23,6 +25,7 @@ import com.followme.object.VideoMarker;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.GoogleMap.InfoWindowAdapter;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -35,11 +38,11 @@ import android.graphics.Bitmap;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.media.ThumbnailUtils;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
-import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem; 
@@ -47,11 +50,9 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.ImageButton;
-import android.widget.MediaController;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.VideoView;
 
 public class ShareActivity extends ActionBarActivity {
 
@@ -67,9 +68,9 @@ public class ShareActivity extends ActionBarActivity {
     private MapWrapperLayout mapWrapperLayout;
 	private ViewGroup infoWindow;
     private TextView infoSnippet;
-    private ImageButton infoImageButton;
-    private VideoView infoVideoView;
-    private OnInfoWindowElemTouchListener infoButtonListener;	
+    private ImageView infoImageView;
+    private OnInfoWindowElemTouchListener photoTouchListener;	
+    private OnInfoWindowElemTouchListener videoTouchListener;
 	private Button photoButton;
 	private Button videoButton;
 	private String photoFileName;
@@ -149,6 +150,24 @@ public class ShareActivity extends ActionBarActivity {
 			Log.i("GPS", "gps not enabled");
 		}
 	
+        photoTouchListener = new OnInfoWindowElemTouchListener() 
+        {
+            @Override
+            protected void onClickConfirmed(View v, Marker marker) 
+            {
+                Toast.makeText(ShareActivity.this, marker.getTitle() + "'s button clicked!", Toast.LENGTH_SHORT).show();
+            }
+        };  
+        
+        videoTouchListener = new OnInfoWindowElemTouchListener() 
+        {
+            @Override
+            protected void onClickConfirmed(View v, Marker marker) 
+            {
+                Toast.makeText(ShareActivity.this, marker.getTitle() + "'s button clicked!", Toast.LENGTH_SHORT).show();
+            }
+        }; 
+		
 		photoButton.setOnClickListener(new OnClickListener()
 		{
 			@Override
@@ -229,9 +248,26 @@ public class ShareActivity extends ActionBarActivity {
 	            .position(new LatLng(photo.getPosition().getLatitude(),
 	            					 photo.getPosition().getLongitude()))
 	            .snippet(photo.getTitle())
+	            .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE))
 	            .title(String.valueOf(markerCounter)));
 		        map.getUiSettings().setMapToolbarEnabled(false);
-		        photoMarkers.add(new PhotoMarker(imageBitMap, m));  
+		        
+				File oldfile = new File(photoFileName);
+		        File newFile=null;
+		        //copy old photo file in cache
+		        try {
+		        	newFile= File.createTempFile("prefix",
+		        			FilenameUtils.getExtension(photoFileName), getCacheDir());
+		        	Utils.copyFile(oldfile, newFile);
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+		        
+	        	//delete old file from memory
+		        oldfile.delete();
+		        
+		        //add photo marker object
+		        photoMarkers.add(new PhotoMarker(imageBitMap, m, newFile.getAbsolutePath()));  
 	        	markerCounter++;
 		        		        
 		        //info window setting
@@ -247,41 +283,30 @@ public class ShareActivity extends ActionBarActivity {
 				        mapWrapperLayout.init(map, Utils.getPixelsFromDp(ShareActivity.this, 59)); 				
 				        infoWindow = (ViewGroup)getLayoutInflater().inflate(R.layout.photo_info_window_layout, null);
 				        infoSnippet = (TextView)infoWindow.findViewById(R.id.PhotoSnippet);
-				        infoImageButton = (ImageButton)infoWindow.findViewById(R.id.photoInfoButton);
-		            				        
-				        //image setting
-				        infoImageButton.setImageBitmap(Bitmap.createScaledBitmap(
-				        		Utils.getBitmapOfPhotoMarker(photoMarkers, marker.getTitle()), 
-								imageBitMap.getWidth()/2, 
-								imageBitMap.getHeight()/2, false));
-				        Utils.rotateImageView(infoImageButton, photoFileName);
+				        infoImageView = (ImageView)infoWindow.findViewById(R.id.infoImageView);
+				        photoTouchListener.setView(infoImageView);
 				        
-				        //info button setting
-				        infoButtonListener = new OnInfoWindowElemTouchListener(infoImageButton) 
-				        {
-				            @Override
-				            protected void onClickConfirmed(View v, Marker marker) {
-				            	//APRI GALLERIA FOTO
-				                // Here we can perform some action triggered after clicking the button
-				                Toast.makeText(ShareActivity.this, "button clicked!", Toast.LENGTH_SHORT).show();
-				            }
-				        }; 
-				        infoImageButton.setOnTouchListener(infoButtonListener);
-		                
 		                // Setting up the infoWindow with current's marker info
 		                infoSnippet.setText(marker.getSnippet());
-		                infoButtonListener.setMarker(marker);
-				        
+		    
+		                photoTouchListener.setMarker(marker);					        
+				        infoImageView.setOnTouchListener(photoTouchListener);		
+		                			        				        
+				        //image setting
+				        PhotoMarker pm = Utils.getPhotoMarkerByTitle(photoMarkers, marker.getTitle());
+				        infoImageView.setImageBitmap(Bitmap.createScaledBitmap(
+				        		pm.getBitmap(), 
+								imageBitMap.getWidth()/2, 
+								imageBitMap.getHeight()/2, false));
+				        Utils.rotateImageView(infoImageView, pm.getPath());
+		                	                		  
 		                // We must call this to set the current marker and infoWindow references
 		                // to the MapWrapperLayout
 		                mapWrapperLayout.setMarkerWithInfoWindow(marker, infoWindow);
+		                
 		                return infoWindow;
 		            }
-		        });
-		       	        	
-	        	//delete file from memory
-				File file = new File(photoFileName);
-				file.delete();
+		        });		       	 
 	        }
 	    }
 	    //ACTIVITY VIDEOINSERT
@@ -303,18 +328,25 @@ public class ShareActivity extends ActionBarActivity {
 				
 				Media video = new Media(inputData, data.getStringExtra("title"), lastPosition);
 				ParseManager.insertVideo(this, video);
-				videos.add(video);
+				videos.add(video);				
+				
+				//get video preview
+				String path = Utils.getPath(this, videoUri);
+				Bitmap thumb = ThumbnailUtils.createVideoThumbnail(
+						path,
+		                MediaStore.Images.Thumbnails.MINI_KIND);
 				
 				//add marker
 	        	Marker m = map.addMarker(new MarkerOptions()
 	            .position(new LatLng(video.getPosition().getLatitude(),
 	            					 video.getPosition().getLongitude()))
 	            .snippet(video.getTitle())
+	            .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN))
 	            .title(String.valueOf(markerCounter)));
 		        map.getUiSettings().setMapToolbarEnabled(false);
-		        videoMarkers.add(new VideoMarker(videoUri, m));  
+		        videoMarkers.add(new VideoMarker(videoUri, m, thumb));  
 	        	markerCounter++;;
-		        map.getUiSettings().setMapToolbarEnabled(false);
+		        map.getUiSettings().setMapToolbarEnabled(false);		        
 		        
 		        //info window setting
 		        map.setInfoWindowAdapter(new InfoWindowAdapter() {
@@ -325,48 +357,27 @@ public class ShareActivity extends ActionBarActivity {
 
 		            @Override
 		            public View getInfoContents(Marker marker) {				        		                
-		            	// MapWrapperLayout initialization
-				        mapWrapperLayout.init(map, Utils.getPixelsFromDp(ShareActivity.this, 39 + 20)); 				
-				        infoWindow = (ViewGroup)getLayoutInflater().inflate(R.layout.video_info_window_layout, null);
-				        infoSnippet = (TextView)infoWindow.findViewById(R.id.VideoSnippet);
-				        infoVideoView = (VideoView)infoWindow.findViewById(R.id.infoVideoView);
-				        
-				        //setting videoView
-				        infoVideoView.setVideoURI(Utils.getUriOfVideoMarker(videoMarkers, marker.getTitle()));
-				        
-				        //setting media controller
-						MediaController mc = new MediaController(ShareActivity.this);
-						infoVideoView.setMediaController(mc);
-				        mc.setAnchorView(infoVideoView);
-				        
-				         //setting dimensions  
-				        DisplayMetrics dm=new DisplayMetrics();            
-				        getWindowManager().getDefaultDisplay().getMetrics(dm);
-				        int width=dm.widthPixels;
-				        infoVideoView.setMinimumWidth(width);
-				        
-				        //start video
-				        infoVideoView.start();
-
-				      //info button setting
-				       /* infoButtonListener = new OnInfoWindowElemTouchListener(infoImageButton) 
-				        {
-				            @Override
-				            protected void onClickConfirmed(View v, Marker marker) {
-				            	//APRI GALLERIA VIDEO
-				                // Here we can perform some action triggered after clicking the button
-				                Toast.makeText(ShareActivity.this, "button clicked!", Toast.LENGTH_SHORT).show();
-				            }
-				        }; 
-				        infoImageButton.setOnTouchListener(infoButtonListener);*/				        
+						// MapWrapperLayout initialization
+				        mapWrapperLayout.init(map, Utils.getPixelsFromDp(ShareActivity.this, 59)); 				
+				        infoWindow = (ViewGroup)getLayoutInflater().inflate(R.layout.photo_info_window_layout, null);
+				        infoSnippet = (TextView)infoWindow.findViewById(R.id.PhotoSnippet);
+				        infoImageView = (ImageView)infoWindow.findViewById(R.id.infoImageView);
+				        videoTouchListener.setView(infoImageView);
 				        
 		                // Setting up the infoWindow with current's marker info
 		                infoSnippet.setText(marker.getSnippet());
-		                //infoButtonListener.setMarker(marker);
-				        
+		    
+		                videoTouchListener.setMarker(marker);					        
+				        infoImageView.setOnTouchListener(videoTouchListener);		
+		                			        				        
+				        //image setting
+				        VideoMarker vm = Utils.getVideoMarkerByTitle(videoMarkers, marker.getTitle());				        				        
+				        infoImageView.setImageBitmap(vm.getThumbnail());
+		                	                		  
 		                // We must call this to set the current marker and infoWindow references
 		                // to the MapWrapperLayout
 		                mapWrapperLayout.setMarkerWithInfoWindow(marker, infoWindow);
+		                
 		                return infoWindow;
 		            }
 		        });

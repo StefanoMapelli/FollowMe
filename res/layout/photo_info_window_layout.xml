@@ -21,8 +21,8 @@
         	android:layout_height="wrap_content"
         	android:layout_weight="0.1" >
          
-        	<ImageButton
-        		android:id="@+id/photoInfoButton" 
+        	<ImageView
+        		android:id="@+id/infoImageView" 
         		android:layout_gravity="center_horizontal"
         		android:layout_width="match_parent"
         		android:layout_height="match_parent"/>   
