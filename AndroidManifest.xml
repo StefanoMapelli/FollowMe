@@ -107,6 +107,10 @@
             android:name=".VideoInsertActivity"
             android:label="@string/title_activity_video_insert" >
         </activity>
+        <activity
+            android:name=".FenceControlActivity"
+            android:label="@string/title_activity_fence_control" >
+        </activity>
     </application>
 
 </manifest>
