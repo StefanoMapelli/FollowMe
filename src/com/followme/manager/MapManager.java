@@ -3,8 +3,10 @@ package com.followme.manager;
 import java.util.Iterator;
 import java.util.List;
 
+import android.content.Context;
 import android.graphics.Color;
 import android.location.Location;
+import android.location.LocationManager;
 
 import com.followme.object.Position;
 import com.google.android.gms.maps.GoogleMap;
@@ -75,5 +77,26 @@ public class MapManager {
 	    map.addPolyline( options );
 
 	}
-
+	
+	/**
+	 * Method that return the best location found from location manager.
+	 * @param context
+	 * @param mLocationManager
+	 * @return
+	 */
+	public static Location getLastKnownLocation(Context context,LocationManager mLocationManager) {
+	    List<String> providers = mLocationManager.getProviders(true);
+	    Location bestLocation = null;
+	    for (String provider : providers) {
+	        Location l = mLocationManager.getLastKnownLocation(provider);
+	        if (l == null) {
+	            continue;
+	        }
+	        if (bestLocation == null || l.getAccuracy() < bestLocation.getAccuracy()) {
+	            // Found best last known location: %s", l);
+	            bestLocation = l;
+	        }
+	    }
+	    return bestLocation;
+	}
 }
