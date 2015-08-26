@@ -8,18 +8,22 @@ import android.view.View.OnTouchListener;
 import com.google.android.gms.maps.model.Marker;
 
 public abstract class OnInfoWindowElemTouchListener implements OnTouchListener {
-    private final View view;
+    private View view;
     private final Handler handler = new Handler();
 
     private Marker marker;
     private boolean pressed = false;
 
-    public OnInfoWindowElemTouchListener(View view) {
-        this.view = view;
+    public OnInfoWindowElemTouchListener() {
     }
 
     public void setMarker(Marker marker) {
         this.marker = marker;
+    }
+    
+    public void setView(View view)
+    {
+    	this.view = view;
     }
 
     @Override
@@ -27,8 +31,14 @@ public abstract class OnInfoWindowElemTouchListener implements OnTouchListener {
         if (0 <= event.getX() && event.getX() <= view.getWidth() &&
             0 <= event.getY() && event.getY() <= view.getHeight())
         {
-            switch (event.getActionMasked()) {
-            case MotionEvent.ACTION_DOWN: startPress(); break;
+        	int i= event.getActionMasked();
+            switch (i) {
+            case MotionEvent.ACTION_DOWN: 
+            	{
+            		startPress(); 
+            		handler.postDelayed(confirmClickRunnable, 150);
+            		break;
+            	}
 
             // We need to delay releasing of the view a little so it shows the pressed state on the screen
             case MotionEvent.ACTION_UP: handler.postDelayed(confirmClickRunnable, 150); break;
@@ -45,7 +55,7 @@ public abstract class OnInfoWindowElemTouchListener implements OnTouchListener {
         }
         return false;
     }
-
+    
     private void startPress() {
         if (!pressed) {
             pressed = true;
