@@ -3,7 +3,6 @@ package com.followme.adapter;
 import java.util.ArrayList;
 
 import com.followme.activity.R;
-import com.followme.activity.VideoInsertActivity;
 import com.followme.manager.Utils;
 import com.followme.object.CustomMarker;
 import com.followme.object.PhotoMarker;
@@ -12,7 +11,8 @@ import com.followme.object.VideoMarker;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.net.Uri;
+import android.media.ThumbnailUtils;
+import android.provider.MediaStore;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
 import android.view.GestureDetector;
@@ -22,9 +22,7 @@ import android.widget.FrameLayout;
 import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.MediaController;
 import android.widget.TextView;
-import android.widget.VideoView;
 import android.view.MotionEvent;
 
 public class GalleryLayout extends HorizontalScrollView {
@@ -59,18 +57,16 @@ public class GalleryLayout extends HorizontalScrollView {
 		addView(internalWrapper);
 		this.mItems = items;
 		for(CustomMarker cm : items){
-			LinearLayout featureLayout=null;
+			DisplayMetrics metrics = new DisplayMetrics();
+			((Activity) context).getWindowManager().getDefaultDisplay().getMetrics(metrics);
+			LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(metrics.widthPixels, LayoutParams.MATCH_PARENT);
+			LinearLayout featureLayout = (LinearLayout) View.inflate(this.getContext(),R.layout.photo_gallery_page,null);
+			featureLayout.setLayoutParams(params);
+			TextView title = (TextView) featureLayout.getChildAt(1);
+			FrameLayout fl = (FrameLayout) featureLayout.getChildAt(0);
+			ImageView image = (ImageView) fl.getChildAt(0);
 			if(cm instanceof PhotoMarker)
-			{
-				DisplayMetrics metrics = new DisplayMetrics();
-				((Activity) context).getWindowManager().getDefaultDisplay().getMetrics(metrics);
-				LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(metrics.widthPixels, LayoutParams.MATCH_PARENT);
-				featureLayout = (LinearLayout) View.inflate(this.getContext(),R.layout.photo_gallery_page,null);
-				featureLayout.setLayoutParams(params);
-				TextView title = (TextView) featureLayout.getChildAt(1);
-				FrameLayout fl = (FrameLayout) featureLayout.getChildAt(0);
-				ImageView image = (ImageView) fl.getChildAt(0);
-				
+			{				
 				PhotoMarker pm = (PhotoMarker) cm;
 				Bitmap bitmap = Utils.getSmallBitmap(pm.getPath());
 				title.setText(pm.getSnippet());
@@ -79,22 +75,13 @@ public class GalleryLayout extends HorizontalScrollView {
 			}
 			else
 			{
-				DisplayMetrics metrics = new DisplayMetrics();
-				((Activity) context).getWindowManager().getDefaultDisplay().getMetrics(metrics);
-				LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(metrics.widthPixels, LayoutParams.MATCH_PARENT);
-				featureLayout = (LinearLayout) View.inflate(this.getContext(),R.layout.video_gallery_page,null);
-				featureLayout.setLayoutParams(params);
-				TextView title = (TextView) featureLayout.findViewById(R.id.titleVideoPage);
-				VideoView video = (VideoView) featureLayout.findViewById(R.id.videoViewVideoPage);
-				
 				VideoMarker vm = (VideoMarker) cm;
-				
+				Bitmap thumb = ThumbnailUtils.createVideoThumbnail(
+						vm.getVideoUriString(),
+		                MediaStore.Images.Thumbnails.FULL_SCREEN_KIND);		        
 				title.setText(vm.getSnippet());
-				video.setVideoURI(Uri.parse(vm.getVideoUriString()));
-				MediaController mc = new MediaController(context);
-				video.setMediaController(mc);
-		        mc.setAnchorView(video);		          
-		        video.setMinimumWidth(metrics.widthPixels);		        
+				image.setImageBitmap(thumb);
+				
 			}
  			internalWrapper.addView(featureLayout);
  		}
