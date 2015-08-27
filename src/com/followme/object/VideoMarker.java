@@ -6,24 +6,16 @@ public class VideoMarker extends CustomMarker{
 	 * 
 	 */
 	private static final long serialVersionUID = -8461794177077148085L;
-	private String videoUriString;
-	private String thumbnailPath;
+	private String videoPath;
 	
-	public VideoMarker(String title, String snippet, String videoUriString,String thumbnailPath) {
+	public VideoMarker(String title, String snippet, String videoUriString) {
 		super(title, snippet);
-		this.videoUriString = videoUriString;
-		this.thumbnailPath = thumbnailPath;
+		this.videoPath = videoUriString;
 	}
 	public String getVideoUriString() {
-		return videoUriString;
+		return videoPath;
 	}
 	public void setVideoUriString(String videoUriString) {
-		this.videoUriString = videoUriString;
-	}
-	public String getThumbnailPath() {
-		return thumbnailPath;
-	}
-	public void setThumbnailPath(String thumbnailPath) {
-		this.thumbnailPath = thumbnailPath;
+		this.videoPath = videoUriString;
 	}
 }

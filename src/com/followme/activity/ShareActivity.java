@@ -242,7 +242,7 @@ public class ShareActivity extends ActionBarActivity {
 			        VideoMarker vm = (VideoMarker)Utils.getMarkerByTitle(markers, marker.getTitle());	
 			        
 			        Bitmap thumb = ThumbnailUtils.createVideoThumbnail(
-							vm.getThumbnailPath(),
+							vm.getVideoUriString(),
 			                MediaStore.Images.Thumbnails.MINI_KIND);
 			        
 			        infoImageView.setImageBitmap(thumb);
@@ -312,7 +312,7 @@ public class ShareActivity extends ActionBarActivity {
 	            // Video captured and saved to fileUri specified in the Intent
 	        	videoUri = data.getData();				
 				Intent intent = new Intent(ShareActivity.this, VideoInsertActivity.class);
-				intent.putExtra("imageUri", videoUri.toString());	
+				intent.putExtra("videoUri", videoUri.toString());	
 				startActivityForResult(intent,3);
 	        }
 	    }
@@ -391,9 +391,24 @@ public class ShareActivity extends ActionBarActivity {
 	            .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN))
 	            .title("video"+String.valueOf(markerCounter)));
 		        map.getUiSettings().setMapToolbarEnabled(false);
-		        markers.add(new VideoMarker(m.getTitle(), m.getSnippet(), videoUri.toString(), path));  
-	        	markerCounter++;;
-		        map.getUiSettings().setMapToolbarEnabled(false);		        		        
+		        
+		        File oldfile = new File(path);
+		        File newFile=null;
+		        //copy old photo file in cache
+		        try {
+		        	newFile= File.createTempFile("prefix",
+		        			FilenameUtils.getExtension(path), getCacheDir());
+		        	Utils.copyFile(oldfile, newFile);
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+		        
+	        	//delete old file from memory
+		        oldfile.delete();
+		        
+		        //add video marker object
+		        markers.add(new VideoMarker(m.getTitle(), m.getSnippet(), newFile.getAbsolutePath()));  
+	        	markerCounter++;;		        		        
 	        }
 	    }
 	}

@@ -29,7 +29,7 @@ public class VideoInsertActivity extends ActionBarActivity {
 		saveButton = (Button) findViewById(R.id.saveButtonVideo);
 		titleEditText = (EditText) findViewById(R.id.inputTitleVideo);
 		
-		Uri videoUri = Uri.parse(getIntent().getStringExtra("imageUri"));				
+		Uri videoUri = Uri.parse(getIntent().getStringExtra("videoUri"));				
 		videoView.setVideoURI(videoUri);
 	 	
 		MediaController mc = new MediaController(VideoInsertActivity.this);

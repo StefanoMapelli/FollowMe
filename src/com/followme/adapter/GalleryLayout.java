@@ -18,6 +18,7 @@ import android.util.DisplayMetrics;
 import android.view.GestureDetector;
 import android.view.GestureDetector.SimpleOnGestureListener;
 import android.view.View;
+import android.widget.FrameLayout;
 import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -63,13 +64,12 @@ public class GalleryLayout extends HorizontalScrollView {
 			{
 				DisplayMetrics metrics = new DisplayMetrics();
 				((Activity) context).getWindowManager().getDefaultDisplay().getMetrics(metrics);
-
 				LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(metrics.widthPixels, LayoutParams.MATCH_PARENT);
-				
 				featureLayout = (LinearLayout) View.inflate(this.getContext(),R.layout.photo_gallery_page,null);
 				featureLayout.setLayoutParams(params);
-				TextView title = (TextView) featureLayout.findViewById(R.id.titlePhotoPage);
-				ImageView image = (ImageView) featureLayout.findViewById(R.id.imageViewPhotoPage);
+				TextView title = (TextView) featureLayout.getChildAt(1);
+				FrameLayout fl = (FrameLayout) featureLayout.getChildAt(0);
+				ImageView image = (ImageView) fl.getChildAt(0);
 				
 				PhotoMarker pm = (PhotoMarker) cm;
 				Bitmap bitmap = Utils.getSmallBitmap(pm.getPath());
@@ -79,7 +79,11 @@ public class GalleryLayout extends HorizontalScrollView {
 			}
 			else
 			{
+				DisplayMetrics metrics = new DisplayMetrics();
+				((Activity) context).getWindowManager().getDefaultDisplay().getMetrics(metrics);
+				LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(metrics.widthPixels, LayoutParams.MATCH_PARENT);
 				featureLayout = (LinearLayout) View.inflate(this.getContext(),R.layout.video_gallery_page,null);
+				featureLayout.setLayoutParams(params);
 				TextView title = (TextView) featureLayout.findViewById(R.id.titleVideoPage);
 				VideoView video = (VideoView) featureLayout.findViewById(R.id.videoViewVideoPage);
 				
@@ -89,14 +93,8 @@ public class GalleryLayout extends HorizontalScrollView {
 				video.setVideoURI(Uri.parse(vm.getVideoUriString()));
 				MediaController mc = new MediaController(context);
 				video.setMediaController(mc);
-		        mc.setAnchorView(video);
-		           
-		        DisplayMetrics dm=new DisplayMetrics();            
-		        ((Activity) context).getWindowManager().getDefaultDisplay().getMetrics(dm);
-		        int width=dm.widthPixels;
-		        video.setMinimumWidth(width);
-		        
-		        video.start();
+		        mc.setAnchorView(video);		          
+		        video.setMinimumWidth(metrics.widthPixels);		        
 			}
  			internalWrapper.addView(featureLayout);
  		}

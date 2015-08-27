@@ -5,27 +5,28 @@
     android:gravity="center_horizontal"
     android:orientation="vertical"
     android:weightSum="1" >
-    
+
          <FrameLayout
 			android:layout_gravity="center_horizontal"
        		android:layout_width="wrap_content"
         	android:layout_height="wrap_content"
-        	android:layout_weight="0.1" >
+        	android:layout_weight="0.01" >
          
         	<ImageView
         		android:id="@+id/imageViewPhotoPage" 
-        		android:layout_gravity="center_horizontal"
+        		android:layout_gravity="center"
         		android:layout_width="match_parent"
         		android:layout_height="match_parent"/>   
         	
-        </FrameLayout>
-                     
+        </FrameLayout> 
+                                           
          <TextView
             android:id="@+id/titlePhotoPage"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:layout_weight="0.9"
+            android:layout_weight="0.99"
             android:textSize="20sp" />
+    
          
 </LinearLayout>
