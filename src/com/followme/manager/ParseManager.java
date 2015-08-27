@@ -605,5 +605,46 @@ public class ParseManager {
 		return true;
 		
 	}
+
+	
+	/**
+	 * This method gets the fence parseObject of the request
+	 * @param context
+	 * @param fenceRequest request of the fence
+	 */
+	public static ParseObject getFenceOfRequest(Context context, Request request) 
+	{
+
+		ParseObject fence=null;
+		List<ParseObject> objects = null;
+		Parse.initialize(context,"x9hwNnRfTCCYGXPVJNKaR7zYTIMOdKeLkerRQJT2" ,"hi7GT6rUlp9uTfw6XQzdEjnTqwgPnRPoikPehgVf");
+		
+		
+		ParseQuery<ParseObject> query = ParseQuery.getQuery("Richiesta");
+		
+		query.whereEqualTo("objectId", request.getId());
+		try {
+			objects=query.find();
+			Iterator<ParseObject> i = objects.iterator();
+			ParseObject po;			
+			if(i.hasNext())
+			{
+				po = i.next();
+				fence=po.getParseObject("idRecinto");	
+			}
+			
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}	
+		return fence;
+		
+	}
+
+	public static void updateFenceStatus(Context context, ParseObject fenceParseObject, boolean isExit) {
+				
+		Parse.initialize(context,"x9hwNnRfTCCYGXPVJNKaR7zYTIMOdKeLkerRQJT2" ,"hi7GT6rUlp9uTfw6XQzdEjnTqwgPnRPoikPehgVf");
+		fenceParseObject.put("uscito", isExit);
+		fenceParseObject.saveInBackground();
+	}
 	
 }

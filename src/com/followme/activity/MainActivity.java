@@ -67,7 +67,9 @@ public class MainActivity extends ActionBarActivity  {
 			user.setPhoneNumber(PersonalDataManager.getPhoneNumber());
 			//carico l'id presente su parse
 			user.setId(ParseManager.getId(this, PersonalDataManager.getPhoneNumber()));
+			userParseObject=ParseManager.getUser(this, user.getId());
 		}
+		
 		
 		new NetworkActivity().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 		

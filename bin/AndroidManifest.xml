@@ -118,6 +118,10 @@
             android:name=".FenceReceiverActivity"
             android:label="@string/title_activity_fence_receiver" >
         </activity>
+        <activity
+            android:name=".FenceControlActivity"
+            android:label="@string/title_activity_fence_control" >
+        </activity>
     </application>
 
 </manifest>
