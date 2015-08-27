@@ -20,5 +20,8 @@
     <string name="title_activity_destination_setting">DestinationSettingActivity</string>
     <string name="title_activity_video_insert">VideoInsertActivity</string>
     <string name="title_activity_fence_control">Follow Me</string>
+    <string name="title_activity_media_gallery">MediaGalleryActivity</string>
+    <string name="dummy_button">Dummy Button</string>
+    <string name="dummy_content">DUMMY\nCONTENT</string>
 
 </resources>

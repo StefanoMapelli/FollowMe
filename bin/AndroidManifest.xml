@@ -108,7 +108,12 @@
             android:name=".VideoInsertActivity"
             android:label="@string/title_activity_video_insert" >
         </activity>
+        <activity
+            android:name=".MediaGalleryActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:label="@string/title_activity_media_gallery"
+            android:theme="@style/FullscreenTheme" >
+        </activity>
     </application>
 
 </manifest>
-

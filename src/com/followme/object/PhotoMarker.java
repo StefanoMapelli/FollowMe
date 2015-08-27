@@ -1,38 +1,20 @@
 package com.followme.object;
+public class PhotoMarker extends CustomMarker{
 
-import com.google.android.gms.maps.model.Marker;
-
-import android.graphics.Bitmap;
-
-public class PhotoMarker {
-
-	private Bitmap bitmap;
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 4296118549589550437L;
 	private String path;
-	private Marker marker;
 	
-	public PhotoMarker(Bitmap bitmap, Marker marker,String path) {
-		super();
-		this.bitmap = bitmap;
-		this.marker = marker;
-		this.path = path;
-	}
-	public Bitmap getBitmap() {
-		return bitmap;
-	}
-	public void setBitmap(Bitmap bitmap) {
-		this.bitmap = bitmap;
-	}
-	public Marker getMarker() {
-		return marker;
-	}
-	public void setMarker(Marker marker) {
-		this.marker = marker;
-	}
 	public String getPath() {
 		return path;
 	}
 	public void setPath(String path) {
 		this.path = path;
 	}
-
+	public PhotoMarker(String title, String snippet, String path) {
+		super(title, snippet);
+		this.path = path;
+	}	
 }

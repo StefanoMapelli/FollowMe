@@ -10,7 +10,6 @@
             android:id="@+id/PhotoSnippet"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="snippet"
             android:layout_gravity="center_horizontal"
             android:layout_weight="0.9"
             android:textSize="14sp" />

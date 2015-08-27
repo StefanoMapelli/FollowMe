@@ -26,6 +26,7 @@ import android.view.View;
 import android.widget.ImageView;
 
 import com.followme.object.Contact;
+import com.followme.object.CustomMarker;
 import com.followme.object.PhotoMarker;
 import com.followme.object.VideoMarker;
 
@@ -256,16 +257,16 @@ public class Utils {
 	}
 	
 	/**
-	 * Method that search in the photo markers array list first occurrence of given marker with that title.
-	 * @param photoMarkers
+	 * Method that search in the markers array list first occurrence of given marker with that title.
+	 * @param markers
 	 * @param title
 	 * @return
 	 */
-	public static PhotoMarker getPhotoMarkerByTitle(ArrayList<PhotoMarker> photoMarkers, String title)
+	public static CustomMarker getMarkerByTitle(ArrayList<CustomMarker> markers, String title)
 	{
-		for(PhotoMarker pm : photoMarkers)
+		for(CustomMarker pm : markers)
 		{
-			if(pm.getMarker().getTitle().compareTo(title) == 0)
+			if(pm.getTitle().compareTo(title) == 0)
 			{
 				return pm;
 			}
@@ -273,24 +274,6 @@ public class Utils {
 		return null;
 	}
 	
-	/**
-	 * Method that search in the video markers array list first occurrence of given marker with that title.
-	 * @param videoMarkers
-	 * @param title
-	 * @return
-	 */
-	public static VideoMarker getVideoMarkerByTitle (ArrayList<VideoMarker> videoMarkers, String title)
-	{
-		for(VideoMarker vm : videoMarkers)
-		{
-			if(vm.getMarker().getTitle().compareTo(title) == 0)
-			{
-				return vm;
-			}
-		}
-		return null;
-	}
-
 	/**
 	 * Copy a file in another.
 	 * @param src

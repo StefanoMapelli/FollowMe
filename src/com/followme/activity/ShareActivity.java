@@ -18,6 +18,7 @@ import com.followme.manager.MapManager;
 import com.followme.manager.ParseManager;
 import com.followme.manager.Utils;
 import com.followme.object.Contact;
+import com.followme.object.CustomMarker;
 import com.followme.object.Media;
 import com.followme.object.PhotoMarker;
 import com.followme.object.Position;
@@ -75,9 +76,8 @@ public class ShareActivity extends ActionBarActivity {
 	private Button videoButton;
 	private String photoFileName;
 	private Uri videoUri;
-	private ArrayList<PhotoMarker> photoMarkers = new ArrayList<PhotoMarker>();
-	private ArrayList<VideoMarker> videoMarkers = new ArrayList<VideoMarker>();
-	private ArrayList<Media> photos = new ArrayList<Media>();
+	private ArrayList<CustomMarker> markers = new ArrayList<CustomMarker>();
+    private ArrayList<Media> photos = new ArrayList<Media>();
 	private ArrayList<Media> videos = new ArrayList<Media>();
 	
 	@Override
@@ -154,8 +154,16 @@ public class ShareActivity extends ActionBarActivity {
         {
             @Override
             protected void onClickConfirmed(View v, Marker marker) 
-            {
-                Toast.makeText(ShareActivity.this, marker.getTitle() + "'s button clicked!", Toast.LENGTH_SHORT).show();
+            {              
+				//intent per l'attività di gallery
+				Intent intent = new Intent(ShareActivity.this,MediaGalleryActivity.class);
+				//passaggio parametri all'intent
+				intent.putExtra("media", markers.toArray());
+				
+				int index = markers.indexOf(Utils.getMarkerByTitle(markers, marker.getTitle()));
+				
+				intent.putExtra("index", index);
+				startActivity(intent);
             }
         };  
         
@@ -163,10 +171,90 @@ public class ShareActivity extends ActionBarActivity {
         {
             @Override
             protected void onClickConfirmed(View v, Marker marker) 
-            {
-                Toast.makeText(ShareActivity.this, marker.getTitle() + "'s button clicked!", Toast.LENGTH_SHORT).show();
+            {             
+				//intent per l'attività di gallery
+				Intent intent = new Intent(ShareActivity.this,MediaGalleryActivity.class);
+				//passaggio parametri all'intent
+				intent.putExtra("media", markers.toArray());
+				
+				int index = markers.indexOf(Utils.getMarkerByTitle(markers, marker.getTitle()));
+				
+				intent.putExtra("index", index);
+				startActivity(intent);
             }
         }; 
+        
+        //info window setting
+        map.setInfoWindowAdapter(new InfoWindowAdapter() {
+            @Override
+            public View getInfoWindow(Marker marker) {
+                return null;
+            }
+
+            @Override
+            public View getInfoContents(Marker marker) {
+            	if(marker.getTitle().startsWith("photo"))
+            	{
+            		// MapWrapperLayout initialization
+			        mapWrapperLayout.init(map, Utils.getPixelsFromDp(ShareActivity.this, 59)); 				
+			        infoWindow = (ViewGroup)getLayoutInflater().inflate(R.layout.photo_info_window_layout, null);
+			        infoSnippet = (TextView)infoWindow.findViewById(R.id.PhotoSnippet);
+			        infoImageView = (ImageView)infoWindow.findViewById(R.id.infoImageView);
+			        photoTouchListener.setView(infoImageView);
+			        
+	                // Setting up the infoWindow with current's marker info
+	                infoSnippet.setText(marker.getSnippet());
+	    
+	                photoTouchListener.setMarker(marker);					        
+			        infoImageView.setOnTouchListener(photoTouchListener);		
+	                			        				        
+			        //image setting
+			        PhotoMarker pm = (PhotoMarker)Utils.getMarkerByTitle(markers, marker.getTitle());
+			        Bitmap bitmap = Utils.getSmallBitmap(pm.getPath());
+			        infoImageView.setImageBitmap(Bitmap.createScaledBitmap(
+			        		bitmap, 
+			        		bitmap.getWidth()/2, 
+			        		bitmap.getHeight()/2, false));
+			        Utils.rotateImageView(infoImageView, pm.getPath());
+	                	                		  
+	                // We must call this to set the current marker and infoWindow references
+	                // to the MapWrapperLayout
+	                mapWrapperLayout.setMarkerWithInfoWindow(marker, infoWindow);
+	                
+	                return infoWindow;
+	            }
+            	else
+            	{
+					// MapWrapperLayout initialization
+			        mapWrapperLayout.init(map, Utils.getPixelsFromDp(ShareActivity.this, 59)); 				
+			        infoWindow = (ViewGroup)getLayoutInflater().inflate(R.layout.photo_info_window_layout, null);
+			        infoSnippet = (TextView)infoWindow.findViewById(R.id.PhotoSnippet);
+			        infoImageView = (ImageView)infoWindow.findViewById(R.id.infoImageView);
+			        videoTouchListener.setView(infoImageView);
+			        
+	                // Setting up the infoWindow with current's marker info
+	                infoSnippet.setText(marker.getSnippet());
+	    
+	                videoTouchListener.setMarker(marker);					        
+			        infoImageView.setOnTouchListener(videoTouchListener);		
+	                			        				        
+			        //image setting
+			        VideoMarker vm = (VideoMarker)Utils.getMarkerByTitle(markers, marker.getTitle());	
+			        
+			        Bitmap thumb = ThumbnailUtils.createVideoThumbnail(
+							vm.getThumbnailPath(),
+			                MediaStore.Images.Thumbnails.MINI_KIND);
+			        
+			        infoImageView.setImageBitmap(thumb);
+	                	                		  
+	                // We must call this to set the current marker and infoWindow references
+	                // to the MapWrapperLayout
+	                mapWrapperLayout.setMarkerWithInfoWindow(marker, infoWindow);
+	                
+	                return infoWindow;
+            	}
+            }
+        });	
 		
 		photoButton.setOnClickListener(new OnClickListener()
 		{
@@ -249,7 +337,7 @@ public class ShareActivity extends ActionBarActivity {
 	            					 photo.getPosition().getLongitude()))
 	            .snippet(photo.getTitle())
 	            .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE))
-	            .title(String.valueOf(markerCounter)));
+	            .title("photo"+String.valueOf(markerCounter)));
 		        map.getUiSettings().setMapToolbarEnabled(false);
 		        
 				File oldfile = new File(photoFileName);
@@ -267,46 +355,8 @@ public class ShareActivity extends ActionBarActivity {
 		        oldfile.delete();
 		        
 		        //add photo marker object
-		        photoMarkers.add(new PhotoMarker(imageBitMap, m, newFile.getAbsolutePath()));  
-	        	markerCounter++;
-		        		        
-		        //info window setting
-		        map.setInfoWindowAdapter(new InfoWindowAdapter() {
-		            @Override
-		            public View getInfoWindow(Marker marker) {
-		                return null;
-		            }
-
-		            @Override
-		            public View getInfoContents(Marker marker) {
-						// MapWrapperLayout initialization
-				        mapWrapperLayout.init(map, Utils.getPixelsFromDp(ShareActivity.this, 59)); 				
-				        infoWindow = (ViewGroup)getLayoutInflater().inflate(R.layout.photo_info_window_layout, null);
-				        infoSnippet = (TextView)infoWindow.findViewById(R.id.PhotoSnippet);
-				        infoImageView = (ImageView)infoWindow.findViewById(R.id.infoImageView);
-				        photoTouchListener.setView(infoImageView);
-				        
-		                // Setting up the infoWindow with current's marker info
-		                infoSnippet.setText(marker.getSnippet());
-		    
-		                photoTouchListener.setMarker(marker);					        
-				        infoImageView.setOnTouchListener(photoTouchListener);		
-		                			        				        
-				        //image setting
-				        PhotoMarker pm = Utils.getPhotoMarkerByTitle(photoMarkers, marker.getTitle());
-				        infoImageView.setImageBitmap(Bitmap.createScaledBitmap(
-				        		pm.getBitmap(), 
-								imageBitMap.getWidth()/2, 
-								imageBitMap.getHeight()/2, false));
-				        Utils.rotateImageView(infoImageView, pm.getPath());
-		                	                		  
-		                // We must call this to set the current marker and infoWindow references
-		                // to the MapWrapperLayout
-		                mapWrapperLayout.setMarkerWithInfoWindow(marker, infoWindow);
-		                
-		                return infoWindow;
-		            }
-		        });		       	 
+		        markers.add(new PhotoMarker(m.getTitle(), m.getSnippet(),newFile.getAbsolutePath()));  
+	        	markerCounter++;		        		        	       	 
 	        }
 	    }
 	    //ACTIVITY VIDEOINSERT
@@ -330,11 +380,8 @@ public class ShareActivity extends ActionBarActivity {
 				ParseManager.insertVideo(this, video);
 				videos.add(video);				
 				
-				//get video preview
+				//get video preview path
 				String path = Utils.getPath(this, videoUri);
-				Bitmap thumb = ThumbnailUtils.createVideoThumbnail(
-						path,
-		                MediaStore.Images.Thumbnails.MINI_KIND);
 				
 				//add marker
 	        	Marker m = map.addMarker(new MarkerOptions()
@@ -342,45 +389,11 @@ public class ShareActivity extends ActionBarActivity {
 	            					 video.getPosition().getLongitude()))
 	            .snippet(video.getTitle())
 	            .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN))
-	            .title(String.valueOf(markerCounter)));
+	            .title("video"+String.valueOf(markerCounter)));
 		        map.getUiSettings().setMapToolbarEnabled(false);
-		        videoMarkers.add(new VideoMarker(videoUri, m, thumb));  
+		        markers.add(new VideoMarker(m.getTitle(), m.getSnippet(), videoUri.toString(), path));  
 	        	markerCounter++;;
-		        map.getUiSettings().setMapToolbarEnabled(false);		        
-		        
-		        //info window setting
-		        map.setInfoWindowAdapter(new InfoWindowAdapter() {
-		            @Override
-		            public View getInfoWindow(Marker marker) {
-		                return null;
-		            }
-
-		            @Override
-		            public View getInfoContents(Marker marker) {				        		                
-						// MapWrapperLayout initialization
-				        mapWrapperLayout.init(map, Utils.getPixelsFromDp(ShareActivity.this, 59)); 				
-				        infoWindow = (ViewGroup)getLayoutInflater().inflate(R.layout.photo_info_window_layout, null);
-				        infoSnippet = (TextView)infoWindow.findViewById(R.id.PhotoSnippet);
-				        infoImageView = (ImageView)infoWindow.findViewById(R.id.infoImageView);
-				        videoTouchListener.setView(infoImageView);
-				        
-		                // Setting up the infoWindow with current's marker info
-		                infoSnippet.setText(marker.getSnippet());
-		    
-		                videoTouchListener.setMarker(marker);					        
-				        infoImageView.setOnTouchListener(videoTouchListener);		
-		                			        				        
-				        //image setting
-				        VideoMarker vm = Utils.getVideoMarkerByTitle(videoMarkers, marker.getTitle());				        				        
-				        infoImageView.setImageBitmap(vm.getThumbnail());
-		                	                		  
-		                // We must call this to set the current marker and infoWindow references
-		                // to the MapWrapperLayout
-		                mapWrapperLayout.setMarkerWithInfoWindow(marker, infoWindow);
-		                
-		                return infoWindow;
-		            }
-		        });
+		        map.getUiSettings().setMapToolbarEnabled(false);		        		        
 	        }
 	    }
 	}

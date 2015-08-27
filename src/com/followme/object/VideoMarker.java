@@ -1,39 +1,29 @@
 package com.followme.object;
 
-import android.graphics.Bitmap;
-import android.net.Uri;
+public class VideoMarker extends CustomMarker{
 
-import com.google.android.gms.maps.model.Marker;
-
-public class VideoMarker {
-
-	private Uri videoUri;
-	private Marker marker;
-	private Bitmap thumbnail;
-
-	public VideoMarker(Uri videoUri, Marker marker, Bitmap thumb) {
-		super();
-		this.videoUri = videoUri;
-		this.marker = marker;
-		this.thumbnail = thumb;
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -8461794177077148085L;
+	private String videoUriString;
+	private String thumbnailPath;
+	
+	public VideoMarker(String title, String snippet, String videoUriString,String thumbnailPath) {
+		super(title, snippet);
+		this.videoUriString = videoUriString;
+		this.thumbnailPath = thumbnailPath;
 	}
-	public Uri getVideoUri() {
-		return videoUri;
+	public String getVideoUriString() {
+		return videoUriString;
 	}
-	public void setVideoUri(Uri videoUri) {
-		this.videoUri = videoUri;
+	public void setVideoUriString(String videoUriString) {
+		this.videoUriString = videoUriString;
 	}
-	public Marker getMarker() {
-		return marker;
+	public String getThumbnailPath() {
+		return thumbnailPath;
 	}
-	public void setMarker(Marker marker) {
-		this.marker = marker;
+	public void setThumbnailPath(String thumbnailPath) {
+		this.thumbnailPath = thumbnailPath;
 	}
-	public Bitmap getThumbnail() {
-		return thumbnail;
-	}
-	public void setThumbnail(Bitmap thumbnail) {
-		this.thumbnail = thumbnail;
-	}
-
 }
