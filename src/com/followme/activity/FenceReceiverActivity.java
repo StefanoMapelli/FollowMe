@@ -9,11 +9,13 @@ import com.followme.object.Position;
 import com.followme.object.Request;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.Circle;
 import com.google.android.gms.maps.model.LatLng;
 import com.parse.ParseObject;
 
+import android.support.v4.app.FragmentManager;
 import android.support.v7.app.ActionBarActivity;
 import android.graphics.Color;
 import android.location.Location;
@@ -21,6 +23,7 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -39,6 +42,8 @@ public class FenceReceiverActivity extends ActionBarActivity {
 	private Position lastPosition = null;
 	private GoogleMap map;
 	private Circle fenceCircle;
+	private CheckFenceStatus checkFenceThread;
+	private Handler handler;
 	
 	
 	@Override
@@ -46,6 +51,7 @@ public class FenceReceiverActivity extends ActionBarActivity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.fence_receiver_layout);
 		
+		handler=new Handler();
 		fenceRequest=(Request) getIntent().getSerializableExtra("acceptedRequest");
 		fenceParseObject=ParseManager.getFenceOfRequest(this, fenceRequest);
 		fence=new Fence(
@@ -53,10 +59,13 @@ public class FenceReceiverActivity extends ActionBarActivity {
 				null,
 				new LatLng(fenceParseObject.getParseGeoPoint("posizione").getLatitude(),
 						fenceParseObject.getParseGeoPoint("posizione").getLongitude()),
-				fenceParseObject.getString("objectId"),
+				fenceParseObject.getObjectId(),
 				true);
 		radius=fence.getRadius();
 		center=fence.getCenter();
+		
+		FragmentManager fm = getSupportFragmentManager();
+		map = ((SupportMapFragment) fm.findFragmentById(R.id.mapFenceReceiver)).getMap();
 		
 		if (Utils.displayGpsStatus(this)) 
 		{
@@ -86,7 +95,8 @@ public class FenceReceiverActivity extends ActionBarActivity {
 		
 		Toast.makeText(this, "Hold tap to create your fence on the map",Toast.LENGTH_LONG).show();
 		
-		
+		checkFenceThread = new CheckFenceStatus();
+		checkFenceThread.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 		
 		
 	}
@@ -138,7 +148,7 @@ public class FenceReceiverActivity extends ActionBarActivity {
 	 }
 	
 	
-	private class checkFenceStatus extends AsyncTask<Void, Integer, String>
+	private class CheckFenceStatus extends AsyncTask<Void, Integer, String>
     {
 
 		@Override
@@ -147,7 +157,7 @@ public class FenceReceiverActivity extends ActionBarActivity {
 			
 			while(true)
 			{	
-				float[] results=null;
+				float[] results=new float[1];
 				myLocation=MapManager.getLastKnownLocation(FenceReceiverActivity.this, locationManager);
 				Location.distanceBetween(myLocation.getLatitude(), myLocation.getLongitude(), center.latitude, center.longitude, results);
 				
@@ -155,14 +165,29 @@ public class FenceReceiverActivity extends ActionBarActivity {
 				{
 					ParseManager.updateFenceStatus(FenceReceiverActivity.this, fenceParseObject, true);
 					fence.setInTheFence(false);
-					fenceCircle.setFillColor(Color.RED);
-					Toast.makeText(FenceReceiverActivity.this, "Where are you going? Pay attention to the fence!!!",Toast.LENGTH_LONG).show();
-				}
+					handler.post(new Runnable() {
+						@Override
+						public void run() 
+						{
+							fenceCircle.setFillColor(Color.RED);
+							Toast.makeText(FenceReceiverActivity.this, "Where are you going? Pay attention to the fence!!!",Toast.LENGTH_LONG).show();
+						
+						}
+					});
+					
+					}
 				else if(results[0]<radius && !fence.isInTheFence())
 				{
 					ParseManager.updateFenceStatus(FenceReceiverActivity.this, fenceParseObject, false);
-					fence.setInTheFence(true);
-					fenceCircle.setFillColor(Color.BLUE);
+					handler.post(new Runnable() {
+						@Override
+						public void run() 
+						{
+							fence.setInTheFence(true);
+							fenceCircle.setFillColor(Color.BLUE);
+						}
+					});
+					
 				}
 				
 				try {

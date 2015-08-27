@@ -636,7 +636,8 @@ public class ParseManager {
 		} catch (ParseException e) {
 			e.printStackTrace();
 		}	
-		return fence;
+		
+		return getFencebyId(context, fence.getObjectId());
 		
 	}
 
