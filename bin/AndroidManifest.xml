@@ -114,6 +114,10 @@
             android:label="@string/title_activity_media_gallery"
             android:theme="@style/FullscreenTheme" >
         </activity>
+        <activity
+            android:name=".FenceReceiverActivity"
+            android:label="@string/title_activity_fence_receiver" >
+        </activity>
     </application>
 
 </manifest>

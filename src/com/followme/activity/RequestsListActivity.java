@@ -58,6 +58,7 @@ public class RequestsListActivity extends ActionBarActivity {
 		//quando viene accettata una richiesta viene mostrata la nuova attività a seconda del 
 		//tipo di richiesta
 		
+		Intent intent;
 		View parentRow = (View) v.getParent();
 		int position = listViewRequests.getPositionForView(parentRow);
 		Request itemToAccept = requestsItems.get(position);
@@ -75,7 +76,7 @@ public class RequestsListActivity extends ActionBarActivity {
 	    case "condivisione":
 	    //apro sharingReceiverActivity
 	    	Log.i("typeOfRequest","condivisione");
-	    	Intent intent = new Intent(RequestsListActivity.this,SharingReceiverActivity.class);
+	    	intent = new Intent(RequestsListActivity.this,SharingReceiverActivity.class);
 			intent.putExtra("acceptedRequest", itemToAccept);
 			startActivity(intent);
 	    	break;
@@ -88,6 +89,9 @@ public class RequestsListActivity extends ActionBarActivity {
 	    case "recinto":
 		//apro activity recinto
 	    	Log.i("typeOfRequest","recinto");
+	    	intent = new Intent(RequestsListActivity.this,FenceReceiverActivity.class);
+			intent.putExtra("acceptedRequest", itemToAccept);
+			startActivity(intent);
 	    	break;
 		  
 	    case "destinazione":

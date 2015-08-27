@@ -75,7 +75,7 @@ public class FenceSettingActivity extends ActionBarActivity {
 			locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
 			locationManager.requestLocationUpdates(LocationManager  
 		    .GPS_PROVIDER, 5000, 10,locationListener); 
-			myLocation=locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+			myLocation=MapManager.getLastKnownLocation(this, locationManager);
 			if(myLocation!=null)
 			{
 				//posiziono la camera nel luogo dove mi trovo sulla mappa
