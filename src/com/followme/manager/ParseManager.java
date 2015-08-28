@@ -159,6 +159,28 @@ public class ParseManager {
 	}
 	
 	/**
+	 * Method that insert a new destination in the Parse db.
+	 * @param context
+	 * @return : the objectId of the inserted fence.
+	 */
+	public static String insertDestination(Context context, int radius, LatLng position)
+	{
+		Parse.initialize(context,"x9hwNnRfTCCYGXPVJNKaR7zYTIMOdKeLkerRQJT2" ,"hi7GT6rUlp9uTfw6XQzdEjnTqwgPnRPoikPehgVf");
+		ParseObject newFence = new ParseObject("Destinazione");
+		try {
+			ParseGeoPoint center = new ParseGeoPoint(position.latitude, position.longitude);
+			newFence.put("posizione", center);
+			newFence.put("raggio", radius);
+			newFence.put("arrivato", false);
+			newFence.save();
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+		
+		return newFence.getObjectId();
+	}
+	
+	/**
 	 * Insert a position in the parse db using parameter data.
 	 * @param context
 	 * @param pId : path id .
@@ -724,6 +746,41 @@ public class ParseManager {
 		Parse.initialize(context,"x9hwNnRfTCCYGXPVJNKaR7zYTIMOdKeLkerRQJT2" ,"hi7GT6rUlp9uTfw6XQzdEjnTqwgPnRPoikPehgVf");
 		fenceParseObject.put("uscito", isExit);
 		fenceParseObject.saveInBackground();
+	}
+
+	
+	/**
+	 * This method return true if the user arrives in the destination's zone
+	 * @param destinationControlActivity
+	 * @param idDestination
+	 * @return
+	 */
+	public static boolean isInTheDestination(
+			Context context,
+			String idDestination) {
+		
+		List<ParseObject> objects = null;
+		Parse.initialize(context,"x9hwNnRfTCCYGXPVJNKaR7zYTIMOdKeLkerRQJT2" ,"hi7GT6rUlp9uTfw6XQzdEjnTqwgPnRPoikPehgVf");
+	
+		ParseQuery<ParseObject> query = ParseQuery.getQuery("Destinazione");
+		query.whereEqualTo("objectId", idDestination);
+		query.whereEqualTo("arrivato", true);
+		
+		try {
+			objects=query.find();
+			if(objects.isEmpty())
+			{
+				return false;
+			}
+			else
+			{
+				return true;
+			}
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+		
+		return false;
 	}
 	
 }
