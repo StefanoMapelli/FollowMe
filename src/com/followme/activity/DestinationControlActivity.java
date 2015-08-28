@@ -3,10 +3,11 @@ package com.followme.activity;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.followme.adapter.DestinationCustomAdapter;
 import com.followme.adapter.FenceCustomAdapter;
-
 import com.followme.manager.ParseManager;
 import com.followme.object.Contact;
+import com.followme.object.Destination;
 import com.followme.object.Fence;
 import com.google.android.gms.maps.model.LatLng;
 
@@ -18,57 +19,56 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ListView;
 
-public class FenceControlActivity extends ActionBarActivity {
+public class DestinationControlActivity extends ActionBarActivity {
 	
-	private ListView listViewFence;
-	private List<Fence> fenceList=new ArrayList();
-	private FenceCustomAdapter adapter;
-	private CheckFences checkFencesThread;
+	private ListView listViewDestination;
+	private List<Destination> destinationList=new ArrayList();
+	private DestinationCustomAdapter adapter;
+	private CheckDestinations checkDestinationsThread;
 	private Handler handler;
-	
-	
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.fence_control_layout);
+		setContentView(R.layout.destination_control_layout);
 		
-		listViewFence = (ListView) this.findViewById(R.id.fenceControlList);
+		listViewDestination = (ListView) this.findViewById(R.id.destinationControlList);
 		handler=new Handler();
 		
 		//recupero i dati dall'intent
 		Object[] objects = (Object[]) getIntent().getSerializableExtra("contactsList");
 		int radius  = getIntent().getIntExtra("radius", 0);
-		String idFence=getIntent().getStringExtra("fenceId");
-		double fenceLatitude=getIntent().getDoubleExtra("fenceLatitude",0);
-		double fenceLongitude=getIntent().getDoubleExtra("fenceLongitude",0);
-		LatLng position=new LatLng(fenceLatitude,fenceLongitude);
+		String idDestination=getIntent().getStringExtra("destinationId");
+		double destinationLatitude=getIntent().getDoubleExtra("destinationLatitude",0);
+		double destinationLongitude=getIntent().getDoubleExtra("destinationLongitude",0);
+		LatLng position=new LatLng(destinationLongitude,destinationLongitude);
 		List<Contact> contactList = new ArrayList<Contact>();
-		
 		
 		//aggiungo i dati alla lista nell view
 		for(int i=0; i < objects.length; i++)
 		{
 			contactList.add((Contact) objects[i]);
-			
 		}
-		
+
 		for(int i=0; i < contactList.size(); i++)
 		{
-			fenceList.add(new Fence(radius,contactList.get(i),position,idFence, true));			
+			destinationList.add(new Destination(radius,contactList.get(i),position,idDestination, false));			
 		}
-		
+
 		//set the adapter
-		adapter = new FenceCustomAdapter(this, fenceList);
-		listViewFence.setAdapter(adapter);
-		checkFencesThread=new CheckFences();
-		checkFencesThread.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+		adapter = new DestinationCustomAdapter(this, destinationList);
+		listViewDestination.setAdapter(adapter);
+		checkDestinationsThread=new CheckDestinations();
+		checkDestinationsThread.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+
+
 		
 	}
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.fence_control, menu);
+		getMenuInflater().inflate(R.menu.destination_control, menu);
 		return true;
 	}
 
@@ -84,10 +84,7 @@ public class FenceControlActivity extends ActionBarActivity {
 		return super.onOptionsItemSelected(item);
 	}
 	
-	
-	
-	
-	private class CheckFences extends AsyncTask<Void, Integer, String>
+	private class CheckDestinations extends AsyncTask<Void, Integer, String>
     {
 		
 		@Override
@@ -95,33 +92,32 @@ public class FenceControlActivity extends ActionBarActivity {
 		{			
 			while(true)
 			{	
-				Fence fenceObject;
-				
-				for(int i=0; i<fenceList.size();i++)
+				Destination destinationObject;
+
+				for(int i=0; i<destinationList.size();i++)
 				{
-					fenceObject = fenceList.get(i);
-					if(!ParseManager.isInTheFence(FenceControlActivity.this, fenceObject.getIdFence()))
+					destinationObject = destinationList.get(i);
+					if(ParseManager.isInTheDestination(DestinationControlActivity.this, destinationObject.getIdDestination()))
 					{
-						fenceObject.setInTheFence(false);
-						adapter = new FenceCustomAdapter(FenceControlActivity.this, fenceList);
-						
+						destinationObject.setInTheDestination(false);
+						adapter = new DestinationCustomAdapter(DestinationControlActivity.this, destinationList);
+
 						handler.post(new Runnable() {
 							@Override
 							public void run() 
 							{
-								listViewFence.setAdapter(adapter);
+								listViewDestination.setAdapter(adapter);
 							}
 						});
-						
 					}
 				}
-				
+
 				try {
 					Thread.sleep(10000);
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}
-				
+
 			}
 		}
     }

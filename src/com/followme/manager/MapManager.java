@@ -18,13 +18,23 @@ import com.google.android.gms.maps.model.PolylineOptions;
 public class MapManager {
 	
 	
-	public static Circle drawCircle(LatLng center, int radius, GoogleMap map)
+	public static Circle drawFenceCircle(LatLng center, int radius, GoogleMap map)
 	{
 	    return map.addCircle(new CircleOptions()
         .center(center)
         .radius(radius)
         .strokeColor(Color.RED)
         .fillColor(Color.BLUE));
+
+	}
+	
+	public static Circle drawDestinationCircle(LatLng center, int radius, GoogleMap map)
+	{
+	    return map.addCircle(new CircleOptions()
+        .center(center)
+        .radius(radius)
+        .strokeColor(Color.RED)
+        .fillColor(Color.GREEN));
 
 	}
 	

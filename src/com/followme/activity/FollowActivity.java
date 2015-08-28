@@ -21,7 +21,6 @@ public class FollowActivity extends ActionBarActivity{
 	{
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.follow_activity_layout);
-
 	}
 
 	//onClickHandler quando viene selezionata la modalità fence
@@ -39,6 +38,7 @@ public class FollowActivity extends ActionBarActivity{
 	{
 		Intent intent = new Intent(FollowActivity.this,DestinationSettingActivity.class);
 		intent.putExtra("selectedContacts", getIntent().getSerializableExtra("selectedContacts"));
+		intent.putExtra("userId", getIntent().getStringExtra("userId"));
 		startActivity(intent);
 	}
 

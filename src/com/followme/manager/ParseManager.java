@@ -790,5 +790,72 @@ public class ParseManager {
 		
 		return false;
 	}
+
+	
+	/**
+	 * This method returns a destination parse object of the request
+	 * @param context
+	 * @param request
+	 * @return
+	 */
+	public static ParseObject getDestinationOfRequest(
+			Context context,
+			Request request) 
+	{
+		
+		ParseObject destination=null;
+		List<ParseObject> objects = null;
+		Parse.initialize(context,"x9hwNnRfTCCYGXPVJNKaR7zYTIMOdKeLkerRQJT2" ,"hi7GT6rUlp9uTfw6XQzdEjnTqwgPnRPoikPehgVf");
+		
+		
+		ParseQuery<ParseObject> query = ParseQuery.getQuery("Richiesta");
+		
+		query.whereEqualTo("objectId", request.getId());
+		try {
+			objects=query.find();
+			Iterator<ParseObject> i = objects.iterator();
+			ParseObject po;			
+			if(i.hasNext())
+			{
+				po = i.next();
+				destination=po.getParseObject("idDestinazione");	
+			}
+			
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}	
+		
+		return getDestinationbyId(context, destination.getObjectId());
+	}
+
+	
+	
+	private static ParseObject getDestinationbyId(Context context,
+			String id) {
+		
+		List<ParseObject> objects = null;
+		ParseObject destPo=null;
+		ParseQuery<ParseObject> query = ParseQuery.getQuery("Destinazione");
+		query.whereEqualTo("objectId", id);		
+		try {
+			objects=query.find();
+			destPo=objects.get(0);
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+		
+		return destPo;
+		
+	}
+
+	public static void updateDestinationStatus(
+			Context context,
+			ParseObject destinationParseObject, boolean isArrived) {
+		
+		Parse.initialize(context,"x9hwNnRfTCCYGXPVJNKaR7zYTIMOdKeLkerRQJT2" ,"hi7GT6rUlp9uTfw6XQzdEjnTqwgPnRPoikPehgVf");
+		destinationParseObject.put("arrivato", isArrived);
+		destinationParseObject.saveInBackground();
+		
+	}
 	
 }

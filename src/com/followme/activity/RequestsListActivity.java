@@ -97,6 +97,9 @@ public class RequestsListActivity extends ActionBarActivity {
 	    case "destinazione":
 	    //apro activity destinazione
 	    	Log.i("typeOfRequest","destinazione");
+	    	intent = new Intent(RequestsListActivity.this,DestinationReceiverActivity.class);
+			intent.putExtra("acceptedRequest", itemToAccept);
+			startActivity(intent);
 	    	break;
 		}
 	    

@@ -1,11 +1,9 @@
 package com.followme.activity;
 
-
 import com.followme.manager.MapManager;
 import com.followme.manager.ParseManager;
 import com.followme.manager.Utils;
-import com.followme.object.Fence;
-import com.followme.object.Position;
+import com.followme.object.Destination;
 import com.followme.object.Request;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -29,43 +27,41 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
-public class FenceReceiverActivity extends ActionBarActivity {
+public class DestinationReceiverActivity extends ActionBarActivity {
 	
-	private Request fenceRequest;
-	private ParseObject fenceParseObject;
-	private Fence fence;
+	private Request destinationRequest;
+	private ParseObject destinationParseObject;
+	private Destination destination;
 	private int radius;
 	private LatLng center;
 	private LocationManager locationManager=null;  
 	private LocationListener locationListener=null;  
 	private Location myLocation = null;
-	private Position lastPosition = null;
 	private GoogleMap map;
-	private Circle fenceCircle;
-	private CheckFenceStatus checkFenceThread;
+	private Circle destinationCircle;
+	private CheckDestinationStatus checkDestinationThread;
 	private Handler handler;
-	
-	
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.fence_receiver_layout);
+		setContentView(R.layout.destination_receiver_layout);
 		
 		handler=new Handler();
-		fenceRequest=(Request) getIntent().getSerializableExtra("acceptedRequest");
-		fenceParseObject=ParseManager.getFenceOfRequest(this, fenceRequest);
-		fence=new Fence(
-				(int) fenceParseObject.getDouble("raggio"),
+		destinationRequest=(Request) getIntent().getSerializableExtra("acceptedRequest");
+		destinationParseObject=ParseManager.getDestinationOfRequest(this, destinationRequest);
+		destination=new Destination(
+				(int) destinationParseObject.getDouble("raggio"),
 				null,
-				new LatLng(fenceParseObject.getParseGeoPoint("posizione").getLatitude(),
-						fenceParseObject.getParseGeoPoint("posizione").getLongitude()),
-				fenceParseObject.getObjectId(),
+				new LatLng(destinationParseObject.getParseGeoPoint("posizione").getLatitude(),
+						destinationParseObject.getParseGeoPoint("posizione").getLongitude()),
+				destinationParseObject.getObjectId(),
 				true);
-		radius=fence.getRadius();
-		center=fence.getCenter();
+		radius=destination.getRadius();
+		center=destination.getCenter();
 		
 		FragmentManager fm = getSupportFragmentManager();
-		map = ((SupportMapFragment) fm.findFragmentById(R.id.mapFenceReceiver)).getMap();
+		map = ((SupportMapFragment) fm.findFragmentById(R.id.mapDestinationReceiver)).getMap();
 		
 		if (Utils.displayGpsStatus(this)) 
 		{
@@ -75,7 +71,7 @@ public class FenceReceiverActivity extends ActionBarActivity {
 		    .GPS_PROVIDER, 5000, 10,locationListener); 
 			map.setMyLocationEnabled(true);
 			
-			//posiziono la camera nel luogo dove mi trovo sulla mappa
+			//posiziono la camera nel luogo dove si trova la destinazione sulla mappa
 			CameraPosition cameraPosition = new CameraPosition.Builder()
 			.target(center)
 			.zoom(17)
@@ -85,8 +81,8 @@ public class FenceReceiverActivity extends ActionBarActivity {
 			map.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
 
 
-			//disegno il recinto sulla mappa
-			fenceCircle=MapManager.drawFenceCircle(center, radius, map);
+			//disegno la destinazione sulla mappa
+			destinationCircle=MapManager.drawDestinationCircle(center, radius, map);
 		} 
 		else
 		{
@@ -95,16 +91,15 @@ public class FenceReceiverActivity extends ActionBarActivity {
 		
 		Toast.makeText(this, "Hold tap to create your fence on the map",Toast.LENGTH_LONG).show();
 		
-		checkFenceThread = new CheckFenceStatus();
-		checkFenceThread.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-		
+		checkDestinationThread = new CheckDestinationStatus();
+		checkDestinationThread.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 		
 	}
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.fence_receiver, menu);
+		getMenuInflater().inflate(R.menu.destination_receiver, menu);
 		return true;
 	}
 
@@ -120,35 +115,29 @@ public class FenceReceiverActivity extends ActionBarActivity {
 		return super.onOptionsItemSelected(item);
 	}
 	
-	
-	
 	private class MyLocationListener implements LocationListener 
 	 {  
 		 @Override  
 	     public void onLocationChanged(Location loc) 	     
 		 {  
-			 
 	     }
 	          
 	     @Override  
-	     public void onProviderDisabled(String provider) {  
-	                      
+	     public void onProviderDisabled(String provider) {                
 	     }  
 	  
 	     @Override  
-	     public void onProviderEnabled(String provider) {  
-	                    
+	     public void onProviderEnabled(String provider) {  	                    
 	     }  
 	  
 	     @Override  
 	     public void onStatusChanged(String provider,   
-	     		int status, Bundle extras) {  
-	                     
+	     		int status, Bundle extras) {  	                     
 	     }  
 	 }
 	
 	
-	private class CheckFenceStatus extends AsyncTask<Void, Integer, String>
+	private class CheckDestinationStatus extends AsyncTask<Void, Integer, String>
     {
 
 		@Override
@@ -158,36 +147,34 @@ public class FenceReceiverActivity extends ActionBarActivity {
 			while(true)
 			{	
 				float[] results=new float[1];
-				myLocation=MapManager.getLastKnownLocation(FenceReceiverActivity.this, locationManager);
+				myLocation=MapManager.getLastKnownLocation(DestinationReceiverActivity.this, locationManager);
 				Location.distanceBetween(myLocation.getLatitude(), myLocation.getLongitude(), center.latitude, center.longitude, results);
 				
-				if(results[0]>radius+1 && fence.isInTheFence())
+				if(results[0]<radius+1 && !destination.isInTheDestination())
 				{
-					ParseManager.updateFenceStatus(FenceReceiverActivity.this, fenceParseObject, true);
-					fence.setInTheFence(false);
+					ParseManager.updateDestinationStatus(DestinationReceiverActivity.this, destinationParseObject, true);
+					destination.setInTheDestination(true);
 					handler.post(new Runnable() {
 						@Override
 						public void run() 
 						{
-							fenceCircle.setFillColor(Color.RED);
-							Toast.makeText(FenceReceiverActivity.this, "Where are you going? Pay attention to the fence!!!",Toast.LENGTH_LONG).show();
+							destinationCircle.setFillColor(Color.RED);
+							Toast.makeText(DestinationReceiverActivity.this, "You are arrived!!!",Toast.LENGTH_LONG).show();
 						
 						}
 					});
-					
-					}
-				else if(results[0]<radius && !fence.isInTheFence())
+				}
+				else if(results[0]>radius+1 && destination.isInTheDestination())
 				{
-					ParseManager.updateFenceStatus(FenceReceiverActivity.this, fenceParseObject, false);
+					ParseManager.updateDestinationStatus(DestinationReceiverActivity.this, destinationParseObject, false);
 					handler.post(new Runnable() {
 						@Override
 						public void run() 
 						{
-							fence.setInTheFence(true);
-							fenceCircle.setFillColor(Color.BLUE);
+							destination.setInTheDestination(false);
+							destinationCircle.setFillColor(Color.GREEN);
 						}
 					});
-					
 				}
 				
 				try {

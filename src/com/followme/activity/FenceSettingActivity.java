@@ -4,14 +4,12 @@ package com.followme.activity;
 import com.followme.manager.MapManager;
 import com.followme.manager.ParseManager;
 import com.followme.object.Contact;
-import com.followme.object.Position;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.Circle;
 import com.google.android.gms.maps.model.LatLng;
-import com.parse.ParseObject;
 
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.ActionBarActivity;
@@ -27,10 +25,7 @@ import android.provider.Settings;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
-import android.view.View.OnTouchListener;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -40,7 +35,6 @@ public class FenceSettingActivity extends ActionBarActivity {
 	private LocationManager locationManager=null;  
 	private LocationListener locationListener=null;  
 	private Location myLocation = null;
-	private Position lastPosition = null;
 	private LatLng fencePosition;
 	private Circle fenceCircle=null;
 	private int radius=60;
@@ -102,7 +96,7 @@ public class FenceSettingActivity extends ActionBarActivity {
 		        		fenceCircle.remove();
 		        	}
 		        	fencePosition=point;
-		        	fenceCircle=MapManager.drawCircle(fencePosition, radius, map);
+		        	fenceCircle=MapManager.drawFenceCircle(fencePosition, radius, map);
 		        	radiusLabel.setText(radius+"");
 		          
 		        }

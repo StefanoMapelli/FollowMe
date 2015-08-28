@@ -47,6 +47,7 @@
         <activity
             android:name=".MainActivity"
             android:label="@string/app_name"
+            android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.Light" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -56,76 +57,103 @@
         </activity>
         <activity
             android:name=".FirstUseActivity"
-            android:label="@string/app_name" >
+            android:label="@string/app_name"
+            android:screenOrientation="portrait" >
         </activity>
         <activity
             android:name=".FirstUseCodeControlActivity"
-            android:label="@string/app_name" >
+            android:label="@string/app_name"
+            android:screenOrientation="portrait" >
         </activity>
         <activity
             android:name=".ChooseContactsForSharingActivity"
             android:label="@string/app_name"
+            android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.Light" >
         </activity>
         <activity
             android:name=".FollowActivity"
             android:label="@string/app_name"
+            android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.Light" >
         </activity>
         <activity
             android:name=".ShareActivity"
-            android:label="@string/title_activity_share" >
+            android:label="@string/title_activity_share"
+            android:screenOrientation="portrait" >
         </activity>
         <activity
             android:name=".RequestsListActivity"
-            android:label="@string/title_activity_requests_list" >
+            android:label="@string/title_activity_requests_list"
+            android:screenOrientation="portrait" >
         </activity>
         <activity
             android:name=".ShowDetailsActivity"
-            android:label="@string/title_activity_show_details" >
+            android:label="@string/title_activity_show_details"
+            android:screenOrientation="portrait" >
         </activity>
         <activity
             android:name=".SharingReceiverActivity"
-            android:label="@string/title_activity_sharing_receiver" >
+            android:label="@string/title_activity_sharing_receiver"
+            android:screenOrientation="portrait" >
         </activity>
         <activity
             android:name=".PhotoInsertActivity"
-            android:label="@string/title_activity_photo_insert" >
+            android:label="@string/title_activity_photo_insert"
+            android:screenOrientation="portrait" >
         </activity>
         <activity
             android:name=".ChooseContactsForFollowActivity"
-            android:label="@string/title_activity_choose_contacts_for_follow" >
+            android:label="@string/title_activity_choose_contacts_for_follow"
+            android:screenOrientation="portrait" >
         </activity>
         <activity
             android:name=".FenceSettingActivity"
-            android:label="@string/title_activity_fence_setting" >
+            android:label="@string/title_activity_fence_setting"
+            android:screenOrientation="portrait" >
         </activity>
         <activity
             android:name=".DestinationSettingActivity"
-            android:label="@string/title_activity_destination_setting" >
+            android:label="@string/title_activity_destination_setting"
+            android:screenOrientation="portrait" >
         </activity>
         <activity
             android:name=".VideoInsertActivity"
-            android:label="@string/title_activity_video_insert" >
+            android:label="@string/title_activity_video_insert"
+            android:screenOrientation="portrait" >
         </activity>
         <activity
             android:name=".MediaGalleryActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/title_activity_media_gallery"
-            android:theme="@android:style/Theme.NoTitleBar">
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.NoTitleBar" >
         </activity>
         <activity
             android:name=".FenceReceiverActivity"
-            android:label="@string/title_activity_fence_receiver" >
+            android:label="@string/title_activity_fence_receiver"
+            android:screenOrientation="portrait" >
         </activity>
         <activity
             android:name=".FenceControlActivity"
-            android:label="@string/title_activity_fence_control" >
+            android:label="@string/title_activity_fence_control"
+            android:screenOrientation="portrait" >
         </activity>
         <activity
             android:name=".FullScreenVideoActivity"
             android:label="@string/title_activity_full_screen_video"
+            android:screenOrientation="portrait"
             android:theme="@android:style/Theme.NoTitleBar" >
+        </activity>
+        <activity
+            android:name=".DestinationControlActivity"
+            android:label="@string/title_activity_destination_control"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name=".DestinationReceiverActivity"
+            android:label="@string/title_activity_destination_receiver" 
+            android:screenOrientation="portrait">
         </activity>
     </application>
 

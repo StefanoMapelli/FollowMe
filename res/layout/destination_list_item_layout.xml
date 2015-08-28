@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:weightSum="1" >
+    
+    <TextView
+        android:id="@+id/userToDestination"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="0.25"
+        android:clickable="true" />
+    
+    <TextView
+        android:id="@+id/radiusOfTheDestination"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="0.25"
+        android:clickable="true"/>
+    
+    <TextView
+        android:id="@+id/centerOfTheDestination"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="0.25"
+        android:clickable="true" 
+        />
+    
+    <TextView
+        android:id="@+id/statusOfTheDestination"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="0.25"
+        android:clickable="true"
+        android:text="No" />
+    
+</LinearLayout>

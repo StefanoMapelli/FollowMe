@@ -26,5 +26,7 @@
     <string name="title_activity_fence_receiver">FenceReceiverActivity</string>
     <string name="title_activity_full_screen_image">FullScreenImageActivity</string>
     <string name="title_activity_full_screen_video">FullScreenVideoActivity</string>
+    <string name="title_activity_destination_control">DestinationControlActivity</string>
+    <string name="title_activity_destination_receiver">DestinationReceiverActivity</string>
 
 </resources>
