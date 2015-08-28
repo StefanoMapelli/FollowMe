@@ -389,9 +389,6 @@ public class ShareActivity extends ActionBarActivity {
 				ParseManager.insertVideo(this, video);
 				videos.add(video);				
 				
-				//get video preview path
-				String path = Utils.getPath(this, videoUri);
-				
 				//add marker
 	        	Marker m = map.addMarker(new MarkerOptions()
 	            .position(new LatLng(video.getPosition().getLatitude(),
@@ -401,12 +398,12 @@ public class ShareActivity extends ActionBarActivity {
 	            .title("video"+String.valueOf(markerCounter)));
 		        map.getUiSettings().setMapToolbarEnabled(false);
 		        
-		        File oldfile = new File(path);
+		        File oldfile = new File(videoFileName);
 		        File newFile=null;
 		        //copy old photo file in cache
 		        try {
 		        	newFile= File.createTempFile("prefix",
-		        			FilenameUtils.getExtension(path), getCacheDir());
+		        			FilenameUtils.getExtension(videoFileName), getCacheDir());
 		        	Utils.copyFile(oldfile, newFile);
 				} catch (IOException e) {
 					e.printStackTrace();
