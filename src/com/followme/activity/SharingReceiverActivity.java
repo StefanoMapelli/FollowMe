@@ -17,6 +17,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v7.app.ActionBarActivity;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -27,11 +28,13 @@ public class SharingReceiverActivity extends ActionBarActivity {
 	private int counterPosition;
 	private GoogleMap map;
 	private List<Position> positionList;
+	private Handler handler;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.sharing_receiver_layout);
+		handler=new Handler();
 		FragmentManager fm = getSupportFragmentManager();
 		map = ((SupportMapFragment) fm.findFragmentById(R.id.mapSharingReceiver)).getMap();
 		
@@ -54,8 +57,6 @@ public class SharingReceiverActivity extends ActionBarActivity {
 		
 	}
 	
-	
-	
 	private class FindNewPositions extends AsyncTask<Void, Integer, String>
     {
 
@@ -66,7 +67,26 @@ public class SharingReceiverActivity extends ActionBarActivity {
 			{	
 				//ricerco le nuove posizioni
 				positionList=ParseManager.getNewSharedPosition(SharingReceiverActivity.this, path, counterPosition);				
-				publishProgress(0);
+				handler.post(new Runnable() {
+					@Override
+					public void run() 
+					{
+						if(positionList.size()>0)
+						{
+							CameraPosition cameraPosition = new CameraPosition.Builder()
+							.target(new LatLng(positionList.get(positionList.size()-1).getLatitude(),
+												positionList.get(positionList.size()-1).getLongitude()))
+							.zoom(18)
+							.bearing(0)           
+							.tilt(0)             
+							.build();
+							map.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+							
+							MapManager.drawPolygonPath(positionList, map);
+							counterPosition=positionList.get(positionList.size()-1).getCounter();
+						}
+					}
+				});
 				
 				try {
 					Thread.sleep(5000);
@@ -75,25 +95,6 @@ public class SharingReceiverActivity extends ActionBarActivity {
 				}
 			}
 		}
-		
-		@Override
-		protected void onProgressUpdate(Integer... progress) 
-		{
-			if(positionList.size()>0)
-			{
-				CameraPosition cameraPosition = new CameraPosition.Builder()
-				.target(new LatLng(positionList.get(positionList.size()-1).getLatitude(),
-									positionList.get(positionList.size()-1).getLongitude()))
-				.zoom(18)
-				.bearing(0)           
-				.tilt(0)             
-				.build();
-				map.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
-				
-				MapManager.drawPolygonPath(positionList, map);
-				counterPosition=positionList.get(positionList.size()-1).getCounter();
-			}
-	    }
     }
 	
 	

@@ -573,6 +573,7 @@ public class ParseManager {
 			posItem=new Position(po.getParseGeoPoint("posizione").getLatitude(),
 					po.getParseGeoPoint("posizione").getLongitude(),
 					po.getInt("contatore"));
+			posItem.setId(po.getObjectId());
 			newPositions.add(posItem);
 		}
 		

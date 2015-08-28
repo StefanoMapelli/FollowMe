@@ -75,6 +75,7 @@ public class ShareActivity extends ActionBarActivity {
 	private Button photoButton;
 	private Button videoButton;
 	private String photoFileName;
+	private String videoFileName;
 	private Uri videoUri;
 	private ArrayList<CustomMarker> markers = new ArrayList<CustomMarker>();
     private ArrayList<Media> photos = new ArrayList<Media>();
@@ -265,7 +266,7 @@ public class ShareActivity extends ActionBarActivity {
 				{
 					Date dt = new Date();
 					File tempFile = new File(Environment.getExternalStorageDirectory(),
-		                      dt.toString()+".jpg");
+		                      dt.toString());
 					photoFileName = tempFile.getAbsolutePath();
 					Uri uri = Uri.fromFile(tempFile);
 					
@@ -284,10 +285,17 @@ public class ShareActivity extends ActionBarActivity {
 			{
 				if(location != null)
 				{
+					Date dt = new Date();
+					File tempFile = new File(Environment.getExternalStorageDirectory(),
+		                      dt.toString());
+					videoFileName = tempFile.getAbsolutePath();
+					Uri uri = Uri.fromFile(tempFile);
+					
 					//intent per l'attività di video
 					Intent intent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
 					intent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY, 0);
 					intent.putExtra(MediaStore.EXTRA_SIZE_LIMIT, 10485760L);
+					intent.putExtra(MediaStore.EXTRA_OUTPUT, uri);
 					startActivityForResult(intent,1);
 				}
 			}
@@ -310,7 +318,8 @@ public class ShareActivity extends ActionBarActivity {
 	    if (requestCode == 1) {
 	        if (resultCode == RESULT_OK) {
 	            // Video captured and saved to fileUri specified in the Intent
-	        	videoUri = data.getData();				
+	        	File file = new File(videoFileName);
+	        	videoUri = Uri.fromFile(file);	        
 				Intent intent = new Intent(ShareActivity.this, VideoInsertActivity.class);
 				intent.putExtra("videoUri", videoUri.toString());	
 				startActivityForResult(intent,3);
