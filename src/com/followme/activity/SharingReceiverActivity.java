@@ -205,15 +205,15 @@ public class SharingReceiverActivity extends ActionBarActivity {
 		{				
 			while(true)
 			{					
-				handler.post(new Runnable() {
-					@Override
-					public void run() 
-					{
-						//ricerco le nuove posizioni
-						List<Position> newPositions = ParseManager.getNewSharedPosition(SharingReceiverActivity.this, path, counterPosition);
-						positionList.addAll(newPositions);
-						if(newPositions.size()>0)
-						{							
+				//ricerco le nuove posizioni
+				List<Position> newPositions = ParseManager.getNewSharedPosition(SharingReceiverActivity.this, path, counterPosition);
+				positionList.addAll(newPositions);
+				if(newPositions.size()>0)
+				{	
+					handler.post(new Runnable() {
+						@Override
+						public void run() 
+						{
 							CameraPosition cameraPosition = new CameraPosition.Builder()
 							.target(new LatLng(positionList.get(positionList.size()-1).getLatitude(),
 												positionList.get(positionList.size()-1).getLongitude()))
@@ -222,16 +222,22 @@ public class SharingReceiverActivity extends ActionBarActivity {
 							.tilt(0)             
 							.build();
 							map.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
-							
 							MapManager.drawPolygonPath(positionList, map);
-							counterPosition=positionList.get(positionList.size()-1).getCounter();
-							
-							//ricerco i file multimediali
-							for (Position p : newPositions)
-							{
-								List<Media> photosAtGivenPosition = 
-										ParseManager.getPhotosFromPosition(SharingReceiverActivity.this, p);
-								for (Media photo : photosAtGivenPosition)
+						}
+					});
+					
+					counterPosition=positionList.get(positionList.size()-1).getCounter();
+					
+					//ricerco i file multimediali
+					for (Position p : newPositions)
+					{
+						List<Media> photosAtGivenPosition = 
+								ParseManager.getPhotosFromPosition(SharingReceiverActivity.this, p);
+						for (final Media photo : photosAtGivenPosition)
+						{
+							handler.post(new Runnable() {
+								@Override
+								public void run() 
 								{
 									//add marker
 									Marker m = map.addMarker(new MarkerOptions()
@@ -250,7 +256,9 @@ public class SharingReceiverActivity extends ActionBarActivity {
 							            FileOutputStream outputStream = new FileOutputStream(newFile.getAbsolutePath()); 
 
 							            outputStream.write(photo.getMedia());
+							            Thread.sleep(1000);
 							            outputStream.flush();
+							            outputStream.close();							            							            
 
 							        } catch (Exception e) {
 							            e.printStackTrace();
@@ -259,11 +267,17 @@ public class SharingReceiverActivity extends ActionBarActivity {
 							        markers.add(new PhotoMarker(m.getTitle(), m.getSnippet(),newFile.getAbsolutePath()));  
 						        	markerCounter++;
 								}
-								photos.addAll(photosAtGivenPosition);
-								
-								List<Media> videosAtGivenPosition = 
-										ParseManager.getVideosFromPosition(SharingReceiverActivity.this, p);
-								for (Media video : videosAtGivenPosition)
+							});				        
+						}
+						photos.addAll(photosAtGivenPosition);
+						
+						List<Media> videosAtGivenPosition = 
+								ParseManager.getVideosFromPosition(SharingReceiverActivity.this, p);
+						for (final Media video : videosAtGivenPosition)
+						{
+							handler.post(new Runnable() {
+								@Override
+								public void run() 
 								{
 									//add marker
 									Marker m = map.addMarker(new MarkerOptions()
@@ -282,8 +296,9 @@ public class SharingReceiverActivity extends ActionBarActivity {
 							        	FileOutputStream outputStream = new FileOutputStream(newFile.getAbsolutePath());
 
 							            outputStream.write(video.getMedia());
+							            Thread.sleep(1000);
 							            outputStream.flush();
-
+							            outputStream.close();							            
 							        } catch (Exception e) {
 							            e.printStackTrace();
 							        }
@@ -291,12 +306,12 @@ public class SharingReceiverActivity extends ActionBarActivity {
 							        markers.add(new VideoMarker(m.getTitle(), m.getSnippet(),newFile.getAbsolutePath()));  
 						        	markerCounter++;
 								}
-								videos.addAll(videosAtGivenPosition);
-							}
+							});															
 						}
+						videos.addAll(videosAtGivenPosition);
 					}
-				});
-				
+				}
+					
 				try {
 					Thread.sleep(5000);
 				} catch (InterruptedException e) {
@@ -305,10 +320,6 @@ public class SharingReceiverActivity extends ActionBarActivity {
 			}
 		}
     }
-	
-	
-	
-
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
