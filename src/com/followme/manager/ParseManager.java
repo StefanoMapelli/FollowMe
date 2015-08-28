@@ -579,6 +579,83 @@ public class ParseManager {
 		
 		return newPositions;
 	}
+	/**
+	 * Method that return a list of photo taken from the given position.
+	 * @param context
+	 * @param position
+	 * @return
+	 */
+	public static List<Media> getPhotosFromPosition(Context context, Position position)
+	{
+		List<Media> newPhotos = new ArrayList<Media>();
+		List<ParseObject> objects = null;
+		Parse.initialize(context,"x9hwNnRfTCCYGXPVJNKaR7zYTIMOdKeLkerRQJT2" ,"hi7GT6rUlp9uTfw6XQzdEjnTqwgPnRPoikPehgVf");
+		
+		ParseObject positionPo = getPositionbyId(context, position.getId());
+		
+		ParseQuery<ParseObject> query = ParseQuery.getQuery("Foto");
+		query.whereEqualTo("idPosizione", positionPo);
+		
+		try {
+			objects=query.find();
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+		
+		Iterator<ParseObject> i = objects.iterator();
+
+		ParseObject po;
+		Media mediaItem;
+		
+		while(i.hasNext())
+		{
+			po = i.next();
+			mediaItem = new Media(po.getBytes("file"),
+								  po.getString("didascalia"),
+								  position);
+			newPhotos.add(mediaItem);
+		}
+		return newPhotos;
+	}
+
+	 /**
+	 * Method that return a list of video taken from the given position. 
+	  * @param context
+	  * @param position
+	  * @return
+	  */
+	public static List<Media> getVideosFromPosition(Context context, Position position)
+	{
+		List<Media> newVides = new ArrayList<Media>();
+		List<ParseObject> objects = null;
+		Parse.initialize(context,"x9hwNnRfTCCYGXPVJNKaR7zYTIMOdKeLkerRQJT2" ,"hi7GT6rUlp9uTfw6XQzdEjnTqwgPnRPoikPehgVf");
+		
+		ParseObject positionPo = getPositionbyId(context, position.getId());
+		
+		ParseQuery<ParseObject> query = ParseQuery.getQuery("Video");
+		query.whereEqualTo("idPosizione", positionPo);
+		
+		try {
+			objects=query.find();
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+		
+		Iterator<ParseObject> i = objects.iterator();
+
+		ParseObject po;
+		Media mediaItem;
+		
+		while(i.hasNext())
+		{
+			po = i.next();
+			mediaItem = new Media(po.getBytes("file"),
+								  po.getString("didascalia"),
+								  position);
+			newVides.add(mediaItem);
+		}
+		return newVides;
+	}
 
 	public static boolean isInTheFence(Context context, String idFence) {
 		
