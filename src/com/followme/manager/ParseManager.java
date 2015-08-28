@@ -627,14 +627,18 @@ public class ParseManager {
 		Iterator<ParseObject> i = objects.iterator();
 
 		ParseObject po;
-		Media mediaItem;
+		Media mediaItem=null;
 		
 		while(i.hasNext())
 		{
 			po = i.next();
-			mediaItem = new Media(po.getBytes("file"),
-								  po.getString("didascalia"),
-								  position);
+			try {
+				mediaItem = new Media(po.getParseFile("file").getData(),
+									  po.getString("didascalia"),
+									  position);
+			} catch (ParseException e) {
+				e.printStackTrace();
+			}
 			newPhotos.add(mediaItem);
 		}
 		return newPhotos;
@@ -666,14 +670,18 @@ public class ParseManager {
 		Iterator<ParseObject> i = objects.iterator();
 
 		ParseObject po;
-		Media mediaItem;
+		Media mediaItem=null;
 		
 		while(i.hasNext())
 		{
 			po = i.next();
-			mediaItem = new Media(po.getBytes("file"),
-								  po.getString("didascalia"),
-								  position);
+			try {
+				mediaItem = new Media(po.getParseFile("file").getData(),
+									  po.getString("didascalia"),
+									  position);
+			} catch (ParseException e) {
+				e.printStackTrace();
+			}
 			newVides.add(mediaItem);
 		}
 		return newVides;
