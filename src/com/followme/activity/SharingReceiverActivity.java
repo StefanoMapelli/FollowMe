@@ -1,25 +1,49 @@
 package com.followme.activity;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
+import com.followme.adapter.MapWrapperLayout;
+import com.followme.adapter.OnInfoWindowElemTouchListener;
 import com.followme.manager.MapManager;
 import com.followme.manager.ParseManager;
+import com.followme.manager.Utils;
+import com.followme.object.CustomMarker;
+import com.followme.object.Media;
+import com.followme.object.PhotoMarker;
 import com.followme.object.Position;
 import com.followme.object.Request;
+import com.followme.object.VideoMarker;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.GoogleMap.InfoWindowAdapter;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.parse.ParseObject;
 
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.ActionBarActivity;
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.media.ThumbnailUtils;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
+import android.provider.MediaStore;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 public class SharingReceiverActivity extends ActionBarActivity {
 	
@@ -27,7 +51,17 @@ public class SharingReceiverActivity extends ActionBarActivity {
 	private ParseObject path;
 	private int counterPosition;
 	private GoogleMap map;
-	private List<Position> positionList;
+	private MapWrapperLayout mapWrapperLayout;
+	private ViewGroup infoWindow;
+    private TextView infoSnippet;
+    private ImageView infoImageView;
+    private OnInfoWindowElemTouchListener photoTouchListener;	
+    private OnInfoWindowElemTouchListener videoTouchListener;
+	private List<Position> positionList = new ArrayList<Position>();
+	private List<Media> photos = new ArrayList<Media>();
+	private List<Media> videos = new ArrayList<Media>();
+	private ArrayList<CustomMarker> markers = new ArrayList<CustomMarker>();
+	private int markerCounter = 0;
 	private Handler handler;
 
 	@Override
@@ -37,6 +71,7 @@ public class SharingReceiverActivity extends ActionBarActivity {
 		handler=new Handler();
 		FragmentManager fm = getSupportFragmentManager();
 		map = ((SupportMapFragment) fm.findFragmentById(R.id.mapSharingReceiver)).getMap();
+		mapWrapperLayout = (MapWrapperLayout)findViewById(R.id.mapRecieverLinearLayout);
 		
 		request = (Request) getIntent().getSerializableExtra("acceptedRequest");
 		counterPosition=-1;
@@ -55,6 +90,111 @@ public class SharingReceiverActivity extends ActionBarActivity {
 			finish();
 		}
 		
+		photoTouchListener = new OnInfoWindowElemTouchListener() 
+        {
+            @Override
+            protected void onClickConfirmed(View v, Marker marker) 
+            {              
+				//intent per l'attività di gallery
+				Intent intent = new Intent(SharingReceiverActivity.this,MediaGalleryActivity.class);
+				//passaggio parametri all'intent
+				intent.putExtra("media", markers.toArray());
+				
+				int index = markers.indexOf(Utils.getMarkerByTitle(markers, marker.getTitle()));
+				
+				intent.putExtra("index", index);
+				startActivity(intent);
+            }
+        };  
+        
+        videoTouchListener = new OnInfoWindowElemTouchListener() 
+        {
+            @Override
+            protected void onClickConfirmed(View v, Marker marker) 
+            {             
+				//intent per l'attività di gallery
+				Intent intent = new Intent(SharingReceiverActivity.this,MediaGalleryActivity.class);
+				//passaggio parametri all'intent
+				intent.putExtra("media", markers.toArray());
+				
+				int index = markers.indexOf(Utils.getMarkerByTitle(markers, marker.getTitle()));
+				
+				intent.putExtra("index", index);
+				startActivity(intent);
+            }
+        }; 
+        
+        //info window setting
+        map.setInfoWindowAdapter(new InfoWindowAdapter() {
+            @Override
+            public View getInfoWindow(Marker marker) {
+                return null;
+            }
+
+            @Override
+            public View getInfoContents(Marker marker) {
+            	if(marker.getTitle().startsWith("photo"))
+            	{
+            		// MapWrapperLayout initialization
+			        mapWrapperLayout.init(map, Utils.getPixelsFromDp(SharingReceiverActivity.this, 59)); 				
+			        infoWindow = (ViewGroup)getLayoutInflater().inflate(R.layout.photo_info_window_layout, null);
+			        infoSnippet = (TextView)infoWindow.findViewById(R.id.PhotoSnippet);
+			        infoImageView = (ImageView)infoWindow.findViewById(R.id.infoImageView);
+			        photoTouchListener.setView(infoImageView);
+			        
+	                // Setting up the infoWindow with current's marker info
+	                infoSnippet.setText(marker.getSnippet());
+	    
+	                photoTouchListener.setMarker(marker);					        
+			        infoImageView.setOnTouchListener(photoTouchListener);		
+	                			        				        
+			        //image setting
+			        PhotoMarker pm = (PhotoMarker)Utils.getMarkerByTitle(markers, marker.getTitle());
+			        Bitmap bitmap = Utils.getSmallBitmap(pm.getPath());
+			        infoImageView.setImageBitmap(Bitmap.createScaledBitmap(
+			        		bitmap, 
+			        		bitmap.getWidth()/2, 
+			        		bitmap.getHeight()/2, false));
+			        Utils.rotateImageView(infoImageView, pm.getPath());
+	                	                		  
+	                // We must call this to set the current marker and infoWindow references
+	                // to the MapWrapperLayout
+	                mapWrapperLayout.setMarkerWithInfoWindow(marker, infoWindow);
+	                
+	                return infoWindow;
+	            }
+            	else
+            	{
+					// MapWrapperLayout initialization
+			        mapWrapperLayout.init(map, Utils.getPixelsFromDp(SharingReceiverActivity.this, 59)); 				
+			        infoWindow = (ViewGroup)getLayoutInflater().inflate(R.layout.photo_info_window_layout, null);
+			        infoSnippet = (TextView)infoWindow.findViewById(R.id.PhotoSnippet);
+			        infoImageView = (ImageView)infoWindow.findViewById(R.id.infoImageView);
+			        videoTouchListener.setView(infoImageView);
+			        
+	                // Setting up the infoWindow with current's marker info
+	                infoSnippet.setText(marker.getSnippet());
+	    
+	                videoTouchListener.setMarker(marker);					        
+			        infoImageView.setOnTouchListener(videoTouchListener);		
+	                			        				        
+			        //image setting
+			        VideoMarker vm = (VideoMarker)Utils.getMarkerByTitle(markers, marker.getTitle());	
+			        
+			        Bitmap thumb = ThumbnailUtils.createVideoThumbnail(
+							vm.getVideoUriString(),
+			                MediaStore.Images.Thumbnails.MINI_KIND);
+			        
+			        infoImageView.setImageBitmap(thumb);
+	                	                		  
+	                // We must call this to set the current marker and infoWindow references
+	                // to the MapWrapperLayout
+	                mapWrapperLayout.setMarkerWithInfoWindow(marker, infoWindow);
+	                
+	                return infoWindow;
+            	}
+            }
+        });	
 	}
 	
 	private class FindNewPositions extends AsyncTask<Void, Integer, String>
@@ -64,15 +204,16 @@ public class SharingReceiverActivity extends ActionBarActivity {
 		protected String doInBackground(Void... params) 
 		{				
 			while(true)
-			{	
-				//ricerco le nuove posizioni
-				positionList=ParseManager.getNewSharedPosition(SharingReceiverActivity.this, path, counterPosition);				
+			{					
 				handler.post(new Runnable() {
 					@Override
 					public void run() 
 					{
-						if(positionList.size()>0)
-						{
+						//ricerco le nuove posizioni
+						List<Position> newPositions = ParseManager.getNewSharedPosition(SharingReceiverActivity.this, path, counterPosition);
+						positionList.addAll(newPositions);
+						if(newPositions.size()>0)
+						{							
 							CameraPosition cameraPosition = new CameraPosition.Builder()
 							.target(new LatLng(positionList.get(positionList.size()-1).getLatitude(),
 												positionList.get(positionList.size()-1).getLongitude()))
@@ -84,6 +225,74 @@ public class SharingReceiverActivity extends ActionBarActivity {
 							
 							MapManager.drawPolygonPath(positionList, map);
 							counterPosition=positionList.get(positionList.size()-1).getCounter();
+							
+							//ricerco i file multimediali
+							for (Position p : newPositions)
+							{
+								List<Media> photosAtGivenPosition = 
+										ParseManager.getPhotosFromPosition(SharingReceiverActivity.this, p);
+								for (Media photo : photosAtGivenPosition)
+								{
+									//add marker
+									Marker m = map.addMarker(new MarkerOptions()
+						            .position(new LatLng(photo.getPosition().getLatitude(),
+						            					 photo.getPosition().getLongitude()))
+						            .snippet(photo.getTitle())
+						            .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE))
+						            .title("photo"+String.valueOf(markerCounter)));
+							        map.getUiSettings().setMapToolbarEnabled(false);
+							        
+							        Date dt = new Date();
+									File newFile = new File(Environment.getExternalStorageDirectory(),
+						                      dt.toString()+".jpg");
+							        //copy bytes to file
+							        try {
+							            FileOutputStream outputStream = new FileOutputStream(newFile.getAbsolutePath()); 
+
+							            outputStream.write(photo.getMedia());
+							            outputStream.flush();
+
+							        } catch (Exception e) {
+							            e.printStackTrace();
+							        }
+							        
+							        markers.add(new PhotoMarker(m.getTitle(), m.getSnippet(),newFile.getAbsolutePath()));  
+						        	markerCounter++;
+								}
+								photos.addAll(photosAtGivenPosition);
+								
+								List<Media> videosAtGivenPosition = 
+										ParseManager.getVideosFromPosition(SharingReceiverActivity.this, p);
+								for (Media video : videosAtGivenPosition)
+								{
+									//add marker
+									Marker m = map.addMarker(new MarkerOptions()
+						            .position(new LatLng(video.getPosition().getLatitude(),
+						            					 video.getPosition().getLongitude()))
+						            .snippet(video.getTitle())
+						            .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN))
+						            .title("video"+String.valueOf(markerCounter)));
+							        map.getUiSettings().setMapToolbarEnabled(false);
+							        
+							        Date dt = new Date();
+									File newFile = new File(Environment.getExternalStorageDirectory(),
+										                      dt.toString()+".mp4");
+							        //copy bytes to file
+							        try {
+							        	FileOutputStream outputStream = new FileOutputStream(newFile.getAbsolutePath());
+
+							            outputStream.write(video.getMedia());
+							            outputStream.flush();
+
+							        } catch (Exception e) {
+							            e.printStackTrace();
+							        }
+							        
+							        markers.add(new VideoMarker(m.getTitle(), m.getSnippet(),newFile.getAbsolutePath()));  
+						        	markerCounter++;
+								}
+								videos.addAll(videosAtGivenPosition);
+							}
 						}
 					}
 				});

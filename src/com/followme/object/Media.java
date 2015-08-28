@@ -41,6 +41,4 @@ public class Media implements Serializable{
 	public void setPosition(Position position) {
 		this.position = position;
 	}
-	
-
 }

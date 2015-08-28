@@ -266,7 +266,7 @@ public class ShareActivity extends ActionBarActivity {
 				{
 					Date dt = new Date();
 					File tempFile = new File(Environment.getExternalStorageDirectory(),
-		                      dt.toString());
+		                      dt.toString()+".jpg");
 					photoFileName = tempFile.getAbsolutePath();
 					Uri uri = Uri.fromFile(tempFile);
 					
@@ -287,7 +287,7 @@ public class ShareActivity extends ActionBarActivity {
 				{
 					Date dt = new Date();
 					File tempFile = new File(Environment.getExternalStorageDirectory(),
-		                      dt.toString());
+		                      dt.toString()+".mp4");
 					videoFileName = tempFile.getAbsolutePath();
 					Uri uri = Uri.fromFile(tempFile);
 					
@@ -348,23 +348,9 @@ public class ShareActivity extends ActionBarActivity {
 	            .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE))
 	            .title("photo"+String.valueOf(markerCounter)));
 		        map.getUiSettings().setMapToolbarEnabled(false);
-		        
-				File oldfile = new File(photoFileName);
-		        File newFile=null;
-		        //copy old photo file in cache
-		        try {
-		        	newFile= File.createTempFile("prefix",
-		        			FilenameUtils.getExtension(photoFileName), getCacheDir());
-		        	Utils.copyFile(oldfile, newFile);
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-		        
-	        	//delete old file from memory
-		        oldfile.delete();
-		        
+		        		        
 		        //add photo marker object
-		        markers.add(new PhotoMarker(m.getTitle(), m.getSnippet(),newFile.getAbsolutePath()));  
+		        markers.add(new PhotoMarker(m.getTitle(), m.getSnippet(),photoFileName));  
 	        	markerCounter++;		        		        	       	 
 	        }
 	    }
@@ -397,23 +383,9 @@ public class ShareActivity extends ActionBarActivity {
 	            .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN))
 	            .title("video"+String.valueOf(markerCounter)));
 		        map.getUiSettings().setMapToolbarEnabled(false);
-		        
-		        File oldfile = new File(videoFileName);
-		        File newFile=null;
-		        //copy old photo file in cache
-		        try {
-		        	newFile= File.createTempFile("prefix",
-		        			FilenameUtils.getExtension(videoFileName), getCacheDir());
-		        	Utils.copyFile(oldfile, newFile);
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-		        
-	        	//delete old file from memory
-		        oldfile.delete();
-		        
+		        		    
 		        //add video marker object
-		        markers.add(new VideoMarker(m.getTitle(), m.getSnippet(), newFile.getAbsolutePath()));  
+		        markers.add(new VideoMarker(m.getTitle(), m.getSnippet(), videoFileName));  
 	        	markerCounter++;;		        		        
 	        }
 	    }
