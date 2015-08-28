@@ -30,6 +30,5 @@ public class MediaGalleryActivity extends Activity {
 		int index = getIntent().getIntExtra("index",-1);
 		
 		layout.setFeatureItems(this, markers);
-		layout.setActiveFeature(index);
 	}
 }

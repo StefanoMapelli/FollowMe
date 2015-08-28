@@ -448,6 +448,7 @@ public class ShareActivity extends ActionBarActivity {
 			 if(location == null)
 				{
 					Log.i("GPS", "FIRST LOCATION");
+				 	location = loc;
 					String id = ParseManager.insertPosition(ShareActivity.this, path, loc.getLatitude(), loc.getLongitude(), positionCounter);
 					 
 					lastPosition = new Position(loc.getLatitude(),loc.getLongitude(), positionCounter);
@@ -473,7 +474,7 @@ public class ShareActivity extends ActionBarActivity {
 					    
 					String id = ParseManager.insertPosition(ShareActivity.this, path, loc.getLatitude(), loc.getLongitude(), positionCounter);
 					    
-					lastPosition = new Position(location.getLatitude(),location.getLongitude(), positionCounter);
+					lastPosition = new Position(loc.getLatitude(),loc.getLongitude(), positionCounter);
 					lastPosition.setId(id);
 					    
 					positionCounter++;

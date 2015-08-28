@@ -2,7 +2,12 @@ package com.followme.adapter;
 
 import java.util.ArrayList;
 
+import uk.co.senab.photoview.PhotoViewAttacher;
+
+import com.followme.activity.FullScreenVideoActivity;
+import com.followme.activity.PhotoInsertActivity;
 import com.followme.activity.R;
+import com.followme.activity.ShareActivity;
 import com.followme.manager.Utils;
 import com.followme.object.CustomMarker;
 import com.followme.object.PhotoMarker;
@@ -10,6 +15,7 @@ import com.followme.object.VideoMarker;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.media.ThumbnailUtils;
 import android.provider.MediaStore;
@@ -44,13 +50,8 @@ public class GalleryLayout extends HorizontalScrollView {
 	public GalleryLayout(Context context) {
 		super(context);
 	}
-
-	public void setActiveFeature(int index)
-	{
-		mActiveFeature = index;
-	}
 	
-	public void setFeatureItems(Context context,ArrayList<CustomMarker> items){
+	public void setFeatureItems(final Context context,ArrayList<CustomMarker> items){
 		LinearLayout internalWrapper = new LinearLayout(getContext());
 		internalWrapper.setLayoutParams(new LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.FILL_PARENT));
 		internalWrapper.setOrientation(LinearLayout.HORIZONTAL);
@@ -65,6 +66,7 @@ public class GalleryLayout extends HorizontalScrollView {
 			TextView title = (TextView) featureLayout.getChildAt(1);
 			FrameLayout fl = (FrameLayout) featureLayout.getChildAt(0);
 			ImageView image = (ImageView) fl.getChildAt(0);
+			
 			if(cm instanceof PhotoMarker)
 			{				
 				PhotoMarker pm = (PhotoMarker) cm;
@@ -72,16 +74,31 @@ public class GalleryLayout extends HorizontalScrollView {
 				title.setText(pm.getSnippet());
 				image.setImageBitmap(bitmap);
 				Utils.rotateImageView(image, pm.getPath());
+				final String path = pm.getPath();
+				PhotoViewAttacher attacher = new PhotoViewAttacher(image);
+		        attacher.update();
 			}
 			else
 			{
-				VideoMarker vm = (VideoMarker) cm;
+				final VideoMarker vm = (VideoMarker) cm;
 				Bitmap thumb = ThumbnailUtils.createVideoThumbnail(
 						vm.getVideoUriString(),
 		                MediaStore.Images.Thumbnails.FULL_SCREEN_KIND);		        
 				title.setText(vm.getSnippet());
 				image.setImageBitmap(thumb);
 				
+				image.setOnClickListener(new OnClickListener()
+				{
+					@Override
+					public void onClick(View v) 
+					{
+						//ACTIVITY FULL SCREEN VIDEO
+						Intent intent = new Intent(context, FullScreenVideoActivity.class);
+						intent.putExtra("fileName", vm.getVideoUriString());	        	
+						context.startActivity(intent);
+					}
+					
+				});
 			}
  			internalWrapper.addView(featureLayout);
  		}
@@ -108,9 +125,22 @@ public class GalleryLayout extends HorizontalScrollView {
  		mGestureDetector = new GestureDetector(new MyGestureDetector());
  	}
  	 	class MyGestureDetector extends SimpleOnGestureListener {
+ 	 		protected MotionEvent mLastOnDownEvent = null;
+ 	 		
+ 	 	@Override
+ 	 	public boolean onDown(MotionEvent e) {
+ 	 	    mLastOnDownEvent = e;
+ 	 	    return super.onDown(e);
+ 	 	 }
  		@Override
  		public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
  				//right to left
+ 			
+ 				if (e1==null)
+ 					e1 = mLastOnDownEvent;
+ 				if (e1==null || e2==null)
+ 					return false;
+ 	        
   				if(e1.getX() - e2.getX() > SWIPE_MIN_DISTANCE && Math.abs(velocityX) > SWIPE_THRESHOLD_VELOCITY) {
 					int featureWidth = getMeasuredWidth();
 					mActiveFeature = (mActiveFeature < (mItems.size() - 1))? mActiveFeature + 1:mItems.size() -1;

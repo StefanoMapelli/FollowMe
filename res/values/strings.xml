@@ -24,5 +24,7 @@
     <string name="dummy_button">Dummy Button</string>
     <string name="dummy_content">DUMMY\nCONTENT</string>
     <string name="title_activity_fence_receiver">FenceReceiverActivity</string>
+    <string name="title_activity_full_screen_image">FullScreenImageActivity</string>
+    <string name="title_activity_full_screen_video">FullScreenVideoActivity</string>
 
 </resources>

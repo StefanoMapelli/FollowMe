@@ -122,6 +122,11 @@
             android:name=".FenceControlActivity"
             android:label="@string/title_activity_fence_control" >
         </activity>
+        <activity
+            android:name=".FullScreenVideoActivity"
+            android:label="@string/title_activity_full_screen_video"
+            android:theme="@android:style/Theme.NoTitleBar" >
+        </activity>
     </application>
 
 </manifest>
