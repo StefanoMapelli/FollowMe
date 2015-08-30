@@ -7,9 +7,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Date;
-
-import org.apache.commons.io.FilenameUtils;
-
 import com.google.android.gms.maps.model.Marker;
 import com.followme.activity.R;
 import com.followme.adapter.MapWrapperLayout;
@@ -444,8 +441,7 @@ public class ShareActivity extends ActionBarActivity {
 				}
 			 else
 			 if((Math.abs(location.getLongitude() - loc.getLongitude()) > 0.00001 ||
-				  Math.abs(location.getLatitude() - loc.getLatitude()) > 0.00001) &&
-				  loc.getSpeed() > 1 && loc.getAccuracy() < 50)
+				  Math.abs(location.getLatitude() - loc.getLatitude()) > 0.00001))
 				 {
 					Toast.makeText(ShareActivity.this, "speed: "+loc.getSpeed()+" accuracy: "+loc.getAccuracy(), Toast.LENGTH_LONG).show();
 					Log.i("GPS", "LOCATION FOUND");
