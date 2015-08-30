@@ -51,7 +51,7 @@ public class PathControlActivity extends ActionBarActivity {
 			
 		}
 		String userId = getIntent().getStringExtra("userId");
-		int i = 0;
+
 		for(Contact c : contactsList)
 		{
 			//creazione dei path
@@ -59,13 +59,10 @@ public class PathControlActivity extends ActionBarActivity {
 			ParseObject path = ParseManager.getPathbyId(this, pathId);
 			pathObjects.add(path);
 			//inizializzazione arraylist
-			ArrayList<Position> arrayList =  paths.get(i);
-			arrayList = new ArrayList<Position>(); 
-			Integer counterPosition = counterPositions.get(i);
-			counterPosition = -1; 
+			paths.add(new ArrayList<Position>());
+			counterPositions.add(-1);
 			//invio delle richieste
 			ParseManager.insertRequest(this, "percorso", userId, contactsList.get(contactsList.indexOf(c)).getId(), pathId, null, null);
-			i++;
 		}
 		new FindNewPositions().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 	}
@@ -120,8 +117,7 @@ public class PathControlActivity extends ActionBarActivity {
 								int color = Utils.generateColor(i);
 								MapManager.drawPolygonPath(color,paths.get(i), map);
 								
-								Integer counterPosition = counterPositions.get(i);
-								counterPosition = paths.get(i).get(paths.get(i).size()-1).getCounter();
+								counterPositions.set(i, paths.get(i).get(paths.get(i).size()-1).getCounter());
 								
 								//add marker
 								if(marker != null)
