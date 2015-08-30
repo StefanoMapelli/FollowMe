@@ -4,9 +4,9 @@
     tools:context="com.followme.activity.SharingReceiverActivity" >
 
     <item
-        android:id="@+id/action_settings"
+        android:id="@+id/savePathShareReceiving"
         android:orderInCategory="100"
-        android:title="@string/action_settings"
+        android:title="Save Path"
         app:showAsAction="never"/>
 
 </menu>

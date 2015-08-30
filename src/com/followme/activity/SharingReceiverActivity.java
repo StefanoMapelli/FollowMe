@@ -10,6 +10,7 @@ import com.followme.adapter.MapWrapperLayout;
 import com.followme.adapter.OnInfoWindowElemTouchListener;
 import com.followme.manager.MapManager;
 import com.followme.manager.ParseManager;
+import com.followme.manager.PersonalDataManager;
 import com.followme.manager.Utils;
 import com.followme.object.CustomMarker;
 import com.followme.object.Media;
@@ -333,9 +334,23 @@ public class SharingReceiverActivity extends ActionBarActivity {
 		// automatically handle clicks on the Home/Up button, so long
 		// as you specify a parent activity in AndroidManifest.xml.
 		int id = item.getItemId();
-		if (id == R.id.action_settings) {
+		if (id == R.id.savePathShareReceiving) {
+			
+			Date d=new Date();
+			savePathOnLocalDB(d.toString());
 			return true;
+			
 		}
 		return super.onOptionsItemSelected(item);
+	}
+	
+	private void savePathOnLocalDB(String title) 
+	{
+		
+		int idPath=PersonalDataManager.insertPath(title, request.getSender().getPhoneNumber());
+		PersonalDataManager.insertPositionList(positionList, idPath);
+		PersonalDataManager.insertPhotoList(photos, idPath+"");
+		PersonalDataManager.insertVideoList(videos, idPath+"");
+		
 	}
 }

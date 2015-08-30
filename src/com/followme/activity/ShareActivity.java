@@ -7,16 +7,19 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Date;
+
 import com.google.android.gms.maps.model.Marker;
 import com.followme.activity.R;
 import com.followme.adapter.MapWrapperLayout;
 import com.followme.adapter.OnInfoWindowElemTouchListener;
 import com.followme.manager.MapManager;
 import com.followme.manager.ParseManager;
+import com.followme.manager.PersonalDataManager;
 import com.followme.manager.Utils;
 import com.followme.object.Contact;
 import com.followme.object.CustomMarker;
 import com.followme.object.Media;
+import com.followme.object.Path;
 import com.followme.object.PhotoMarker;
 import com.followme.object.Position;
 import com.followme.object.VideoMarker;
@@ -77,6 +80,7 @@ public class ShareActivity extends ActionBarActivity {
 	private ArrayList<CustomMarker> markers = new ArrayList<CustomMarker>();
     private ArrayList<Media> photos = new ArrayList<Media>();
 	private ArrayList<Media> videos = new ArrayList<Media>();
+	private ArrayList<Position> positionList=new ArrayList<Position>();
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -129,6 +133,8 @@ public class ShareActivity extends ActionBarActivity {
 				 
 				lastPosition = new Position(location.getLatitude(),location.getLongitude(), positionCounter);
 				lastPosition.setId(id);
+				
+				positionList.add(lastPosition);
 				 
 				positionCounter++;
 				 
@@ -408,12 +414,25 @@ public class ShareActivity extends ActionBarActivity {
 		// automatically handle clicks on the Home/Up button, so long
 		// as you specify a parent activity in AndroidManifest.xml.
 		int id = item.getItemId();
-		if (id == R.id.action_settings) {
+		if (id == R.id.savePathShareItem) 
+		{
+			Date d=new Date();
+			savePathOnLocalDB(d.toString());
 			return true;
 		}
 		return super.onOptionsItemSelected(item);
 	}
 	
+	private void savePathOnLocalDB(String title) 
+	{
+		
+		int idPath=PersonalDataManager.insertPath(title, "Me");
+		PersonalDataManager.insertPositionList(positionList, idPath);
+		PersonalDataManager.insertPhotoList(photos, idPath+"");
+		PersonalDataManager.insertVideoList(videos, idPath+"");
+		
+	}
+
 	/*----------Listener class to get coordinates ------------- */  
 	 private class MyLocationListener implements LocationListener 
 	 {  
@@ -428,7 +447,9 @@ public class ShareActivity extends ActionBarActivity {
 					 
 					lastPosition = new Position(loc.getLatitude(),loc.getLongitude(), positionCounter);
 					lastPosition.setId(id);
-					 
+					
+					positionList.add(lastPosition);
+					
 					positionCounter++;
 					 
 					CameraPosition cameraPosition = new CameraPosition.Builder()
@@ -451,6 +472,8 @@ public class ShareActivity extends ActionBarActivity {
 					lastPosition = new Position(loc.getLatitude(),loc.getLongitude(), positionCounter);
 					lastPosition.setId(id);
 					    
+					positionList.add(lastPosition);
+					
 					positionCounter++;
 					    
 					CameraPosition cameraPosition = new CameraPosition.Builder()
@@ -486,4 +509,5 @@ public class ShareActivity extends ActionBarActivity {
 	            // TODO Auto-generated method stub           
 	     }  
 	 }
+	 
 }

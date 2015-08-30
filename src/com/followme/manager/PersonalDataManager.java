@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import com.followme.object.Contact;
 import com.followme.object.Media;
 import com.followme.object.Path;
 import com.followme.object.Position;
@@ -74,9 +75,9 @@ public class PersonalDataManager {
 	   * Get all the paths in the database, in the table of path.
 	   * @return list of all the path in the db
 	   */
-	  public static List<Path> getAllPaths() 
+	  public static ArrayList<Path> getAllPaths() 
 	  {
-		  List<Path> pathList=new ArrayList<Path>();  
+		  ArrayList<Path> pathList=new ArrayList<Path>();  
 		  
 		  String[] allPathColumns = new String[3];
 		  allPathColumns[0]=DatabaseCreationManager.COLUMN_PATH_ID;
@@ -84,22 +85,101 @@ public class PersonalDataManager {
 		  allPathColumns[2]=DatabaseCreationManager.COLUMN_TITLE;
 		  
 		  Cursor cursor =database.query(DatabaseCreationManager.TABLE_PATH, allPathColumns, null, null, null, null, null);
-		  
-		  cursor.moveToFirst();
-	  
-		  do
+
+		  if(cursor.moveToFirst())
 		  {
-			  Path pathObject=new Path();
-			  pathObject.setId(cursor.getInt(0)+"");
-			  pathObject.setOwner(cursor.getString(1));
-			  pathObject.setTitle(cursor.getString(2));
-			  pathList.add(pathObject);
-			  cursor.moveToNext();
+			  do
+			  {
+				  Path pathObject=new Path();
+				  pathObject.setId(cursor.getInt(0)+"");
+				  pathObject.setOwner(cursor.getString(1));
+				  pathObject.setTitle(cursor.getString(2));
+				  pathList.add(pathObject);
+				  cursor.moveToNext();
+			  }
+			  while(!cursor.isAfterLast());
 		  }
-		  while(!cursor.isAfterLast());
 		  
 		  return pathList;
 	  }
+	  
+	  
+	  /**
+	   * Insertion of a new contact in the database, in the table of contact. Return the id of the contact
+	   * inserted yet 
+	   * @param contact
+	   * @return the id of the inserted contact
+	   */
+	  public static int insertContact(Contact contact) 
+	  {
+		  ContentValues values = new ContentValues();
+		  values.put(DatabaseCreationManager.COLUMN_CONTACT_ID, contact.getId());
+		  values.put(DatabaseCreationManager.COLUMN_NUMBER, contact.getPhoneNumber());
+		  values.put(DatabaseCreationManager.COLUMN_NAME, contact.getName());
+		  long contactId=database.insert(DatabaseCreationManager.TABLE_CONTACT, null,values);
+		  return (int) contactId;
+	  }
+	  
+	  
+	  /**
+	   * Get all the contacts in the database, in the table of contact.
+	   * @return list of all the contacts in the db
+	   */
+	  public static ArrayList<Contact> getAllContacts() 
+	  {
+		  ArrayList<Contact> contactList=new ArrayList<Contact>();  
+		  
+		  String[] allColumnContact = new String[3];
+		  allColumnContact[0]=DatabaseCreationManager.COLUMN_CONTACT_ID;
+		  allColumnContact[1]=DatabaseCreationManager.COLUMN_NUMBER;
+		  allColumnContact[2]=DatabaseCreationManager.COLUMN_NAME;
+
+		  Cursor cursor =database.query(DatabaseCreationManager.TABLE_CONTACT, allColumnContact, null, null, null, null, null);
+
+		  if(cursor.moveToFirst())
+		  {
+			  do
+			  {
+				  Contact contactObject=new Contact(cursor.getInt(0)+"",
+						  cursor.getString(2),
+						  cursor.getString(1)
+						  );
+				  contactList.add(contactObject);
+				  cursor.moveToNext();
+			  }
+			  while(!cursor.isAfterLast());
+		  }
+		  return contactList;
+	  }
+	  
+	  
+	  /**
+	   * Get the name of a contact in the database with specified 
+	   * @return list of all the contacts in the db
+	   */
+	  public static String getNameOfContact(String number) 
+	  {		  
+		  String[] allColumnContact = new String[1];
+		  allColumnContact[0]=DatabaseCreationManager.COLUMN_NAME;
+		  
+		  Cursor cursor =database.query(DatabaseCreationManager.TABLE_CONTACT, allColumnContact, DatabaseCreationManager.COLUMN_NUMBER+"="+number, null, null, null, null);
+
+		  if(cursor.moveToFirst())
+		  {
+			  return cursor.getString(0);
+		  }
+		  return null;
+	  }
+	  
+	  
+	  /**
+	   * Delete all rows of the table contact
+	   */
+	  public static void deleteAllContacts(String number) 
+	  {		  
+		  database.delete(DatabaseCreationManager.TABLE_CONTACT, null, null);
+	  }
+	  
 	  
 	  /**
 	   * Insertion of a list of position in the database
@@ -129,9 +209,9 @@ public class PersonalDataManager {
 	   * @param idPath id of the searched path
 	   * @return list of all the position of the selected path in the db
 	   */
-	  public static List<Position> getAllPositionsOfPath(String idPath) 
+	  public static ArrayList<Position> getAllPositionsOfPath(String idPath) 
 	  {
-		  List<Position> positionList=new ArrayList<Position>();  
+		  ArrayList<Position> positionList=new ArrayList<Position>();  
 		  
 		  String[] allPositionColumns = new String[5];
 		  allPositionColumns[0]=DatabaseCreationManager.COLUMN_POSITION_ID;
@@ -140,28 +220,30 @@ public class PersonalDataManager {
 		  allPositionColumns[3]=DatabaseCreationManager.COLUMN_LATITUDE_POSITION;
 		  allPositionColumns[4]=DatabaseCreationManager.COLUMN_LONGITUDE_POSITION;
 		  
-		  Cursor cursor =database.query(DatabaseCreationManager.TABLE_PATH, allPositionColumns, "id_path="+idPath, null, null, null, "counter asc");
+		  Cursor cursor =database.query(DatabaseCreationManager.TABLE_POSITION, allPositionColumns, "id_path="+idPath, null, null, null, "counter asc");
 		  
-		  cursor.moveToFirst();
-	  
-		  do
+		  if(cursor.moveToFirst())
 		  {
-			  Position positionObject=new Position(cursor.getDouble(3),cursor.getDouble(4),cursor.getInt(2));
-			  positionObject.setId(cursor.getInt(0)+"");
-			  positionObject.setId(cursor.getInt(1)+"");
-			  positionList.add(positionObject);
-			  cursor.moveToNext();
+
+			  do
+			  {
+				  Position positionObject=new Position(cursor.getDouble(3),cursor.getDouble(4),cursor.getInt(2));
+				  positionObject.setId(cursor.getInt(0)+"");
+				  positionObject.setId(cursor.getInt(1)+"");
+				  positionList.add(positionObject);
+				  cursor.moveToNext();
+			  }
+			  while(!cursor.isAfterLast());
 		  }
-		  while(!cursor.isAfterLast());
-		  
+
 		  return positionList;
 	  }
-	  
+
 	  /**
 	   * Insertion of a list of photos in the database
 	   * @param list of photo objects
 	   */
-	  public static void insertPhotoList(List<Media> photoList) 
+	  public static void insertPhotoList(List<Media> photoList, String idPath) 
 	  {
 		  
 		  
@@ -178,7 +260,7 @@ public class PersonalDataManager {
 			  //ricerco la posizione della foto nel database e ne prendo l'id per l'inserimento
 			  String[] columns=new String[1];
 			  columns[0]=DatabaseCreationManager.COLUMN_POSITION_ID;
-			  Cursor cursor =database.query(DatabaseCreationManager.TABLE_POSITION, columns, DatabaseCreationManager.COLUMN_LATITUDE_POSITION+"="+photoItem.getPosition().getLatitude()+" AND "+DatabaseCreationManager.COLUMN_LONGITUDE_POSITION+"="+photoItem.getPosition().getLongitude()+" AND "+DatabaseCreationManager.COLUMN_COUNTER+"="+photoItem.getPosition().getCounter(), null, null, null, null);
+			  Cursor cursor =database.query(DatabaseCreationManager.TABLE_POSITION, columns, DatabaseCreationManager.COLUMN_LATITUDE_POSITION+"="+photoItem.getPosition().getLatitude()+" AND "+DatabaseCreationManager.COLUMN_LONGITUDE_POSITION+"="+photoItem.getPosition().getLongitude()+ " AND "+DatabaseCreationManager.COLUMN_PATH+"="+idPath, null, null, null, null);
 			  cursor.moveToFirst();
 			  String positionId=cursor.getString(0);
 			  			  
@@ -194,35 +276,39 @@ public class PersonalDataManager {
 	   * @param idPath id of the searched path
 	   * @return list of all the photos of the selected path in the db
 	   */
-	  public static List<Media> getAllPhotosOfPath(String idPath) 
+	  public static ArrayList<Media> getAllPhotosOfPath(String idPath) 
 	  {
-		  List<Media> photoList=new ArrayList<Media>();  
-		  	  
+		  ArrayList<Media> photoList=new ArrayList<Media>();  
+
 		  Cursor cursor=database.rawQuery("SELECT photo.id_photo, photo.position, photo.title, photo.file, position.id_position, position.counter, position.latitude, position.longitude FROM photo, position WHERE photo.position=position.id_position AND position.id_path="+idPath, null);
-		  
+
 		  cursor.moveToFirst();
-	  
-		  do
+
+		  if(cursor.moveToFirst())
 		  {
-			  Media mediaObject=new Media();
-			  Position position=new Position(cursor.getDouble(6),cursor.getDouble(7),cursor.getInt(5));
-			  position.setId(cursor.getInt(4)+"");
-			  mediaObject.setPosition(position);
-			  mediaObject.setMedia(cursor.getBlob(3));
-			  mediaObject.setTitle(cursor.getString(2));
-			  photoList.add(mediaObject);
-			  cursor.moveToNext();
+			  do
+			  {
+				  Media mediaObject=new Media();
+				  Position position=new Position(cursor.getDouble(6),cursor.getDouble(7),cursor.getInt(5));
+				  position.setId(cursor.getInt(4)+"");
+				  mediaObject.setPosition(position);
+				  mediaObject.setMedia(cursor.getBlob(3));
+				  mediaObject.setTitle(cursor.getString(2));
+				  photoList.add(mediaObject);
+				  cursor.moveToNext();
+			  }
+			  while(!cursor.isAfterLast());
 		  }
-		  while(!cursor.isAfterLast());
-		  
+
 		  return photoList;
 	  }
 	  
 	  /**
 	   * Insertion of a list of videos in the database
+	 * @param idPath 
 	   * @param list of video objects
 	   */
-	  public static void insertVideoList(List<Media> videoList) 
+	  public static void insertVideoList(List<Media> videoList, String idPath) 
 	  {
 		  
 		  
@@ -239,107 +325,113 @@ public class PersonalDataManager {
 			  //ricerco la posizione della foto nel database e ne prendo l'id per l'inserimento
 			  String[] columns=new String[1];
 			  columns[0]=DatabaseCreationManager.COLUMN_POSITION_ID;
-			  Cursor cursor =database.query(DatabaseCreationManager.TABLE_POSITION, columns, DatabaseCreationManager.COLUMN_LATITUDE_POSITION+"="+videoItem.getPosition().getLatitude()+" AND "+DatabaseCreationManager.COLUMN_LONGITUDE_POSITION+"="+videoItem.getPosition().getLongitude()+" AND "+DatabaseCreationManager.COLUMN_COUNTER+"="+videoItem.getPosition().getCounter(), null, null, null, null);
+			  Cursor cursor =database.query(DatabaseCreationManager.TABLE_POSITION, columns, DatabaseCreationManager.COLUMN_LATITUDE_POSITION+"="+videoItem.getPosition().getLatitude()+" AND "+DatabaseCreationManager.COLUMN_LONGITUDE_POSITION+"="+videoItem.getPosition().getLongitude()+" AND "+DatabaseCreationManager.COLUMN_PATH+"="+idPath, null, null, null, null);
 			  cursor.moveToFirst();
 			  String positionId=cursor.getString(0);
-			  			  
+
 			  values.put(DatabaseCreationManager.COLUMN_POSITION, positionId);
 			  //inserisco la foto nel db
 			  database.insert(DatabaseCreationManager.TABLE_VIDEO, null, values);
 		  }
 	  }
-	  
-	  
-	  
-	  
+
+
+
+
 	  /**
 	   * Get all the videos of a path in the database, in the table of photo.
 	   * @param idPath id of the searched path
 	   * @return list of all the videos of the selected path in the db
 	   */
-	  public static List<Media> getAllVideosOfPath(String idPath) 
+	  public static ArrayList<Media> getAllVideosOfPath(String idPath) 
 	  {
-		  List<Media> videoList=new ArrayList<Media>();  
-		  	  
+		  ArrayList<Media> videoList=new ArrayList<Media>();  
+
 		  Cursor cursor=database.rawQuery("SELECT video.id_video, video.position, video.title, video.file, position.id_position, position.counter, position.latitude, position.longitude FROM video, position WHERE video.position=position.id_position AND position.id_path="+idPath, null);
-		  
+
 		  cursor.moveToFirst();
-	  
-		  do
+
+		  if(cursor.moveToFirst())
 		  {
-			  Media mediaObject=new Media();
-			  Position position=new Position(cursor.getDouble(6),cursor.getDouble(7),cursor.getInt(5));
-			  position.setId(cursor.getInt(4)+"");
-			  mediaObject.setPosition(position);
-			  mediaObject.setMedia(cursor.getBlob(3));
-			  mediaObject.setTitle(cursor.getString(2));
-			  videoList.add(mediaObject);
-			  cursor.moveToNext();
+			  do
+			  {
+				  Media mediaObject=new Media();
+				  Position position=new Position(cursor.getDouble(6),cursor.getDouble(7),cursor.getInt(5));
+				  position.setId(cursor.getInt(4)+"");
+				  mediaObject.setPosition(position);
+				  mediaObject.setMedia(cursor.getBlob(3));
+				  mediaObject.setTitle(cursor.getString(2));
+				  videoList.add(mediaObject);
+				  cursor.moveToNext();
+			  }
+			  while(!cursor.isAfterLast());
 		  }
-		  while(!cursor.isAfterLast());
-		  
+
 		  return videoList;
 	  }
-	  
-	  
+
+
 	  /**
 	   * Insertion of a list of audios in the database
 	   * @param list of video objects
 	   */
 	  public static void insertAudioList(List<Media> audioList) 
 	  {
-		  
-		  
+
+
 		  Iterator<Media> i = audioList.iterator();
 		  Media audioItem=null;
-			
+
 		  while(i.hasNext())
 		  {
 			  ContentValues values = new ContentValues();
 			  audioItem = i.next();
 			  values.put(DatabaseCreationManager.COLUMN_FILE, audioItem.getMedia());
 			  values.put(DatabaseCreationManager.COLUMN_TITLE, audioItem.getTitle());
-			 
+
 			  //ricerco la posizione della foto nel database e ne prendo l'id per l'inserimento
 			  String[] columns=new String[1];
 			  columns[0]=DatabaseCreationManager.COLUMN_POSITION_ID;
 			  Cursor cursor =database.query(DatabaseCreationManager.TABLE_POSITION, columns, DatabaseCreationManager.COLUMN_LATITUDE_POSITION+"="+audioItem.getPosition().getLatitude()+" AND "+DatabaseCreationManager.COLUMN_LONGITUDE_POSITION+"="+audioItem.getPosition().getLongitude()+" AND "+DatabaseCreationManager.COLUMN_COUNTER+"="+audioItem.getPosition().getCounter(), null, null, null, null);
 			  cursor.moveToFirst();
 			  String positionId=cursor.getString(0);
-			  			  
+
 			  values.put(DatabaseCreationManager.COLUMN_POSITION, positionId);
 			  //inserisco la foto nel db
 			  database.insert(DatabaseCreationManager.TABLE_AUDIO, null, values);
 		  }
 	  }
-	  
-	  
+
+
 	  /**
 	   * Get all the audios of a path in the database, in the table of photo.
 	   * @param idPath id of the searched path
 	   * @return list of all the audios of the selected path in the db
 	   */
-	  public static List<Media> getAllAudiosOfPath(String idPath) 
+	  public static ArrayList<Media> getAllAudiosOfPath(String idPath) 
 	  {
-		  List<Media> audioList=new ArrayList<Media>();  
-		  	  
+		  ArrayList<Media> audioList=new ArrayList<Media>();  
+
 		  Cursor cursor=database.rawQuery("SELECT audio.id_audio, audio.position, audio.title, audio.file, position.id_position, position.counter, position.latitude, position.longitude FROM video, position WHERE audio.position=position.id_position AND position.id_path="+idPath, null);
-		  
+
 		  cursor.moveToFirst();
-	  
-		  do
+		  if(cursor.moveToFirst())
 		  {
-			  Media mediaObject=new Media();
-			  Position position=new Position(cursor.getDouble(6),cursor.getDouble(7),cursor.getInt(5));
-			  position.setId(cursor.getInt(4)+"");
-			  mediaObject.setPosition(position);
-			  mediaObject.setMedia(cursor.getBlob(3));
-			  mediaObject.setTitle(cursor.getString(2));
-			  audioList.add(mediaObject);
-			  cursor.moveToNext();
+
+			  do
+			  {
+				  Media mediaObject=new Media();
+				  Position position=new Position(cursor.getDouble(6),cursor.getDouble(7),cursor.getInt(5));
+				  position.setId(cursor.getInt(4)+"");
+				  mediaObject.setPosition(position);
+				  mediaObject.setMedia(cursor.getBlob(3));
+				  mediaObject.setTitle(cursor.getString(2));
+				  audioList.add(mediaObject);
+				  cursor.moveToNext();
+			  }
+			  while(!cursor.isAfterLast());
 		  }
-		  while(!cursor.isAfterLast());
-		  
+
 		  return audioList;
 	  }
 	  
