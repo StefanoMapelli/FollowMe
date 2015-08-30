@@ -16,6 +16,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.graphics.Matrix;
 import android.location.LocationManager;
 import android.media.ExifInterface;
@@ -29,6 +30,7 @@ import com.followme.object.Contact;
 import com.followme.object.CustomMarker;
 import com.followme.object.PhotoMarker;
 import com.followme.object.VideoMarker;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 
 public class Utils {
 	
@@ -303,4 +305,67 @@ public class Utils {
 	    return cursor.getString(column_index);
 	}
 	
+	public static int generateColor(int index)
+	{
+		switch (index%6)
+		{
+			case 0:
+			{
+				return Color.BLUE;
+			}
+			case 1:
+			{
+				return Color.CYAN;
+			}
+			case 2:
+			{
+				return Color.GREEN;
+			}
+			case 3:
+			{
+				return Color.YELLOW;			
+			}
+			case 4:
+			{
+				return Color.MAGENTA;
+			}
+			case 5:
+			{
+				return Color.RED;
+			}
+		}
+		return -1;
+	}
+	
+	public static float convertColor(int color)
+	{
+		switch (color)
+		{
+			case Color.BLUE:
+			{
+				return BitmapDescriptorFactory.HUE_BLUE;
+			}
+			case Color.CYAN:
+			{
+				return BitmapDescriptorFactory.HUE_CYAN;
+			}
+			case Color.GREEN:
+			{
+				return BitmapDescriptorFactory.HUE_GREEN;
+			}
+			case Color.YELLOW:
+			{
+				return BitmapDescriptorFactory.HUE_YELLOW;
+			}
+			case Color.MAGENTA:
+			{
+				return BitmapDescriptorFactory.HUE_MAGENTA;
+			}
+			case Color.RED:
+			{
+				return BitmapDescriptorFactory.HUE_RED;
+			}
+		}
+		return -1;
+	}
 }

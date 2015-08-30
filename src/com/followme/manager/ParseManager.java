@@ -569,7 +569,7 @@ public class ParseManager {
 	 * Method to get the new shared positions of shared path
 	 * @return a list of positions
 	 */
-	public static List<Position> getNewSharedPosition(Context context, ParseObject path, int counter)
+	public static List<Position> getNewPosition(Context context, ParseObject path, int counter)
 	{
 		List<Position> newPositions=new ArrayList<Position>();
 		List<ParseObject> objects = null;

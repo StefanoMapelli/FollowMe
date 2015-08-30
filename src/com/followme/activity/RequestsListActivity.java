@@ -84,6 +84,9 @@ public class RequestsListActivity extends ActionBarActivity {
 	    case "percorso":
 	    //apro activity percorso
 	    	Log.i("typeOfRequest","percorso");
+	    	intent = new Intent(RequestsListActivity.this,PathReceiverActivity.class);
+			intent.putExtra("acceptedRequest", itemToAccept);
+			startActivity(intent);
 	    	break;
 	      
 	    case "recinto":

@@ -40,8 +40,10 @@ public class FollowActivity extends ActionBarActivity{
 	public void startPathOnClickHandler(View v) 
 	{
 		//Intent che manda alla ricezione del percorso del followato
-		//Intent intent = new Intent(FollowActivity.this,DestinationSettingActivity.class);
-		//startActivity(intent);
+		Intent intent = new Intent(FollowActivity.this,PathControlActivity.class);
+		intent.putExtra("selectedContacts", getIntent().getSerializableExtra("selectedContacts"));
+		intent.putExtra("userId", getIntent().getStringExtra("userId"));
+		startActivity(intent);
 	}
 
 

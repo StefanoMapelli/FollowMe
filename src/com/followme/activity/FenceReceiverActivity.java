@@ -39,7 +39,6 @@ public class FenceReceiverActivity extends ActionBarActivity {
 	private LocationManager locationManager=null;  
 	private LocationListener locationListener=null;  
 	private Location myLocation = null;
-	private Position lastPosition = null;
 	private GoogleMap map;
 	private Circle fenceCircle;
 	private CheckFenceStatus checkFenceThread;

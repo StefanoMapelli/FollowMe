@@ -89,6 +89,33 @@ public class MapManager {
 	}
 	
 	/**
+	 * Draw broken polygon from list of a given color.
+	 * @param positionList
+	 * @param map
+	 */
+	public static void drawPolygonPath(int color, List<Position> positionList, GoogleMap map)
+	{
+	    PolylineOptions options = new PolylineOptions();
+	    
+	    Iterator<Position> i = positionList.iterator();
+		Position posItem=null;
+		
+		while(i.hasNext())
+		{
+			posItem = i.next();
+			
+			options.add(new LatLng(posItem.getLatitude(),posItem.getLongitude()));
+			
+		}
+	    options.color(color);
+	    options.width( 5 );
+	    options.visible( true );
+	    options.geodesic( true );
+	    map.addPolyline( options );
+
+	}
+	
+	/**
 	 * Method that return the best location found from location manager.
 	 * @param context
 	 * @param mLocationManager

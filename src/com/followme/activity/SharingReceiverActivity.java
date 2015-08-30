@@ -206,7 +206,7 @@ public class SharingReceiverActivity extends ActionBarActivity {
 			while(true)
 			{					
 				//ricerco le nuove posizioni
-				List<Position> newPositions = ParseManager.getNewSharedPosition(SharingReceiverActivity.this, path, counterPosition);
+				List<Position> newPositions = ParseManager.getNewPosition(SharingReceiverActivity.this, path, counterPosition);
 				positionList.addAll(newPositions);
 				if(newPositions.size()>0)
 				{	

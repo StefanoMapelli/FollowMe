@@ -3,6 +3,7 @@ package com.followme.activity;
 
 import com.followme.manager.MapManager;
 import com.followme.manager.ParseManager;
+import com.followme.manager.Utils;
 import com.followme.object.Contact;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -15,13 +16,11 @@ import android.support.v4.app.FragmentManager;
 import android.support.v7.app.ActionBarActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.content.ContentResolver;
 import android.content.Intent;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
-import android.provider.Settings;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -63,7 +62,7 @@ public class FenceSettingActivity extends ActionBarActivity {
 		}
 		userId = getIntent().getStringExtra("userId");
 		
-		if (displayGpsStatus()) 
+		if (Utils.displayGpsStatus(this)) 
 		{
 			locationListener = new MyLocationListener(); 
 			locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
@@ -193,24 +192,6 @@ public class FenceSettingActivity extends ActionBarActivity {
 			startActivity(intent);
 		}
 	}
-	
-	
-	
-	
-	/*----Method to Check GPS is enable or disable ----- */  
-	 private Boolean displayGpsStatus() {  
-	  ContentResolver contentResolver = getBaseContext()  
-	  .getContentResolver();  
-	  boolean gpsStatus = Settings.Secure  
-	  .isLocationProviderEnabled(contentResolver,   
-	  LocationManager.GPS_PROVIDER);  
-	  if (gpsStatus) {  
-	   return true;  
-	  
-	  } else {  
-	   return false;  
-	  }  
-	 }  
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
