@@ -66,7 +66,7 @@ public class DatabaseCreationManager extends SQLiteOpenHelper {
 	
 	private static final String CONTACT_CREATE= "create table "
 		      + TABLE_CONTACT + "(" + COLUMN_CONTACT_ID
-		      + " INTEGER primary key, " 
+		      + " TEXT primary key, " 
 		      + COLUMN_NUMBER + " TEXT not null, "
 		      + COLUMN_NAME + " TEXT not null);";
 	

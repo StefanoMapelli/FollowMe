@@ -1,22 +1,38 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/LinearLayout1"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical" >
+    android:orientation="vertical"
+    android:weightSum="1" >
 
     <ListView
         android:id="@+id/contactList"
         android:layout_width="match_parent"
-        android:layout_height="406dp"
-        android:layout_gravity="left|top" >
+        android:layout_height="match_parent"
+        android:layout_weight="0.2" >
     </ListView>
 
-    <Button
-        android:id="@+id/contactSelectButton"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:layout_gravity="center"
-        android:text="Share" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:weightSum="1"
+        android:layout_weight="0.8" >
+        
+    	<Button
+        	android:id="@+id/contactSelectButton"
+        	android:layout_width="match_parent"
+        	android:layout_height="match_parent"
+        	android:layout_weight="0.5"
+        	android:onClick="selectContactForSharingOnClickHandler"
+        	android:text="Share" />
+    	
+    	<Button
+        	android:id="@+id/refreshButton"
+        	android:layout_width="match_parent"
+        	android:layout_height="match_parent"
+        	android:layout_weight="0.5"
+        	android:onClick="refreshContactsForSharingOnClickHandler"
+        	android:text="Refresh" />
+    </LinearLayout>
 
 </LinearLayout>

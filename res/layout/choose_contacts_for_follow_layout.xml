@@ -3,20 +3,36 @@
     android:id="@+id/LinearLayout1"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical" >
+    android:orientation="vertical"
+    android:weightSum="1" >
 
     <ListView
         android:id="@+id/contactListFollow"
         android:layout_width="match_parent"
-        android:layout_height="406dp"
-        android:layout_gravity="left|top" >
+        android:layout_height="match_parent"
+        android:layout_weight="0.2" >
     </ListView>
 
-    <Button
-        android:id="@+id/contactSelectFollowButton"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:layout_gravity="center"
-        android:text="Follow" />
-
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:weightSum="1"
+        android:layout_weight="0.8" >
+        
+    	<Button
+        	android:id="@+id/contactSelectFollowButton"
+        	android:layout_width="match_parent"
+        	android:layout_height="match_parent"
+        	android:layout_weight="0.5"
+        	android:onClick="selectContactForFollowOnClickHandler"
+        	android:text="Follow" />
+    	
+    	<Button
+        	android:id="@+id/refreshFollowButton"
+        	android:layout_width="match_parent"
+        	android:layout_height="match_parent"
+        	android:layout_weight="0.5"
+        	android:onClick="refreshContactsForFollowOnClickHandler"
+        	android:text="Refresh" />
+    </LinearLayout>
 </LinearLayout>
