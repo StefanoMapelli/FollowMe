@@ -175,7 +175,7 @@ public class PersonalDataManager {
 	  /**
 	   * Delete all rows of the table contact
 	   */
-	  public static void deleteAllContacts(String number) 
+	  public static void deleteAllContacts() 
 	  {		  
 		  database.delete(DatabaseCreationManager.TABLE_CONTACT, null, null);
 	  }
