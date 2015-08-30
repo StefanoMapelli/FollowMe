@@ -25,7 +25,8 @@
             android:layout_width="fill_parent"
             android:layout_height="match_parent"
             android:layout_weight="0.33"
-            android:text="Load" />
+            android:text="Load" 
+            android:onClick="loadPathsOnClickHandler" />
         
         <Button
             android:id="@+id/shareButton"
@@ -39,7 +40,7 @@
             android:layout_width="fill_parent"
             android:layout_height="match_parent"
             android:layout_weight="0.33"
-            android:text="Follow" />
+            android:text="Follow"/>
 
     </LinearLayout>
 </LinearLayout>

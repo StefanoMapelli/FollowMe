@@ -30,5 +30,6 @@
     <string name="title_activity_destination_receiver">DestinationReceiverActivity</string>
     <string name="title_activity_path_control">PathControlActivity</string>
     <string name="title_activity_path_receiver">PathReceiverActivity</string>
+    <string name="title_activity_saved_path_list">SavedPathListActivity</string>
 
 </resources>

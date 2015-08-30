@@ -103,6 +103,14 @@ public class MainActivity extends ActionBarActivity  {
 		
 	}
 	
+	
+	public void loadPathsOnClickHandler(View v)
+	{
+		//intent per l'attività di load path
+		Intent intent = new Intent(MainActivity.this,SavedPathListActivity.class);
+		startActivity(intent);
+	}
+	
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) 
 	{
