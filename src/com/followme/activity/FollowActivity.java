@@ -1,13 +1,6 @@
 package com.followme.activity;
 
-import java.util.List;
-
 import com.followme.activity.R;
-import com.followme.manager.DeviceDataManager;
-import com.followme.manager.ParseManager;
-import com.followme.manager.Utils;
-import com.followme.object.Contact;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;

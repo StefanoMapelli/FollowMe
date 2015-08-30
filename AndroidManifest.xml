@@ -152,8 +152,16 @@
         </activity>
         <activity
             android:name=".DestinationReceiverActivity"
-            android:label="@string/title_activity_destination_receiver" 
-            android:screenOrientation="portrait">
+            android:label="@string/title_activity_destination_receiver"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name=".PathControlActivity"
+            android:label="@string/title_activity_path_control" >
+        </activity>
+        <activity
+            android:name=".PathReceiverActivity"
+            android:label="@string/title_activity_path_receiver" >
         </activity>
     </application>
 
