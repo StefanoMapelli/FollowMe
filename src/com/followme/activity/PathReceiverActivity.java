@@ -81,7 +81,7 @@ public class PathReceiverActivity extends ActionBarActivity {
 				{
 					Log.i("GPS", "FIRST LOCATION");
 				 	location = loc;
-					String id = ParseManager.insertPosition(PathReceiverActivity.this, path, loc.getLatitude(), loc.getLongitude(), positionCounter);					 					 
+					ParseManager.insertPosition(PathReceiverActivity.this, path, loc.getLatitude(), loc.getLongitude(), positionCounter);					 					 
 					positionCounter++;
 					 
 					CameraPosition cameraPosition = new CameraPosition.Builder()
