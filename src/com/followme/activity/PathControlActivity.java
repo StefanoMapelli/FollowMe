@@ -43,7 +43,7 @@ public class PathControlActivity extends ActionBarActivity {
 		map = ((SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.followPathMap)).getMap();
 		
 		//recupero dati dall'intent
-		Object[] objects = (Object[]) getIntent().getSerializableExtra("contactsList");		
+		Object[] objects = (Object[]) getIntent().getSerializableExtra("selectedContacts");		
 		//aggiungo i dati alla lista nell view
 		for(int i=0; i < objects.length; i++)
 		{
