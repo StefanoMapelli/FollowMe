@@ -44,10 +44,7 @@ public class RequestsListActivity extends ActionBarActivity {
 		
 		//set the adapter
 		adapter = new RequestCustomAdapter(this, requestsItems);
-		listViewRequests.setAdapter(adapter);
-		
-		
-		
+		listViewRequests.setAdapter(adapter);		
 	}
 	
 	

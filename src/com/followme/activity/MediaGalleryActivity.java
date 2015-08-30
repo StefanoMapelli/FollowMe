@@ -29,6 +29,6 @@ public class MediaGalleryActivity extends Activity {
 		//create a path and insert requests for the users receivers for that path
 		int index = getIntent().getIntExtra("index",-1);
 		
-		layout.setFeatureItems(this, markers);
+		layout.setFeatureItems(index,this, markers);
 	}
 }

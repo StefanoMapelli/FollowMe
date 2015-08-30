@@ -26,6 +26,7 @@ public class DatabaseCreationManager extends SQLiteOpenHelper {
 	public static final String COLUMN_CONTACT_ID="id_contact";
 	public static final String COLUMN_NUMBER = "number";
 	public static final String COLUMN_NAME = "name";
+	public static final String COLUMN_CONTACT_PARSE_ID="id_parse";
 	
 	public static final String TABLE_POSITION = "position";
 	public static final String COLUMN_POSITION_ID = "id_position";
@@ -66,9 +67,10 @@ public class DatabaseCreationManager extends SQLiteOpenHelper {
 	
 	private static final String CONTACT_CREATE= "create table "
 		      + TABLE_CONTACT + "(" + COLUMN_CONTACT_ID
-		      + " TEXT primary key, " 
+		      + " INTEGER primary key autoincrement, " 
 		      + COLUMN_NUMBER + " TEXT not null, "
-		      + COLUMN_NAME + " TEXT not null);";
+		      + COLUMN_NAME + " TEXT not null,"
+		      + COLUMN_CONTACT_PARSE_ID + " TEXT not null);";
 	
 	private static final String POSITION_CREATE = "create table "
 		      + TABLE_POSITION 

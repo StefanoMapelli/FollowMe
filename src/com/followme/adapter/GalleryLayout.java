@@ -5,9 +5,7 @@ import java.util.ArrayList;
 import uk.co.senab.photoview.PhotoViewAttacher;
 
 import com.followme.activity.FullScreenVideoActivity;
-import com.followme.activity.PhotoInsertActivity;
 import com.followme.activity.R;
-import com.followme.activity.ShareActivity;
 import com.followme.manager.Utils;
 import com.followme.object.CustomMarker;
 import com.followme.object.PhotoMarker;
@@ -51,7 +49,7 @@ public class GalleryLayout extends HorizontalScrollView {
 		super(context);
 	}
 	
-	public void setFeatureItems(final Context context,ArrayList<CustomMarker> items){
+	public void setFeatureItems(int index, final Context context,ArrayList<CustomMarker> items){
 		LinearLayout internalWrapper = new LinearLayout(getContext());
 		internalWrapper.setLayoutParams(new LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.FILL_PARENT));
 		internalWrapper.setOrientation(LinearLayout.HORIZONTAL);
@@ -122,6 +120,7 @@ public class GalleryLayout extends HorizontalScrollView {
  				}
  			}
  		});
+ 		mActiveFeature = index;
  		mGestureDetector = new GestureDetector(new MyGestureDetector());
  	}
  	 	class MyGestureDetector extends SimpleOnGestureListener {

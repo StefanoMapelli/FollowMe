@@ -113,7 +113,7 @@ public class PersonalDataManager {
 	  public static int insertContact(Contact contact) 
 	  {
 		  ContentValues values = new ContentValues();
-		  values.put(DatabaseCreationManager.COLUMN_CONTACT_ID, contact.getId());
+		  values.put(DatabaseCreationManager.COLUMN_CONTACT_PARSE_ID, contact.getId());
 		  values.put(DatabaseCreationManager.COLUMN_NUMBER, contact.getPhoneNumber());
 		  values.put(DatabaseCreationManager.COLUMN_NAME, contact.getName());
 		  long contactId=database.insert(DatabaseCreationManager.TABLE_CONTACT, null,values);
@@ -130,7 +130,7 @@ public class PersonalDataManager {
 		  ArrayList<Contact> contactList=new ArrayList<Contact>();  
 		  
 		  String[] allColumnContact = new String[3];
-		  allColumnContact[0]=DatabaseCreationManager.COLUMN_CONTACT_ID;
+		  allColumnContact[0]=DatabaseCreationManager.COLUMN_CONTACT_PARSE_ID;
 		  allColumnContact[1]=DatabaseCreationManager.COLUMN_NUMBER;
 		  allColumnContact[2]=DatabaseCreationManager.COLUMN_NAME;
 
@@ -140,7 +140,7 @@ public class PersonalDataManager {
 		  {
 			  do
 			  {
-				  Contact contactObject=new Contact(cursor.getInt(0)+"",
+				  Contact contactObject=new Contact(cursor.getString(0)+"",
 						  cursor.getString(2),
 						  cursor.getString(1)
 						  );
@@ -168,7 +168,7 @@ public class PersonalDataManager {
 		  {
 			  return cursor.getString(0);
 		  }
-		  return null;
+		  return number;
 	  }
 	  
 	  

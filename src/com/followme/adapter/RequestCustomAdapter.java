@@ -3,6 +3,7 @@ package com.followme.adapter;
 import java.util.List;
 
 import com.followme.activity.R;
+import com.followme.manager.PersonalDataManager;
 import com.followme.object.Request;
 
 import android.app.Activity;
@@ -11,10 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.TextView;
-import android.widget.CompoundButton.OnCheckedChangeListener;
 
 public class RequestCustomAdapter extends ArrayAdapter<Request>{
 	
@@ -41,7 +39,9 @@ public class RequestCustomAdapter extends ArrayAdapter<Request>{
 		//per ogni elemento della lista setto il testo della text view type con il tipo di richiesta
 		//per ogni elemento della lista setto il testo della text view sender con il mittente
 		typeRequest.setText("Type: "+ requests.get(position).getType());
-		senderRequest.setText("Sender: "+ requests.get(position).getSender().getPhoneNumber());
+		senderRequest.setText("Sender: "+ 
+				PersonalDataManager.getNameOfContact(
+				requests.get(position).getSender().getPhoneNumber()));
 				
 		return convertView;	
 	}
