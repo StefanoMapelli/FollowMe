@@ -341,7 +341,7 @@ public class ShareActivity extends ActionBarActivity {
 				byte[] image = stream.toByteArray();
 				
 				//create media and insert in parse and in photos
-	    		Media photo = new Media(image, data.getStringExtra("title"), lastPosition, path, positionCounter);
+	    		Media photo = new Media(image, data.getStringExtra("title"), lastPosition, path, positionCounter-1);
 	        	ParseManager.insertPhoto(this, photo);
 	        	photos.add(photo);
 	    		        
@@ -376,7 +376,7 @@ public class ShareActivity extends ActionBarActivity {
 					e.printStackTrace();
 				}
 				
-				Media video = new Media(inputData, data.getStringExtra("title"), lastPosition, path, positionCounter);
+				Media video = new Media(inputData, data.getStringExtra("title"), lastPosition, path, positionCounter-1);
 				ParseManager.insertVideo(this, video);
 				videos.add(video);				
 				
