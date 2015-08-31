@@ -245,7 +245,7 @@ public class SharingReceiverActivity extends ActionBarActivity {
 						{
 							//add marker
 							Marker m = map.addMarker(new MarkerOptions()
-							.position(new LatLng(positionList.get(photo.getCounter()-1).getLatitude(),
+							.position(new LatLng(positionList.get(photo.getCounter()).getLatitude(),
 									positionList.get(photo.getCounter()).getLongitude()))
 									.snippet(photo.getTitle())
 									.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE))
