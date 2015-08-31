@@ -19,6 +19,7 @@ import com.followme.manager.Utils;
 import com.followme.object.Contact;
 import com.followme.object.CustomMarker;
 import com.followme.object.Media;
+import com.followme.object.Path;
 import com.followme.object.PhotoMarker;
 import com.followme.object.Position;
 import com.followme.object.VideoMarker;
@@ -61,7 +62,8 @@ public class ShareActivity extends ActionBarActivity {
 	private LocationListener locationListener=null;  
 	private Location location = null;
 	private Position lastPosition = null;
-	private ParseObject path;
+	private ParseObject pathParseObject;
+	private Path path;
 	private int positionCounter;
 	private int markerCounter;
 	private GoogleMap map;
@@ -110,7 +112,8 @@ public class ShareActivity extends ActionBarActivity {
 		//create a path and insert requests for the users receivers for that path
 		String userId = getIntent().getStringExtra("userId");
 		String pathId = ParseManager.insertPath(this);
-		path = ParseManager.getPathbyId(this, pathId);
+		pathParseObject = ParseManager.getPathbyId(this, pathId);
+		path = new Path(pathParseObject.getObjectId(), "", "");
 		for(int i=0; i<contacts.length; i++)
 		{
 			ParseManager.insertRequest(this, "condivisione", userId, contacts[i].getId(), pathId, null, null);
@@ -128,7 +131,7 @@ public class ShareActivity extends ActionBarActivity {
 			if(location != null)
 			{
 				Log.i("GPS", "FIRST LOCATION");
-				String id = ParseManager.insertPosition(ShareActivity.this, path, location.getLatitude(), location.getLongitude(), positionCounter);
+				String id = ParseManager.insertPosition(ShareActivity.this, pathParseObject, location.getLatitude(), location.getLongitude(), positionCounter);
 				 
 				lastPosition = new Position(location.getLatitude(),location.getLongitude(), positionCounter);
 				lastPosition.setId(id);
@@ -338,7 +341,7 @@ public class ShareActivity extends ActionBarActivity {
 				byte[] image = stream.toByteArray();
 				
 				//create media and insert in parse and in photos
-	    		Media photo = new Media(image, data.getStringExtra("title"), lastPosition);
+	    		Media photo = new Media(image, data.getStringExtra("title"), lastPosition, path, positionCounter);
 	        	ParseManager.insertPhoto(this, photo);
 	        	photos.add(photo);
 	    		        
@@ -373,7 +376,7 @@ public class ShareActivity extends ActionBarActivity {
 					e.printStackTrace();
 				}
 				
-				Media video = new Media(inputData, data.getStringExtra("title"), lastPosition);
+				Media video = new Media(inputData, data.getStringExtra("title"), lastPosition, path, positionCounter);
 				ParseManager.insertVideo(this, video);
 				videos.add(video);				
 				
@@ -442,7 +445,7 @@ public class ShareActivity extends ActionBarActivity {
 				{
 					Log.i("GPS", "FIRST LOCATION");
 				 	location = loc;
-					String id = ParseManager.insertPosition(ShareActivity.this, path, loc.getLatitude(), loc.getLongitude(), positionCounter);
+					String id = ParseManager.insertPosition(ShareActivity.this, pathParseObject, loc.getLatitude(), loc.getLongitude(), positionCounter);
 					 
 					lastPosition = new Position(loc.getLatitude(),loc.getLongitude(), positionCounter);
 					lastPosition.setId(id);
@@ -466,7 +469,7 @@ public class ShareActivity extends ActionBarActivity {
 					Toast.makeText(ShareActivity.this, "speed: "+loc.getSpeed()+" accuracy: "+loc.getAccuracy(), Toast.LENGTH_LONG).show();
 					Log.i("GPS", "LOCATION FOUND");
 					    
-					String id = ParseManager.insertPosition(ShareActivity.this, path, loc.getLatitude(), loc.getLongitude(), positionCounter);
+					String id = ParseManager.insertPosition(ShareActivity.this, pathParseObject, loc.getLatitude(), loc.getLongitude(), positionCounter);
 					    
 					lastPosition = new Position(loc.getLatitude(),loc.getLongitude(), positionCounter);
 					lastPosition.setId(id);

@@ -221,12 +221,21 @@ public class ParseManager {
 			po = getPositionbyId(context, photo.getPosition().getId());
 			newPhoto.put("idPosizione", po);
 		}
+		//get path parse object
+		if(photo.getPath() != null)
+		{
+			ParseObject po=null;
+			po = getPathbyId(context, photo.getPath().getId());
+			newPhoto.put("idPercorso", po);
+		}
 		final ParseFile file = new ParseFile("photo.jpg", photo.getMedia());
 		final String title = photo.getTitle();
+		final int counter = photo.getCounter();
 		file.saveInBackground(new SaveCallback() {
 			  public void done(ParseException e) {
 				  newPhoto.put("file", file);
 					newPhoto.put("didascalia", title);
+					newPhoto.put("contatore", counter);
 					newPhoto.saveInBackground(new SaveCallback(){
 						public void done(ParseException e)
 						{
@@ -254,13 +263,22 @@ public class ParseManager {
 			po = getPositionbyId(context, video.getPosition().getId());
 			newPhoto.put("idPosizione", po);
 		}
+		//get path parse object
+		if(video.getPath() != null)
+		{
+			ParseObject po=null;
+			po = getPathbyId(context, video.getPath().getId());
+			newPhoto.put("idPercorso", po);
+		}
 		final ParseFile file = new ParseFile("video.mp4", video.getMedia());
 		final String title = video.getTitle();
+		final int counter = video.getCounter();
 		Log.i("UPLOAD","ORA INIZIO UPLOAD:"+new Date().toString());
 		file.saveInBackground(new SaveCallback() {
 			  public void done(ParseException e) {
 				  newPhoto.put("file", file);
 					newPhoto.put("didascalia", title);
+					newPhoto.put("contatore", counter);
 					newPhoto.saveInBackground(new SaveCallback(){
 						public void done(ParseException e)
 						{
@@ -607,16 +625,16 @@ public class ParseManager {
 	 * @param position
 	 * @return
 	 */
-	public static List<Media> getPhotosFromPosition(Context context, Position position)
+	public static List<Media> getNewPhotos(Context context, ParseObject path, int counter)
 	{
 		List<Media> newPhotos = new ArrayList<Media>();
 		List<ParseObject> objects = null;
 		Parse.initialize(context,"x9hwNnRfTCCYGXPVJNKaR7zYTIMOdKeLkerRQJT2" ,"hi7GT6rUlp9uTfw6XQzdEjnTqwgPnRPoikPehgVf");
-		
-		ParseObject positionPo = getPositionbyId(context, position.getId());
-		
+				
 		ParseQuery<ParseObject> query = ParseQuery.getQuery("Foto");
-		query.whereEqualTo("idPosizione", positionPo);
+		query.whereEqualTo("idPercorso", path);
+		query.whereGreaterThan("contatore", counter);
+		query.addAscendingOrder("contatore");
 		
 		try {
 			objects=query.find();
@@ -635,7 +653,7 @@ public class ParseManager {
 			try {
 				mediaItem = new Media(po.getParseFile("file").getData(),
 									  po.getString("didascalia"),
-									  position);
+									  null,null, po.getInt("contatore"));
 			} catch (ParseException e) {
 				e.printStackTrace();
 			}
@@ -650,16 +668,16 @@ public class ParseManager {
 	  * @param position
 	  * @return
 	  */
-	public static List<Media> getVideosFromPosition(Context context, Position position)
+	public static List<Media> getNewVideos(Context context, ParseObject path, int counter)
 	{
 		List<Media> newVides = new ArrayList<Media>();
 		List<ParseObject> objects = null;
 		Parse.initialize(context,"x9hwNnRfTCCYGXPVJNKaR7zYTIMOdKeLkerRQJT2" ,"hi7GT6rUlp9uTfw6XQzdEjnTqwgPnRPoikPehgVf");
-		
-		ParseObject positionPo = getPositionbyId(context, position.getId());
-		
+				
 		ParseQuery<ParseObject> query = ParseQuery.getQuery("Video");
-		query.whereEqualTo("idPosizione", positionPo);
+		query.whereEqualTo("idPercorso", path);
+		query.whereGreaterThan("contatore", counter);
+		query.addAscendingOrder("contatore");
 		
 		try {
 			objects=query.find();
@@ -677,8 +695,8 @@ public class ParseManager {
 			po = i.next();
 			try {
 				mediaItem = new Media(po.getParseFile("file").getData(),
-									  po.getString("didascalia"),
-									  position);
+						  po.getString("didascalia"),
+						  null,null, po.getInt("contatore"));
 			} catch (ParseException e) {
 				e.printStackTrace();
 			}

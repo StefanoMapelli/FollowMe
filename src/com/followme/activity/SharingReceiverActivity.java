@@ -50,6 +50,8 @@ public class SharingReceiverActivity extends ActionBarActivity {
 	
 	private Request request;
 	private ParseObject path;
+	private int counterPhoto;
+	private int counterVideo;
 	private int counterPosition;
 	private GoogleMap map;
 	private MapWrapperLayout mapWrapperLayout;
@@ -76,6 +78,8 @@ public class SharingReceiverActivity extends ActionBarActivity {
 		map.getUiSettings().setMapToolbarEnabled(false);
 		request = (Request) getIntent().getSerializableExtra("acceptedRequest");
 		counterPosition=-1;
+		counterPhoto = -1;
+		counterVideo = -1;
 		
 		//recupero l'id del percorso relativo alla richiesta
 		path=ParseManager.getPathOfRequest(this, request);
@@ -226,93 +230,95 @@ public class SharingReceiverActivity extends ActionBarActivity {
 							MapManager.drawPolygonPath(positionList, map);
 						}
 					});
+				
 					
 					counterPosition=positionList.get(positionList.size()-1).getCounter();
-					
-					//ricerco i file multimediali
-					for (Position p : newPositions)
-					{
-						List<Media> photosAtGivenPosition = 
-								ParseManager.getPhotosFromPosition(SharingReceiverActivity.this, p);
-						for (final Media photo : photosAtGivenPosition)
-						{
-							handler.post(new Runnable() {
-								@Override
-								public void run() 
-								{
-									//add marker
-									Marker m = map.addMarker(new MarkerOptions()
-						            .position(new LatLng(photo.getPosition().getLatitude(),
-						            					 photo.getPosition().getLongitude()))
-						            .snippet(photo.getTitle())
-						            .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE))
-						            .title("photo"+String.valueOf(markerCounter)));
-							        
-							        
-							        Date dt = new Date();
-									File newFile = new File(Environment.getExternalStorageDirectory(),
-						                      dt.toString()+".jpg");
-							        //copy bytes to file
-							        try {
-							            FileOutputStream outputStream = new FileOutputStream(newFile.getAbsolutePath()); 
-
-							            outputStream.write(photo.getMedia());
-							            Thread.sleep(1000);
-							            outputStream.flush();
-							            outputStream.close();							            							            
-
-							        } catch (Exception e) {
-							            e.printStackTrace();
-							        }
-							        
-							        markers.add(new PhotoMarker(m.getTitle(), m.getSnippet(),newFile.getAbsolutePath()));  
-						        	markerCounter++;
-								}
-							});				        
-						}
-						photos.addAll(photosAtGivenPosition);
-						
-						List<Media> videosAtGivenPosition = 
-								ParseManager.getVideosFromPosition(SharingReceiverActivity.this, p);
-						for (final Media video : videosAtGivenPosition)
-						{
-							handler.post(new Runnable() {
-								@Override
-								public void run() 
-								{
-									//add marker
-									Marker m = map.addMarker(new MarkerOptions()
-						            .position(new LatLng(video.getPosition().getLatitude(),
-						            					 video.getPosition().getLongitude()))
-						            .snippet(video.getTitle())
-						            .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN))
-						            .title("video"+String.valueOf(markerCounter)));
-							        map.getUiSettings().setMapToolbarEnabled(false);
-							        
-							        Date dt = new Date();
-									File newFile = new File(Environment.getExternalStorageDirectory(),
-										                      dt.toString()+".mp4");
-							        //copy bytes to file
-							        try {
-							        	FileOutputStream outputStream = new FileOutputStream(newFile.getAbsolutePath());
-
-							            outputStream.write(video.getMedia());
-							            Thread.sleep(1000);
-							            outputStream.flush();
-							            outputStream.close();							            
-							        } catch (Exception e) {
-							            e.printStackTrace();
-							        }
-							        
-							        markers.add(new VideoMarker(m.getTitle(), m.getSnippet(),newFile.getAbsolutePath()));  
-						        	markerCounter++;
-								}
-							});															
-						}
-						videos.addAll(videosAtGivenPosition);
-					}
 				}
+
+				List<Media> newPhotos = ParseManager.getNewPhotos(SharingReceiverActivity.this, path, counterPhoto);
+				for (final Media photo : newPhotos)
+				{
 					
+					handler.post(new Runnable() {
+						@Override
+						public void run() 
+						{
+							//add marker
+							Marker m = map.addMarker(new MarkerOptions()
+							.position(new LatLng(positionList.get(photo.getCounter()).getLatitude(),
+									positionList.get(photo.getCounter()).getLongitude()))
+									.snippet(photo.getTitle())
+									.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE))
+									.title("photo"+String.valueOf(markerCounter)));
+
+
+							Date dt = new Date();
+							File newFile = new File(Environment.getExternalStorageDirectory(),
+									dt.toString()+".jpg");
+							//copy bytes to file
+							try {
+								FileOutputStream outputStream = new FileOutputStream(newFile.getAbsolutePath()); 
+
+								outputStream.write(photo.getMedia());
+								Thread.sleep(1000);
+								outputStream.flush();
+								outputStream.close();							            							            
+
+							} catch (Exception e) {
+								e.printStackTrace();
+							}
+
+							markers.add(new PhotoMarker(m.getTitle(), m.getSnippet(),newFile.getAbsolutePath()));  
+							markerCounter++;
+						}
+					});	
+				}
+				if(!newPhotos.isEmpty())
+					counterPhoto=newPhotos.get(newPhotos.size()-1).getCounter();
+				photos.addAll(newPhotos);
+				
+
+				List<Media> newVideos = 
+						ParseManager.getNewVideos(SharingReceiverActivity.this, path, counterVideo);
+				for (final Media video : newVideos)
+				{
+					handler.post(new Runnable() {
+						@Override
+						public void run() 
+						{
+							//add marker
+							Marker m = map.addMarker(new MarkerOptions()
+							.position(new LatLng(positionList.get(video.getCounter()).getLatitude(),
+									positionList.get(video.getCounter()).getLongitude()))
+									.snippet(video.getTitle())
+									.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN))
+									.title("video"+String.valueOf(markerCounter)));
+							map.getUiSettings().setMapToolbarEnabled(false);
+
+							Date dt = new Date();
+							File newFile = new File(Environment.getExternalStorageDirectory(),
+									dt.toString()+".mp4");
+							//copy bytes to file
+							try {
+								FileOutputStream outputStream = new FileOutputStream(newFile.getAbsolutePath());
+
+								outputStream.write(video.getMedia());
+								Thread.sleep(1000);
+								outputStream.flush();
+								outputStream.close();							            
+							} catch (Exception e) {
+								e.printStackTrace();
+							}
+
+							markers.add(new VideoMarker(m.getTitle(), m.getSnippet(),newFile.getAbsolutePath()));  
+							markerCounter++;
+						}
+					});															
+				}
+				if(!newVideos.isEmpty())
+					counterVideo=newVideos.get(newVideos.size()-1).getCounter();
+				videos.addAll(newVideos);
+
 				try {
 					Thread.sleep(5000);
 				} catch (InterruptedException e) {

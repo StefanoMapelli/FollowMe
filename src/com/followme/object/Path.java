@@ -6,6 +6,17 @@ public class Path {
 	private String title;
 	private String owner;
 	
+	public Path()
+	{
+		
+	}
+	
+	public Path(String id, String title, String owner) {
+		super();
+		this.id = id;
+		this.title = title;
+		this.owner = owner;
+	}
 	public String getTitle() {
 		return title;
 	}

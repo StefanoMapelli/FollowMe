@@ -3,20 +3,19 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:weightSum="1" >
+    android:weightSum="1" 
+    android:descendantFocusability="blocksDescendants">
     
     <TextView
         android:id="@+id/savedPathTitle"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_weight="0.5"
-        android:clickable="true"/>
+        android:layout_weight="0.5"/>
     
     <TextView
         android:id="@+id/savedPathOwner"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_weight="0.5"
-        android:clickable="true"/>
+        android:layout_weight="0.5"/>
     
 </LinearLayout>

@@ -11,17 +11,21 @@ public class Media implements Serializable{
 	private byte[] media;
 	private String title;
 	private Position position;
+	private Path path;
+	private int counter;
 	
 	public Media()
 	{
 		
 	}
 	
-	public Media(byte[] media, String title, Position position) {
+	public Media(byte[] media, String title, Position position, Path path, int counter) {
 		super();
 		this.media = media;
 		this.title = title;
 		this.position = position;
+		this.path = path;
+		this.counter = counter;
 	}
 	public byte[] getMedia() {
 		return media;
@@ -40,5 +44,21 @@ public class Media implements Serializable{
 	}
 	public void setPosition(Position position) {
 		this.position = position;
+	}
+
+	public Path getPath() {
+		return path;
+	}
+
+	public void setPath(Path path) {
+		this.path = path;
+	}
+
+	public int getCounter() {
+		return counter;
+	}
+
+	public void setCounter(int counter) {
+		this.counter = counter;
 	}
 }

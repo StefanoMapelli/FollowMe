@@ -131,7 +131,7 @@ public class ShowDetailsActivity extends ActionBarActivity {
 	public void declineRequestOnClickHandler(View v) 
 	{				
 		//eliminare la richiesta da parse db
-		//ParseManager.deleteRequest(this, request.getId());
+		ParseManager.deleteRequest(this, request.getId());
 		Intent intent = new Intent();
 		intent.putExtra("requestToRemove", request);
 		setResult(RESULT_OK, intent);

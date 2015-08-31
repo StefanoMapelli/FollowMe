@@ -348,15 +348,15 @@ public class PersonalDataManager {
 		  ArrayList<Media> videoList=new ArrayList<Media>();  
 
 		  Cursor cursor=database.rawQuery("SELECT video.id_video, video.position, video.title, video.file, position.id_position, position.counter, position.latitude, position.longitude FROM video, position WHERE video.position=position.id_position AND position.id_path="+idPath, null);
-
-		  cursor.moveToFirst();
-
-		  if(cursor.moveToFirst())
+		  if(cursor.getCount() > 0)
 		  {
+			  cursor.moveToFirst();
 			  do
 			  {
 				  Media mediaObject=new Media();
-				  Position position=new Position(cursor.getDouble(6),cursor.getDouble(7),cursor.getInt(5));
+				  Position position=new Position(cursor.getDouble(6),
+						  						 cursor.getDouble(7),
+						  						 cursor.getInt(5));
 				  position.setId(cursor.getInt(4)+"");
 				  mediaObject.setPosition(position);
 				  mediaObject.setMedia(cursor.getBlob(3));

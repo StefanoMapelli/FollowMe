@@ -3,7 +3,6 @@ package com.followme.activity;
 import java.util.ArrayList;
 
 import com.followme.adapter.PathCustomAdapter;
-import com.followme.adapter.RequestCustomAdapter;
 import com.followme.manager.PersonalDataManager;
 import com.followme.object.Path;
 
@@ -19,8 +18,8 @@ import android.widget.ListView;
 
 public class SavedPathListActivity extends ActionBarActivity {
 	
-	ArrayList<Path> pathList;
-	PathCustomAdapter adapter;
+	private ArrayList<Path> pathList;
+	private PathCustomAdapter adapter;
 	private ListView listView;
 
 	@Override
@@ -28,8 +27,13 @@ public class SavedPathListActivity extends ActionBarActivity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.saved_path_list_layout);
 		
-		listView = (ListView) this.findViewById(R.id.savedPathListView);
+		listView = (ListView) this.findViewById(R.id.savedPathListView);		
+		pathList=PersonalDataManager.getAllPaths();
 		
+		//set the adapter
+		adapter = new PathCustomAdapter(this, pathList);
+		listView.setAdapter(adapter);
+
 		listView.setOnItemClickListener(new OnItemClickListener() {
 			
    			@Override
@@ -41,14 +45,6 @@ public class SavedPathListActivity extends ActionBarActivity {
    				startActivity(intent);
 			}
         });
-		
-		pathList=PersonalDataManager.getAllPaths();
-		
-		//set the adapter
-		adapter = new PathCustomAdapter(this, pathList);
-		listView.setAdapter(adapter);
-
-		
 	}
 
 	@Override

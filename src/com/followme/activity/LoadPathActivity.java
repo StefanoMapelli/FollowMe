@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.Iterator;
 import java.util.List;
 
 import com.followme.adapter.MapWrapperLayout;
@@ -12,21 +11,20 @@ import com.followme.adapter.OnInfoWindowElemTouchListener;
 import com.followme.manager.MapManager;
 import com.followme.manager.PersonalDataManager;
 import com.followme.manager.Utils;
-import com.followme.object.Contact;
 import com.followme.object.CustomMarker;
 import com.followme.object.Media;
 import com.followme.object.PhotoMarker;
 import com.followme.object.Position;
-import com.followme.object.Request;
 import com.followme.object.VideoMarker;
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.GoogleMap.InfoWindowAdapter;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.parse.ParseObject;
 
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.ActionBarActivity;
@@ -35,19 +33,16 @@ import android.graphics.Bitmap;
 import android.media.ThumbnailUtils;
 import android.os.Bundle;
 import android.os.Environment;
-import android.os.Handler;
 import android.provider.MediaStore;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.ListView;
 import android.widget.TextView;
 
 public class LoadPathActivity extends ActionBarActivity {
 	
-	private int counterPosition;
 	private GoogleMap map;
 	private MapWrapperLayout mapWrapperLayout;
 	private ViewGroup infoWindow;
@@ -60,8 +55,6 @@ public class LoadPathActivity extends ActionBarActivity {
 	private List<Media> videos = new ArrayList<Media>();
 	private ArrayList<CustomMarker> markers = new ArrayList<CustomMarker>();
 	private int markerCounter = 0;
-	private String pathLocalId;
-	private ListView listView;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -70,8 +63,7 @@ public class LoadPathActivity extends ActionBarActivity {
 		
 		FragmentManager fm = getSupportFragmentManager();
 		map = ((SupportMapFragment) fm.findFragmentById(R.id.mapLoad)).getMap();
-		mapWrapperLayout = (MapWrapperLayout)findViewById(R.id.mapLoad);
-		counterPosition=-1;
+		mapWrapperLayout = (MapWrapperLayout)findViewById(R.id.mapLoadLinearLayout);
 		map.getUiSettings().setMapToolbarEnabled(false);
 		
 		String idPath=getIntent().getStringExtra("pathLocalId");
@@ -190,6 +182,15 @@ public class LoadPathActivity extends ActionBarActivity {
         
         //disegno il percorso con tutte le posizioni
         MapManager.drawPolygonPath(positionList, map);
+        
+        //zoommo
+        CameraPosition cameraPosition = new CameraPosition.Builder()
+		.target(new LatLng(positionList.get(0).getLatitude(),positionList.get(0).getLongitude()))
+		.zoom(18)
+		.bearing(0)           
+		.tilt(0)             
+		.build();
+		map.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
         
         //inserisco i marker per le foto
         for (Media photo : photos)
