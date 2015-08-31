@@ -167,7 +167,13 @@
         </activity>
         <activity
             android:name=".SavedPathListActivity"
-            android:label="@string/title_activity_saved_path_list" >
+            android:label="@string/title_activity_saved_path_list"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name=".LoadPathActivity"
+            android:label="@string/title_activity_load_path" 
+            android:screenOrientation="portrait" >
         </activity>
     </application>
 

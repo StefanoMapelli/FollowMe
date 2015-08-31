@@ -8,29 +8,45 @@ import com.followme.manager.PersonalDataManager;
 import com.followme.object.Path;
 
 import android.support.v7.app.ActionBarActivity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 
 public class SavedPathListActivity extends ActionBarActivity {
 	
 	ArrayList<Path> pathList;
 	PathCustomAdapter adapter;
-	private ListView listViewRequests;
+	private ListView listView;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.saved_path_list_layout);
 		
-		listViewRequests = (ListView) this.findViewById(R.id.savedPathListView);
+		listView = (ListView) this.findViewById(R.id.savedPathListView);
+		
+		listView.setOnItemClickListener(new OnItemClickListener() {
+			
+   			@Override
+			public void onItemClick(AdapterView<?> parent, View view,
+					int position, long id) {
+				
+   				Intent intent = new Intent(SavedPathListActivity.this, LoadPathActivity.class);
+   				intent.putExtra("pathLocalId", pathList.get((int)id).getId());
+   				startActivity(intent);
+			}
+        });
 		
 		pathList=PersonalDataManager.getAllPaths();
 		
 		//set the adapter
 		adapter = new PathCustomAdapter(this, pathList);
-		listViewRequests.setAdapter(adapter);
+		listView.setAdapter(adapter);
 
 		
 	}
