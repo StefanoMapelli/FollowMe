@@ -46,9 +46,4 @@ public class RequestCustomAdapter extends ArrayAdapter<Request>{
 		return convertView;	
 	}
 
-{
-	
-	
-}
-
 }

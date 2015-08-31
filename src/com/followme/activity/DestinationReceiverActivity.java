@@ -89,8 +89,6 @@ public class DestinationReceiverActivity extends ActionBarActivity {
 			Log.i("GPS", "gps not enabled");
 		}
 		
-		Toast.makeText(this, "Hold tap to create your fence on the map",Toast.LENGTH_LONG).show();
-		
 		checkDestinationThread = new CheckDestinationStatus();
 		checkDestinationThread.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 		

@@ -5,7 +5,6 @@ import com.followme.manager.MapManager;
 import com.followme.manager.ParseManager;
 import com.followme.manager.Utils;
 import com.followme.object.Fence;
-import com.followme.object.Position;
 import com.followme.object.Request;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -91,8 +90,6 @@ public class FenceReceiverActivity extends ActionBarActivity {
 		{
 			Log.i("GPS", "gps not enabled");
 		}
-		
-		Toast.makeText(this, "Hold tap to create your fence on the map",Toast.LENGTH_LONG).show();
 		
 		checkFenceThread = new CheckFenceStatus();
 		checkFenceThread.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);

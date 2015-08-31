@@ -5,11 +5,36 @@
     android:orientation="vertical"
     android:weightSum="1" >
     
-    <TextView
-        android:id="@+id/requestType"
+   <fragment
+        android:id="@+id/detailsMap"
+        android:name="com.google.android.gms.maps.SupportMapFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_weight="0.33"
-        android:text="Dettagli" />
+        android:layout_weight="0.2"/>
+	
+	<LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:weightSum="1"
+        android:layout_weight="0.8"
+        android:orientation="horizontal" >
+
+        <Button
+            android:id="@+id/acceptButton"
+            android:layout_width="fill_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="0.5"
+            android:onClick="acceptRequestOnClickHandler"
+            android:text="Accept" />
+        
+        <Button
+            android:id="@+id/declineButton"
+            android:layout_width="fill_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="0.5"
+            android:onClick="declineRequestOnClickHandler"
+            android:text="Decline" />
+        
+     </LinearLayout>
     
 </LinearLayout>

@@ -116,20 +116,68 @@ public class RequestsListActivity extends ActionBarActivity {
 		
 		//eliminare la richiesta da parse db
 		ParseManager.deleteRequest(this, itemToRemove.getId());
+		//reset the arraylist
+		int i = 0;
+		for (Request r : requestsItems)
+		{
+			if(r.getId().compareTo(itemToRemove.getId())==0)
+			{
+				requestsItems.remove(i);
+				break;
+			}
+			i++;
+		}
+		if(requestsItems.isEmpty())
+		{
+			finish();
+		}
 		//rimuovere dalla listview
-		adapter.remove(itemToRemove);
-
+		adapter.remove(itemToRemove);		
+	}
+	
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) 
+	{
+		//sta ritornando l'attività first use
+		if(requestCode==0)
+		{
+			if(resultCode==RESULT_OK)
+			{
+				Request itemToRemove = (Request)data.getSerializableExtra("requestToRemove");
+				//rimuovere dalla listview
+				//reset the adapter
+				int i = 0;
+				for (Request r : requestsItems)
+				{
+					if(r.getId().compareTo(itemToRemove.getId())==0)
+					{
+						requestsItems.remove(i);
+						break;
+					}
+					i++;
+				}
+				adapter = new RequestCustomAdapter(this, requestsItems);
+				listViewRequests.setAdapter(adapter);	
+				
+				if(requestsItems.isEmpty())
+				{
+					finish();
+				}
+			}
+		}
 	}
 	
 	//onClickHandler quando vengono aperti i dettagli di una richiesta
 	public void showDetailsRequestOnClickHandler(View v) 
 	{
 		//quando apriamo i dettagli di una richiesta si apre la nuova attività che mostra i dettagli
-		Request itemToShow = (Request)v.getTag();
+		View parentRow = (View) v.getParent();
+		int position = listViewRequests.getPositionForView(parentRow);
+		Request itemToShow = requestsItems.get(position);
 		
 		Intent intent = new Intent(RequestsListActivity.this,ShowDetailsActivity.class);
 		intent.putExtra("requestShow", itemToShow);
-		startActivity(intent);
+		startActivityForResult(intent,0);
 		
 	}
 	
