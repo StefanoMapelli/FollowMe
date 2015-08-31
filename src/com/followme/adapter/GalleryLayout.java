@@ -35,6 +35,7 @@ public class GalleryLayout extends HorizontalScrollView {
 
 	private ArrayList mItems = null;
 	private GestureDetector mGestureDetector;
+	private ImageView activeImageView;
 	private int mActiveFeature = 0;
 
 	public GalleryLayout(Context context, AttributeSet attrs, int defStyle) {
@@ -49,12 +50,20 @@ public class GalleryLayout extends HorizontalScrollView {
 		super(context);
 	}
 	
+	@Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+        
+        scrollTo(mActiveFeature*activeImageView.getWidth(), 0);
+    }
+	
 	public void setFeatureItems(int index, final Context context,ArrayList<CustomMarker> items){
 		LinearLayout internalWrapper = new LinearLayout(getContext());
 		internalWrapper.setLayoutParams(new LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.FILL_PARENT));
 		internalWrapper.setOrientation(LinearLayout.HORIZONTAL);
 		addView(internalWrapper);
 		this.mItems = items;
+		int i=0;
 		for(CustomMarker cm : items){
 			DisplayMetrics metrics = new DisplayMetrics();
 			((Activity) context).getWindowManager().getDefaultDisplay().getMetrics(metrics);
@@ -64,7 +73,7 @@ public class GalleryLayout extends HorizontalScrollView {
 			TextView title = (TextView) featureLayout.getChildAt(1);
 			FrameLayout fl = (FrameLayout) featureLayout.getChildAt(0);
 			ImageView image = (ImageView) fl.getChildAt(0);
-			
+						
 			if(cm instanceof PhotoMarker)
 			{				
 				PhotoMarker pm = (PhotoMarker) cm;
@@ -98,8 +107,14 @@ public class GalleryLayout extends HorizontalScrollView {
 					
 				});
 			}
+			if(i==index)
+			{
+				activeImageView = image;
+			}
  			internalWrapper.addView(featureLayout);
+ 			i++;
  		}
+		mActiveFeature=index;
  		setOnTouchListener(new View.OnTouchListener() {
  			@Override
  			public boolean onTouch(View v, MotionEvent event) {
@@ -120,7 +135,6 @@ public class GalleryLayout extends HorizontalScrollView {
  				}
  			}
  		});
- 		mActiveFeature = index;
  		mGestureDetector = new GestureDetector(new MyGestureDetector());
  	}
  	 	class MyGestureDetector extends SimpleOnGestureListener {

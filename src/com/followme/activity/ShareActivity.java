@@ -19,7 +19,6 @@ import com.followme.manager.Utils;
 import com.followme.object.Contact;
 import com.followme.object.CustomMarker;
 import com.followme.object.Media;
-import com.followme.object.Path;
 import com.followme.object.PhotoMarker;
 import com.followme.object.Position;
 import com.followme.object.VideoMarker;
