@@ -9,6 +9,7 @@ public class Position implements Serializable{
 	 */
 	private static final long serialVersionUID = -657863294709893140L;
 	private String id;
+	private String parseId;
 	private String path;
 	private double latitude;
 	private double longitude;
@@ -59,6 +60,16 @@ public class Position implements Serializable{
 
 	public void setPath(String path) {
 		this.path = path;
+	}
+
+
+	public String getParseId() {
+		return parseId;
+	}
+
+
+	public void setParseId(String parseId) {
+		this.parseId = parseId;
 	}
 	
 	

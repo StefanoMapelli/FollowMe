@@ -221,12 +221,13 @@ public class PersonalDataManager {
 	  {
 		  ArrayList<Position> positionList=new ArrayList<Position>();  
 		  
-		  String[] allPositionColumns = new String[5];
+		  String[] allPositionColumns = new String[6];
 		  allPositionColumns[0]=DatabaseCreationManager.COLUMN_POSITION_ID;
 		  allPositionColumns[1]=DatabaseCreationManager.COLUMN_PATH;
 		  allPositionColumns[2]=DatabaseCreationManager.COLUMN_COUNTER;
 		  allPositionColumns[3]=DatabaseCreationManager.COLUMN_LATITUDE_POSITION;
 		  allPositionColumns[4]=DatabaseCreationManager.COLUMN_LONGITUDE_POSITION;
+		  allPositionColumns[5]=DatabaseCreationManager.COLUMN_POSITION_PARSE_ID;
 		  
 		  Cursor cursor =database.query(DatabaseCreationManager.TABLE_POSITION, allPositionColumns, "id_path="+idPath, null, null, null, "counter asc");
 		  
@@ -237,7 +238,8 @@ public class PersonalDataManager {
 			  {
 				  Position positionObject=new Position(cursor.getDouble(3),cursor.getDouble(4),cursor.getInt(2));
 				  positionObject.setId(cursor.getInt(0)+"");
-				  positionObject.setId(cursor.getInt(1)+"");
+				  positionObject.setPath(cursor.getInt(1)+"");
+				  positionObject.setParseId(cursor.getString(5));
 				  positionList.add(positionObject);
 				  cursor.moveToNext();
 			  }
@@ -260,6 +262,7 @@ public class PersonalDataManager {
 			
 		  while(i.hasNext())
 		  {
+			  ArrayList<Media> photoAll = getAllPhotosOfPath(idPath);
 			  ContentValues values = new ContentValues();
 			  photoItem = i.next();
 			  values.put(DatabaseCreationManager.COLUMN_FILE_PATH, photoItem.getFilePath());
