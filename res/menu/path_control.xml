@@ -4,9 +4,9 @@
     tools:context="com.followme.activity.PathControlActivity" >
 
     <item
-        android:id="@+id/action_settings"
+        android:id="@+id/action_autoFocus"
         android:orderInCategory="100"
-        android:title="@string/action_settings"
-        app:showAsAction="never"/>
+        android:title="Disable autofocus"
+        android:showAsAction="withText"/>
 
 </menu>

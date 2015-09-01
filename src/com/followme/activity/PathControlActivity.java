@@ -24,6 +24,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 public class PathControlActivity extends ActionBarActivity {
 
@@ -33,7 +34,10 @@ public class PathControlActivity extends ActionBarActivity {
 	private List<Integer> counterPositions = new ArrayList<Integer>();
 	private List<Contact> contactsList = new ArrayList<Contact>();	
 	private List<Marker> markers = new ArrayList<Marker>();
+	private boolean autofocus = true;
+	private int focus = -1;
 	private Handler handler;
+	private Menu optionsMenu;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -71,6 +75,15 @@ public class PathControlActivity extends ActionBarActivity {
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
 		getMenuInflater().inflate(R.menu.path_control, menu);
+		optionsMenu = menu;
+		
+		Menu focusMenu = menu.addSubMenu("Change focus");
+		int i = 0;
+		for(Contact c : contactsList)
+		{
+			focusMenu.add(1, i, i, "Focus on "+c.getName());
+			i++;
+		}
 		return true;
 	}
 
@@ -79,10 +92,46 @@ public class PathControlActivity extends ActionBarActivity {
 		// Handle action bar item clicks here. The action bar will
 		// automatically handle clicks on the Home/Up button, so long
 		// as you specify a parent activity in AndroidManifest.xml.
-		int id = item.getItemId();
-		if (id == R.id.action_settings) {
-			return true;
+		switch (item.getItemId())
+		{
+		case R.id.action_autoFocus:
+		{
+			if(!autofocus)
+			{
+				autofocus = true;
+				item.setTitle("Disable autofocus");
+				Toast.makeText(this, "Autofocus enabled!",Toast.LENGTH_SHORT).show();
+			}
+			else
+			{
+				autofocus = false;
+				item.setTitle("Enable autofocus");
+				Toast.makeText(this, "Autofocus disabled!",Toast.LENGTH_SHORT).show();
+			}
+			break;
 		}
+		}
+		
+		if(item.getGroupId() == 1)
+		{
+			autofocus = false;
+			optionsMenu.getItem(1).setTitle("Enable autofocus");
+			Toast.makeText(this, "Autofocus disabled!",Toast.LENGTH_SHORT).show();
+			focus = item.getItemId();			
+			if(paths.get(focus).size() > 0)
+			{
+				CameraPosition cameraPosition = new CameraPosition.Builder()
+				.target(new LatLng(paths.get(focus).get(paths.get(focus).size()-1).getLatitude(),
+						paths.get(focus).get(paths.get(focus).size()-1).getLongitude()))
+				.zoom(18)
+				.bearing(0)           
+				.tilt(0)             
+				.build();
+				map.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+			}			
+			Toast.makeText(this, "Focus changed! Now is on "+contactsList.get(focus).getName(),Toast.LENGTH_SHORT).show();
+		}
+				
 		return super.onOptionsItemSelected(item);
 	}
 	
@@ -106,14 +155,32 @@ public class PathControlActivity extends ActionBarActivity {
 						paths.get(i).addAll(newPositions);		
 							if(newPositions.size()>0)
 							{
-								CameraPosition cameraPosition = new CameraPosition.Builder()
-								.target(new LatLng(paths.get(i).get(paths.get(i).size()-1).getLatitude(),
-										paths.get(i).get(paths.get(i).size()-1).getLongitude()))
-								.zoom(18)
-								.bearing(0)           
-								.tilt(0)             
-								.build();
-								map.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+								if(autofocus)
+								{
+									CameraPosition cameraPosition = new CameraPosition.Builder()
+									.target(new LatLng(paths.get(i).get(paths.get(i).size()-1).getLatitude(),
+											paths.get(i).get(paths.get(i).size()-1).getLongitude()))
+									.zoom(18)
+									.bearing(0)           
+									.tilt(0)             
+									.build();
+									map.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+								}
+								else
+								{
+									if(i == focus)
+									{
+										CameraPosition cameraPosition = new CameraPosition.Builder()
+										.target(new LatLng(paths.get(i).get(paths.get(i).size()-1).getLatitude(),
+												paths.get(i).get(paths.get(i).size()-1).getLongitude()))
+										.zoom(18)
+										.bearing(0)           
+										.tilt(0)             
+										.build();
+										map.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+									}
+								}
+								
 								int color = Utils.generateColor(i);
 								MapManager.drawPolygonPath(color,paths.get(i), map);
 								
