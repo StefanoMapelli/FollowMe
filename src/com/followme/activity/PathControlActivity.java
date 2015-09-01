@@ -32,7 +32,7 @@ public class PathControlActivity extends ActionBarActivity {
 	private List<ArrayList<Position>> paths = new ArrayList<ArrayList<Position>>(); 
 	private List<Integer> counterPositions = new ArrayList<Integer>();
 	private List<Contact> contactsList = new ArrayList<Contact>();	
-	private Marker marker;
+	private List<Marker> markers = new ArrayList<Marker>();
 	private Handler handler;
 	
 	@Override
@@ -120,9 +120,9 @@ public class PathControlActivity extends ActionBarActivity {
 								counterPositions.set(i, paths.get(i).get(paths.get(i).size()-1).getCounter());
 								
 								//add marker
-								if(marker != null)
+								if(markers.get(i) != null)
 								{
-									marker.remove();
+									markers.get(i).remove();
 								}
 					        	Marker m = map.addMarker(new MarkerOptions()
 					            .position(new LatLng(paths.get(i).get(paths.get(i).size()-1).getLatitude(),
@@ -131,7 +131,15 @@ public class PathControlActivity extends ActionBarActivity {
 					            .icon(BitmapDescriptorFactory.defaultMarker(Utils.convertColor(color)))
 					            .title(contactsList.get(i).getName()));
 						        map.getUiSettings().setMapToolbarEnabled(false);
-						        marker=m;
+						        
+						        if(markers.get(i) != null)
+								{
+						        	markers.set(i, m);
+								}
+						        else
+						        {
+						        	markers.add(m);
+						        }
 							}
 							i++;
 						}
