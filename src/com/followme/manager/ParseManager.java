@@ -653,10 +653,10 @@ public class ParseManager {
 		{
 			po = i.next();
 			try {
-				//positionObj = getPositionbyId(context,po.getParseObject("idPosizione").getObjectId());
-				position = new Position(po.getParseObject("idPosizione").getParseGeoPoint("posizione").getLatitude(),
-						po.getParseObject("idPosizione").getParseGeoPoint("posizione").getLongitude(),
-						po.getParseObject("idPosizione").getInt("contatore"));
+				positionObj = getPositionbyId(context,po.getParseObject("idPosizione").getObjectId());
+				position = new Position(positionObj.getParseGeoPoint("posizione").getLatitude(),
+										positionObj.getParseGeoPoint("posizione").getLongitude(),
+										positionObj.getInt("contatore"));
 				mediaItem = new Media(po.getParseFile("file").getData(),
 									  po.getString("didascalia"),
 									  position,null, po.getInt("contatore"));
@@ -702,10 +702,10 @@ public class ParseManager {
 		{
 			po = i.next();
 			try {
-				//positionObj = getPositionbyId(context,po.getParseObject("idPosizione").getObjectId());
-				position = new Position(po.getParseObject("idPosizione").getParseGeoPoint("posizione").getLatitude(),
-						po.getParseObject("idPosizione").getParseGeoPoint("posizione").getLongitude(),
-						po.getParseObject("idPosizione").getInt("contatore"));
+				positionObj = getPositionbyId(context,po.getParseObject("idPosizione").getObjectId());
+				position = new Position(positionObj.getParseGeoPoint("posizione").getLatitude(),
+										positionObj.getParseGeoPoint("posizione").getLongitude(),
+										positionObj.getInt("contatore"));
 				mediaItem = new Media(po.getParseFile("file").getData(),
 						  po.getString("didascalia"),
 						  position,null, po.getInt("contatore"));
