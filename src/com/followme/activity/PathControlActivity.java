@@ -120,7 +120,7 @@ public class PathControlActivity extends ActionBarActivity {
 								counterPositions.set(i, paths.get(i).get(paths.get(i).size()-1).getCounter());
 								
 								//add marker
-								if(markers.get(i) != null)
+								if(markers.size() > i)
 								{
 									markers.get(i).remove();
 								}
@@ -132,7 +132,7 @@ public class PathControlActivity extends ActionBarActivity {
 					            .title(contactsList.get(i).getName()));
 						        map.getUiSettings().setMapToolbarEnabled(false);
 						        
-						        if(markers.get(i) != null)
+						        if(markers.size() > i)
 								{
 						        	markers.set(i, m);
 								}
