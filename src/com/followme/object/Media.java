@@ -13,6 +13,7 @@ public class Media implements Serializable{
 	private Position position;
 	private Path path;
 	private int counter;
+	private String filePath;
 	
 	public Media()
 	{
@@ -60,5 +61,13 @@ public class Media implements Serializable{
 
 	public void setCounter(int counter) {
 		this.counter = counter;
+	}
+
+	public String getFilePath() {
+		return filePath;
+	}
+
+	public void setFilePath(String filePath) {
+		this.filePath = filePath;
 	}
 }

@@ -43,6 +43,7 @@ public class DatabaseCreationManager extends SQLiteOpenHelper {
 	
 	public static final String TABLE_VIDEO = "video";
 	public static final String COLUMN_VIDEO_ID = "id_video";
+	public static final String COLUMN_FILE_PATH = "file_path";
 	
 	public static final String TABLE_AUDIO = "audio";
 	public static final String COLUMN_AUDIO_ID = "id_audio";
@@ -85,14 +86,14 @@ public class DatabaseCreationManager extends SQLiteOpenHelper {
 		      + "(" + COLUMN_PHOTO_ID + " INTEGER primary key autoincrement, " 
 		      + COLUMN_POSITION + " INTEGER not null, "
 		      + COLUMN_TITLE + " TEXT not null, "
-		      + COLUMN_FILE + " BLOB not null);";
+		      + COLUMN_FILE_PATH + " TEXT not null);";
 	
 	private static final String VIDEO_CREATE  = "create table "
 		      + TABLE_VIDEO 
 		      + "(" + COLUMN_VIDEO_ID + " INTEGER primary key autoincrement, " 
 		      + COLUMN_POSITION + " INTEGER not null, "
 		      + COLUMN_TITLE + " TEXT not null, "
-		      + COLUMN_FILE + " BLOB not null);";
+		      + COLUMN_FILE_PATH + " TEXT not null);";
 	
 	private static final String AUDIO_CREATE  = "create table "
 		      + TABLE_AUDIO 

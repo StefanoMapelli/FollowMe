@@ -1,5 +1,7 @@
 package com.followme.manager;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -14,6 +16,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
+import android.provider.MediaStore.Files;
 
 /**
  * Class for management of db table: PERSONAL_DATA
@@ -99,7 +102,7 @@ public class PersonalDataManager {
 			  }
 			  while(!cursor.isAfterLast());
 		  }
-		  
+		  cursor.close();
 		  return pathList;
 	  }
 	  
@@ -149,6 +152,7 @@ public class PersonalDataManager {
 			  }
 			  while(!cursor.isAfterLast());
 		  }
+		  cursor.close();
 		  return contactList;
 	  }
 	  
@@ -166,8 +170,11 @@ public class PersonalDataManager {
 
 		  if(cursor.moveToFirst())
 		  {
-			  return cursor.getString(0);
+			  String result=cursor.getString(0);
+			  cursor.close();
+			  return result;
 		  }
+		  cursor.close();
 		  return number;
 	  }
 	  
@@ -235,7 +242,7 @@ public class PersonalDataManager {
 			  }
 			  while(!cursor.isAfterLast());
 		  }
-
+		  cursor.close();
 		  return positionList;
 	  }
 
@@ -246,7 +253,7 @@ public class PersonalDataManager {
 	  public static void insertPhotoList(List<Media> photoList, String idPath) 
 	  {
 		  
-		  
+		  ArrayList<Position> posAll=getAllPositionsOfPath(idPath);
 		  Iterator<Media> i = photoList.iterator();
 		  Media photoItem=null;
 			
@@ -254,8 +261,9 @@ public class PersonalDataManager {
 		  {
 			  ContentValues values = new ContentValues();
 			  photoItem = i.next();
-			  values.put(DatabaseCreationManager.COLUMN_FILE, photoItem.getMedia());
+			  values.put(DatabaseCreationManager.COLUMN_FILE_PATH, photoItem.getFilePath());
 			  values.put(DatabaseCreationManager.COLUMN_TITLE, photoItem.getTitle());
+			  
 			 
 			  //ricerco la posizione della foto nel database e ne prendo l'id per l'inserimento
 			  String[] columns=new String[1];
@@ -263,6 +271,7 @@ public class PersonalDataManager {
 			  Cursor cursor =database.query(DatabaseCreationManager.TABLE_POSITION, columns, DatabaseCreationManager.COLUMN_LATITUDE_POSITION+"="+photoItem.getPosition().getLatitude()+" AND "+DatabaseCreationManager.COLUMN_LONGITUDE_POSITION+"="+photoItem.getPosition().getLongitude()+ " AND "+DatabaseCreationManager.COLUMN_PATH+"="+idPath, null, null, null, null);
 			  cursor.moveToFirst();
 			  String positionId=cursor.getString(0);
+			  cursor.close();
 			  			  
 			  values.put(DatabaseCreationManager.COLUMN_POSITION, positionId);
 			  //inserisco la foto nel db
@@ -282,8 +291,6 @@ public class PersonalDataManager {
 
 		  Cursor cursor=database.rawQuery("SELECT photo.id_photo, photo.position, photo.title, photo.file, position.id_position, position.counter, position.latitude, position.longitude FROM photo, position WHERE photo.position=position.id_position AND position.id_path="+idPath, null);
 
-		  cursor.moveToFirst();
-
 		  if(cursor.moveToFirst())
 		  {
 			  do
@@ -292,14 +299,31 @@ public class PersonalDataManager {
 				  Position position=new Position(cursor.getDouble(6),cursor.getDouble(7),cursor.getInt(5));
 				  position.setId(cursor.getInt(4)+"");
 				  mediaObject.setPosition(position);
-				  mediaObject.setMedia(cursor.getBlob(3));
+				  String filePath= cursor.getString(3);
+				  
+				  //converto pathFile in array di byte
+				  File mediaFile=new File(filePath);
+				  FileInputStream fileInputStream = null;
+			      byte[] bFile = new byte[(int) mediaFile.length()];
+			      try
+			      {
+			         //convert file into array of bytes
+			         fileInputStream = new FileInputStream(mediaFile);
+			         fileInputStream.read(bFile);
+			         fileInputStream.close();
+			      }
+			      catch (Exception e)
+			      {
+			         e.printStackTrace();
+			      }
+				  mediaObject.setMedia(bFile);
 				  mediaObject.setTitle(cursor.getString(2));
 				  photoList.add(mediaObject);
 				  cursor.moveToNext();
 			  }
 			  while(!cursor.isAfterLast());
 		  }
-
+		  cursor.close();
 		  return photoList;
 	  }
 	  
@@ -311,15 +335,14 @@ public class PersonalDataManager {
 	  public static void insertVideoList(List<Media> videoList, String idPath) 
 	  {
 		  
-		  
 		  Iterator<Media> i = videoList.iterator();
 		  Media videoItem=null;
 			
 		  while(i.hasNext())
-		  {
+		  {		  
 			  ContentValues values = new ContentValues();
 			  videoItem = i.next();
-			  values.put(DatabaseCreationManager.COLUMN_FILE, videoItem.getMedia());
+			  values.put(DatabaseCreationManager.COLUMN_FILE_PATH, videoItem.getFilePath());
 			  values.put(DatabaseCreationManager.COLUMN_TITLE, videoItem.getTitle());
 			 
 			  //ricerco la posizione della foto nel database e ne prendo l'id per l'inserimento
@@ -331,6 +354,7 @@ public class PersonalDataManager {
 
 			  values.put(DatabaseCreationManager.COLUMN_POSITION, positionId);
 			  //inserisco la foto nel db
+			  cursor.close();
 			  database.insert(DatabaseCreationManager.TABLE_VIDEO, null, values);
 		  }
 	  }
@@ -347,7 +371,7 @@ public class PersonalDataManager {
 	  {
 		  ArrayList<Media> videoList=new ArrayList<Media>();  
 
-		  Cursor cursor=database.rawQuery("SELECT video.id_video, video.position, video.title, video.file, position.id_position, position.counter, position.latitude, position.longitude FROM video, position WHERE video.position=position.id_position AND position.id_path="+idPath, null);
+		  Cursor cursor=database.rawQuery("SELECT video.id_video, video.position, video.title, video.file_path, position.id_position, position.counter, position.latitude, position.longitude FROM video, position WHERE video.position=position.id_position AND position.id_path="+idPath, null);
 		  if(cursor.getCount() > 0)
 		  {
 			  cursor.moveToFirst();
@@ -359,14 +383,31 @@ public class PersonalDataManager {
 						  						 cursor.getInt(5));
 				  position.setId(cursor.getInt(4)+"");
 				  mediaObject.setPosition(position);
-				  mediaObject.setMedia(cursor.getBlob(3));
+				  String filePath= cursor.getString(3);
+				  
+				  //converto pathFile in array di byte
+				  File mediaFile=new File(filePath);
+				  FileInputStream fileInputStream = null;
+			      byte[] bFile = new byte[(int) mediaFile.length()];
+			      try
+			      {
+			         //convert file into array of bytes
+			         fileInputStream = new FileInputStream(mediaFile);
+			         fileInputStream.read(bFile);
+			         fileInputStream.close();
+			      }
+			      catch (Exception e)
+			      {
+			         e.printStackTrace();
+			      }
+				  mediaObject.setMedia(bFile);
 				  mediaObject.setTitle(cursor.getString(2));
 				  videoList.add(mediaObject);
 				  cursor.moveToNext();
 			  }
 			  while(!cursor.isAfterLast());
 		  }
-
+		  cursor.close();
 		  return videoList;
 	  }
 
@@ -398,7 +439,9 @@ public class PersonalDataManager {
 
 			  values.put(DatabaseCreationManager.COLUMN_POSITION, positionId);
 			  //inserisco la foto nel db
+			  
 			  database.insert(DatabaseCreationManager.TABLE_AUDIO, null, values);
+			  cursor.close();
 		  }
 	  }
 
@@ -431,7 +474,7 @@ public class PersonalDataManager {
 			  }
 			  while(!cursor.isAfterLast());
 		  }
-
+		  cursor.close();
 		  return audioList;
 	  }
 	  
@@ -474,6 +517,7 @@ public class PersonalDataManager {
 		  
 			  String phoneNumber=cursor.getString(2);
 		  
+			  cursor.close();
 			  return phoneNumber;
 		  }
 		  else
@@ -492,6 +536,8 @@ public class PersonalDataManager {
 		  
 			  String userId=cursor.getString(1);
 		  
+			  
+			  cursor.close();
 			  return userId;
 		  }
 		  else

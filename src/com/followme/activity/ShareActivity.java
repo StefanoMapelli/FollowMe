@@ -3,6 +3,7 @@ package com.followme.activity;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -343,10 +344,31 @@ public class ShareActivity extends ActionBarActivity {
 	    		final Bitmap imageBitMap = Utils.getSmallBitmap(photoFileName);
 	    		imageBitMap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
 				byte[] image = stream.toByteArray();
+				File oldPhoto=new File(photoFileName);
+				oldPhoto.delete();
+				
+				//inserisco il file piccolo in memoria
+				Date dt = new Date();
+				File newFile = new File(Environment.getExternalStorageDirectory(),
+						dt.toString()+".jpg");
+				//copy bytes to file
+				try {
+					FileOutputStream outputStream = new FileOutputStream(newFile.getAbsolutePath()); 
+
+					outputStream.write(image);
+					Thread.sleep(1000);
+					outputStream.flush();
+					outputStream.close();							            							            
+
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+				
 				
 				//create media and insert in parse and in photos
 	    		Media photo = new Media(image, data.getStringExtra("title"), lastPosition, path, counterPhoto);
-	        	ParseManager.insertPhoto(this, photo);
+	    		photo.setFilePath(newFile.getAbsolutePath());
+	    		ParseManager.insertPhoto(this, photo);
 	        	counterPhoto++;
 	        	photos.add(photo);
 	    		        
@@ -360,7 +382,7 @@ public class ShareActivity extends ActionBarActivity {
 		        map.getUiSettings().setMapToolbarEnabled(false);
 		        		        
 		        //add photo marker object
-		        markers.add(new PhotoMarker(m.getTitle(), m.getSnippet(),photoFileName));  
+		        markers.add(new PhotoMarker(m.getTitle(), m.getSnippet(),newFile.getAbsolutePath()));  
 	        	markerCounter++;		        		        	       	 
 	        }
 	    }
@@ -383,6 +405,7 @@ public class ShareActivity extends ActionBarActivity {
 				
 				Media video = new Media(inputData, data.getStringExtra("title"), lastPosition, path, counterVideo);
 				ParseManager.insertVideo(this, video);
+				video.setFilePath(videoFileName);
 				counterVideo++;
 				videos.add(video);				
 				

@@ -255,6 +255,7 @@ public class SharingReceiverActivity extends ActionBarActivity {
 							Date dt = new Date();
 							File newFile = new File(Environment.getExternalStorageDirectory(),
 									dt.toString()+".jpg");
+							photo.setFilePath(newFile.getAbsolutePath());
 							//copy bytes to file
 							try {
 								FileOutputStream outputStream = new FileOutputStream(newFile.getAbsolutePath()); 
@@ -298,6 +299,7 @@ public class SharingReceiverActivity extends ActionBarActivity {
 							Date dt = new Date();
 							File newFile = new File(Environment.getExternalStorageDirectory(),
 									dt.toString()+".mp4");
+							video.setFilePath(newFile.getAbsolutePath());
 							//copy bytes to file
 							try {
 								FileOutputStream outputStream = new FileOutputStream(newFile.getAbsolutePath());
@@ -356,7 +358,7 @@ public class SharingReceiverActivity extends ActionBarActivity {
 	private void savePathOnLocalDB(String title) 
 	{
 		
-		int idPath=PersonalDataManager.insertPath(title, request.getSender().getPhoneNumber());
+		int idPath=PersonalDataManager.insertPath(title, PersonalDataManager.getNameOfContact(request.getSender().getPhoneNumber()));
 		PersonalDataManager.insertPositionList(positionList, idPath);
 		PersonalDataManager.insertPhotoList(photos, idPath+"");
 		PersonalDataManager.insertVideoList(videos, idPath+"");
