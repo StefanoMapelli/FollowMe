@@ -206,7 +206,7 @@ public class PersonalDataManager {
 			  values.put(DatabaseCreationManager.COLUMN_LONGITUDE_POSITION, posItem.getLongitude());
 			  values.put(DatabaseCreationManager.COLUMN_COUNTER, posItem.getCounter());
 			  values.put(DatabaseCreationManager.COLUMN_PATH, path);
-			  values.put(DatabaseCreationManager.COLUMN_CONTACT_PARSE_ID, posItem.getId());
+			  values.put(DatabaseCreationManager.COLUMN_POSITION_PARSE_ID, posItem.getId());
 			  database.insert(DatabaseCreationManager.TABLE_POSITION, null,values);
 		  }
 	  }
@@ -269,7 +269,7 @@ public class PersonalDataManager {
 			  //ricerco la posizione della foto nel database e ne prendo l'id per l'inserimento
 			  String[] columns=new String[1];
 			  columns[0]=DatabaseCreationManager.COLUMN_POSITION_ID;
-			  Cursor cursor =database.query(DatabaseCreationManager.TABLE_POSITION, columns, DatabaseCreationManager.COLUMN_CONTACT_PARSE_ID+"="+photoItem.getPosition().getId(), null, null, null, null);
+			  Cursor cursor =database.query(DatabaseCreationManager.TABLE_POSITION, columns, DatabaseCreationManager.COLUMN_POSITION_PARSE_ID+"="+photoItem.getPosition().getId(), null, null, null, null);
 			  cursor.moveToFirst();
 			  String positionId=cursor.getString(0);
 			  cursor.close();
@@ -349,7 +349,7 @@ public class PersonalDataManager {
 			  //ricerco la posizione della foto nel database e ne prendo l'id per l'inserimento
 			  String[] columns=new String[1];
 			  columns[0]=DatabaseCreationManager.COLUMN_POSITION_ID;
-			  Cursor cursor =database.query(DatabaseCreationManager.TABLE_POSITION, columns, DatabaseCreationManager.COLUMN_CONTACT_PARSE_ID+"="+videoItem.getPosition().getId(), null, null, null, null);
+			  Cursor cursor =database.query(DatabaseCreationManager.TABLE_POSITION, columns, DatabaseCreationManager.COLUMN_POSITION_PARSE_ID+"="+videoItem.getPosition().getId(), null, null, null, null);
 			  cursor.moveToFirst();
 			  String positionId=cursor.getString(0);
 
