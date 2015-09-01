@@ -245,8 +245,8 @@ public class SharingReceiverActivity extends ActionBarActivity {
 						{
 							//add marker
 							Marker m = map.addMarker(new MarkerOptions()
-							.position(new LatLng(positionList.get(photo.getCounter()).getLatitude(),
-									positionList.get(photo.getCounter()).getLongitude()))
+							.position(new LatLng(photo.getPosition().getLatitude(),
+												 photo.getPosition().getLongitude()))
 									.snippet(photo.getTitle())
 									.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE))
 									.title("photo"+String.valueOf(markerCounter)));
@@ -288,8 +288,8 @@ public class SharingReceiverActivity extends ActionBarActivity {
 						{
 							//add marker
 							Marker m = map.addMarker(new MarkerOptions()
-							.position(new LatLng(positionList.get(video.getCounter()).getLatitude(),
-									positionList.get(video.getCounter()).getLongitude()))
+							.position(new LatLng(video.getPosition().getLatitude(),
+											     video.getPosition().getLongitude()))
 									.snippet(video.getTitle())
 									.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN))
 									.title("video"+String.valueOf(markerCounter)));

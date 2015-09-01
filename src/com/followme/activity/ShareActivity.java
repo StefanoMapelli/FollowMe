@@ -65,6 +65,8 @@ public class ShareActivity extends ActionBarActivity {
 	private ParseObject pathParseObject;
 	private Path path;
 	private int positionCounter;
+	private int counterPhoto;
+	private int counterVideo;
 	private int markerCounter;
 	private GoogleMap map;
     private MapWrapperLayout mapWrapperLayout;
@@ -98,6 +100,8 @@ public class ShareActivity extends ActionBarActivity {
 			  photoFileName = savedInstanceState.getString("fileName");
 		
 		positionCounter = 0;
+		counterPhoto = 0;
+		counterVideo = 0;
 		markerCounter = 0;
 		
 		Object[] objects = (Object[]) getIntent().getSerializableExtra("selectedContacts");
@@ -341,8 +345,9 @@ public class ShareActivity extends ActionBarActivity {
 				byte[] image = stream.toByteArray();
 				
 				//create media and insert in parse and in photos
-	    		Media photo = new Media(image, data.getStringExtra("title"), lastPosition, path, positionCounter-1);
+	    		Media photo = new Media(image, data.getStringExtra("title"), lastPosition, path, counterPhoto);
 	        	ParseManager.insertPhoto(this, photo);
+	        	counterPhoto++;
 	        	photos.add(photo);
 	    		        
 	        	//add marker
@@ -376,8 +381,9 @@ public class ShareActivity extends ActionBarActivity {
 					e.printStackTrace();
 				}
 				
-				Media video = new Media(inputData, data.getStringExtra("title"), lastPosition, path, positionCounter-1);
+				Media video = new Media(inputData, data.getStringExtra("title"), lastPosition, path, counterVideo);
 				ParseManager.insertVideo(this, video);
+				counterVideo++;
 				videos.add(video);				
 				
 				//add marker

@@ -645,15 +645,21 @@ public class ParseManager {
 		Iterator<ParseObject> i = objects.iterator();
 
 		ParseObject po;
+		ParseObject positionObj;
+		Position position;
 		Media mediaItem=null;
 		
 		while(i.hasNext())
 		{
 			po = i.next();
 			try {
+				//positionObj = getPositionbyId(context,po.getParseObject("idPosizione").getObjectId());
+				position = new Position(po.getParseObject("idPosizione").getParseGeoPoint("posizione").getLatitude(),
+						po.getParseObject("idPosizione").getParseGeoPoint("posizione").getLongitude(),
+						po.getParseObject("idPosizione").getInt("contatore"));
 				mediaItem = new Media(po.getParseFile("file").getData(),
 									  po.getString("didascalia"),
-									  null,null, po.getInt("contatore"));
+									  position,null, po.getInt("contatore"));
 			} catch (ParseException e) {
 				e.printStackTrace();
 			}
@@ -688,15 +694,21 @@ public class ParseManager {
 		Iterator<ParseObject> i = objects.iterator();
 
 		ParseObject po;
+		ParseObject positionObj;
+		Position position;
 		Media mediaItem=null;
 		
 		while(i.hasNext())
 		{
 			po = i.next();
 			try {
+				//positionObj = getPositionbyId(context,po.getParseObject("idPosizione").getObjectId());
+				position = new Position(po.getParseObject("idPosizione").getParseGeoPoint("posizione").getLatitude(),
+						po.getParseObject("idPosizione").getParseGeoPoint("posizione").getLongitude(),
+						po.getParseObject("idPosizione").getInt("contatore"));
 				mediaItem = new Media(po.getParseFile("file").getData(),
 						  po.getString("didascalia"),
-						  null,null, po.getInt("contatore"));
+						  position,null, po.getInt("contatore"));
 			} catch (ParseException e) {
 				e.printStackTrace();
 			}
