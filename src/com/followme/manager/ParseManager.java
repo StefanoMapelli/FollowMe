@@ -657,6 +657,7 @@ public class ParseManager {
 				position = new Position(positionObj.getParseGeoPoint("posizione").getLatitude(),
 										positionObj.getParseGeoPoint("posizione").getLongitude(),
 										positionObj.getInt("contatore"));
+				position.setId(positionObj.getObjectId());
 				mediaItem = new Media(po.getParseFile("file").getData(),
 									  po.getString("didascalia"),
 									  position,null, po.getInt("contatore"));
@@ -706,6 +707,7 @@ public class ParseManager {
 				position = new Position(positionObj.getParseGeoPoint("posizione").getLatitude(),
 										positionObj.getParseGeoPoint("posizione").getLongitude(),
 										positionObj.getInt("contatore"));
+				position.setId(positionObj.getObjectId());
 				mediaItem = new Media(po.getParseFile("file").getData(),
 						  po.getString("didascalia"),
 						  position,null, po.getInt("contatore"));

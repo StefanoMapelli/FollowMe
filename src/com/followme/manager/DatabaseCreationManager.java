@@ -30,6 +30,7 @@ public class DatabaseCreationManager extends SQLiteOpenHelper {
 	
 	public static final String TABLE_POSITION = "position";
 	public static final String COLUMN_POSITION_ID = "id_position";
+	public static final String COLUMN_PARSE_ID = "id_parse_position";
 	public static final String COLUMN_PATH = "id_path";
 	public static final String COLUMN_COUNTER = "counter";
 	public static final String COLUMN_LATITUDE_POSITION = "latitude";
@@ -76,6 +77,7 @@ public class DatabaseCreationManager extends SQLiteOpenHelper {
 	private static final String POSITION_CREATE = "create table "
 		      + TABLE_POSITION 
 		      + "(" + COLUMN_POSITION_ID + " INTEGER primary key autoincrement, " 
+		      + COLUMN_PARSE_ID + " TEXT not null, "
 		      + COLUMN_PATH + " INTEGER not null, "
 		      + COLUMN_COUNTER + " INTEGER not null, "
 		      + COLUMN_LATITUDE_POSITION + " REAL not null, "

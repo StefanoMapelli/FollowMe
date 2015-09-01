@@ -206,6 +206,7 @@ public class PersonalDataManager {
 			  values.put(DatabaseCreationManager.COLUMN_LONGITUDE_POSITION, posItem.getLongitude());
 			  values.put(DatabaseCreationManager.COLUMN_COUNTER, posItem.getCounter());
 			  values.put(DatabaseCreationManager.COLUMN_PATH, path);
+			  values.put(DatabaseCreationManager.COLUMN_CONTACT_PARSE_ID, posItem.getId());
 			  database.insert(DatabaseCreationManager.TABLE_POSITION, null,values);
 		  }
 	  }
@@ -268,7 +269,7 @@ public class PersonalDataManager {
 			  //ricerco la posizione della foto nel database e ne prendo l'id per l'inserimento
 			  String[] columns=new String[1];
 			  columns[0]=DatabaseCreationManager.COLUMN_POSITION_ID;
-			  Cursor cursor =database.query(DatabaseCreationManager.TABLE_POSITION, columns, DatabaseCreationManager.COLUMN_LATITUDE_POSITION+"="+photoItem.getPosition().getLatitude()+" AND "+DatabaseCreationManager.COLUMN_LONGITUDE_POSITION+"="+photoItem.getPosition().getLongitude()+ " AND "+DatabaseCreationManager.COLUMN_PATH+"="+idPath, null, null, null, null);
+			  Cursor cursor =database.query(DatabaseCreationManager.TABLE_POSITION, columns, DatabaseCreationManager.COLUMN_CONTACT_PARSE_ID+"="+photoItem.getPosition().getId(), null, null, null, null);
 			  cursor.moveToFirst();
 			  String positionId=cursor.getString(0);
 			  cursor.close();
@@ -289,7 +290,7 @@ public class PersonalDataManager {
 	  {
 		  ArrayList<Media> photoList=new ArrayList<Media>();  
 
-		  Cursor cursor=database.rawQuery("SELECT photo.id_photo, photo.position, photo.title, photo.file, position.id_position, position.counter, position.latitude, position.longitude FROM photo, position WHERE photo.position=position.id_position AND position.id_path="+idPath, null);
+		  Cursor cursor=database.rawQuery("SELECT photo.id_photo, photo.position, photo.title, photo.file_path, position.id_position, position.counter, position.latitude, position.longitude FROM photo, position WHERE photo.position=position.id_position AND position.id_path="+idPath, null);
 
 		  if(cursor.moveToFirst())
 		  {
@@ -348,7 +349,7 @@ public class PersonalDataManager {
 			  //ricerco la posizione della foto nel database e ne prendo l'id per l'inserimento
 			  String[] columns=new String[1];
 			  columns[0]=DatabaseCreationManager.COLUMN_POSITION_ID;
-			  Cursor cursor =database.query(DatabaseCreationManager.TABLE_POSITION, columns, DatabaseCreationManager.COLUMN_LATITUDE_POSITION+"="+videoItem.getPosition().getLatitude()+" AND "+DatabaseCreationManager.COLUMN_LONGITUDE_POSITION+"="+videoItem.getPosition().getLongitude()+" AND "+DatabaseCreationManager.COLUMN_PATH+"="+idPath, null, null, null, null);
+			  Cursor cursor =database.query(DatabaseCreationManager.TABLE_POSITION, columns, DatabaseCreationManager.COLUMN_CONTACT_PARSE_ID+"="+videoItem.getPosition().getId(), null, null, null, null);
 			  cursor.moveToFirst();
 			  String positionId=cursor.getString(0);
 
