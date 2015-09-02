@@ -10,6 +10,8 @@ import com.followme.object.Request;
 import com.followme.object.User;
 import com.parse.ParseObject;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -126,6 +128,28 @@ public class MainActivity extends ActionBarActivity  {
 				userParseObject=ParseManager.getUser(this,user.getId());
 			}
 		}
+	}
+	
+	@Override
+	public void onBackPressed()
+	{
+		new AlertDialog.Builder(this)
+	    .setTitle("Quit")
+	    .setMessage("Are you sure you want to quit?")
+	    .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+	        public void onClick(DialogInterface dialog, int which) { 
+	            // continue
+	        	System.exit(0);
+	        	finish();
+	        }
+	     })
+	    .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+	        public void onClick(DialogInterface dialog, int which) { 
+	            // do nothing
+	        }
+	     })
+	    .setIcon(android.R.drawable.ic_dialog_alert)
+	    .show();
 	}
 	
 	 @Override

@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.followme.adapter.FenceCustomAdapter;
-
 import com.followme.manager.ParseManager;
 import com.followme.object.Contact;
 import com.followme.object.Fence;
@@ -21,7 +20,7 @@ import android.widget.ListView;
 public class FenceControlActivity extends ActionBarActivity {
 	
 	private ListView listViewFence;
-	private List<Fence> fenceList=new ArrayList();
+	private List<Fence> fenceList=new ArrayList<Fence>();
 	private FenceCustomAdapter adapter;
 	private CheckFences checkFencesThread;
 	private Handler handler;
@@ -83,10 +82,7 @@ public class FenceControlActivity extends ActionBarActivity {
 		}
 		return super.onOptionsItemSelected(item);
 	}
-	
-	
-	
-	
+		
 	private class CheckFences extends AsyncTask<Void, Integer, String>
     {
 		

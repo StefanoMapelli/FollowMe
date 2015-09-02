@@ -37,6 +37,7 @@ public class PathControlActivity extends ActionBarActivity {
 	private boolean autofocus = true;
 	private int focus = -1;
 	private Handler handler;
+	private FindNewPositions findNewPositionsThread;
 	private Menu optionsMenu;
 	
 	@Override
@@ -68,9 +69,10 @@ public class PathControlActivity extends ActionBarActivity {
 			//invio delle richieste
 			ParseManager.insertRequest(this, "percorso", userId, contactsList.get(contactsList.indexOf(c)).getId(), pathId, null, null);
 		}
-		new FindNewPositions().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+		findNewPositionsThread = new FindNewPositions();
+		findNewPositionsThread.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 	}
-
+	
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.

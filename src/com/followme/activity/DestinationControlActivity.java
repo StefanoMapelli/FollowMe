@@ -4,11 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.followme.adapter.DestinationCustomAdapter;
-import com.followme.adapter.FenceCustomAdapter;
 import com.followme.manager.ParseManager;
 import com.followme.object.Contact;
 import com.followme.object.Destination;
-import com.followme.object.Fence;
 import com.google.android.gms.maps.model.LatLng;
 
 import android.support.v7.app.ActionBarActivity;
@@ -22,7 +20,7 @@ import android.widget.ListView;
 public class DestinationControlActivity extends ActionBarActivity {
 	
 	private ListView listViewDestination;
-	private List<Destination> destinationList=new ArrayList();
+	private List<Destination> destinationList=new ArrayList<Destination>();
 	private DestinationCustomAdapter adapter;
 	private CheckDestinations checkDestinationsThread;
 	private Handler handler;
@@ -41,7 +39,7 @@ public class DestinationControlActivity extends ActionBarActivity {
 		String idDestination=getIntent().getStringExtra("destinationId");
 		double destinationLatitude=getIntent().getDoubleExtra("destinationLatitude",0);
 		double destinationLongitude=getIntent().getDoubleExtra("destinationLongitude",0);
-		LatLng position=new LatLng(destinationLongitude,destinationLongitude);
+		LatLng position=new LatLng(destinationLatitude,destinationLongitude);
 		List<Contact> contactList = new ArrayList<Contact>();
 		
 		//aggiungo i dati alla lista nell view
@@ -59,12 +57,9 @@ public class DestinationControlActivity extends ActionBarActivity {
 		adapter = new DestinationCustomAdapter(this, destinationList);
 		listViewDestination.setAdapter(adapter);
 		checkDestinationsThread=new CheckDestinations();
-		checkDestinationsThread.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-
-
-		
+		checkDestinationsThread.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);	
 	}
-
+	
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.

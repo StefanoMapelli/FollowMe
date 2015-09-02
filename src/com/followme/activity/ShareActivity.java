@@ -312,7 +312,7 @@ public class ShareActivity extends ActionBarActivity {
 		});
 		
 	}
-
+	
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 	    //ACTIVITY PHOTO

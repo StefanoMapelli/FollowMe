@@ -65,6 +65,7 @@ public class SharingReceiverActivity extends ActionBarActivity {
 	private List<Media> videos = new ArrayList<Media>();
 	private ArrayList<CustomMarker> markers = new ArrayList<CustomMarker>();
 	private int markerCounter = 0;
+	private FindNewPositions networkThread;
 	private Handler handler;
 
 	@Override
@@ -88,7 +89,8 @@ public class SharingReceiverActivity extends ActionBarActivity {
 		if(path!=null)
 		{
 			//parte il thread per il controllo delle nuove posizioni nel db
-			new FindNewPositions().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+			networkThread = new FindNewPositions();
+			networkThread.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 		}
 		else
 		{
@@ -352,9 +354,7 @@ public class SharingReceiverActivity extends ActionBarActivity {
 		return super.onOptionsItemSelected(item);
 	}
 	
-	
-	//salvataggio di path, posizioni, photos e videos
-	
+	//salvataggio di path, posizioni, photos e videos	
 	private void savePathOnLocalDB(String title) 
 	{
 		

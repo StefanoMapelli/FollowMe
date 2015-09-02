@@ -62,6 +62,9 @@ public class RequestsListActivity extends ActionBarActivity {
 		
 		String typeOfRequest = itemToAccept.getType();
 		
+		//rimuovere dalla listview
+				adapter.remove(itemToAccept);		
+		
 		//valutiamo il tipo di richiesta
 		//-condivisione
 		//-percorso
@@ -181,8 +184,6 @@ public class RequestsListActivity extends ActionBarActivity {
 		
 	}
 	
-	
-
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
@@ -200,9 +201,5 @@ public class RequestsListActivity extends ActionBarActivity {
 			return true;
 		}
 		return super.onOptionsItemSelected(item);
-	}
-	
-	
-	
-	
+	}		
 }
