@@ -461,6 +461,7 @@ public class ShareActivity extends ActionBarActivity {
 		PersonalDataManager.insertPositionList(positionList, idPath);
 		PersonalDataManager.insertPhotoList(photos, idPath+"");
 		PersonalDataManager.insertVideoList(videos, idPath+"");
+		Toast.makeText(ShareActivity.this, "Path saved successfully!", Toast.LENGTH_LONG).show();
 		
 	}
 

@@ -45,6 +45,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class SharingReceiverActivity extends ActionBarActivity {
 	
@@ -362,6 +363,7 @@ public class SharingReceiverActivity extends ActionBarActivity {
 		PersonalDataManager.insertPositionList(positionList, idPath);
 		PersonalDataManager.insertPhotoList(photos, idPath+"");
 		PersonalDataManager.insertVideoList(videos, idPath+"");
+		Toast.makeText(this, "Path saved successfully", Toast.LENGTH_LONG).show();
 		
 	}
 }

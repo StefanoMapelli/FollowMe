@@ -281,7 +281,6 @@ public class PersonalDataManager {
 					  break;
 				  }
 			  }
-			  
 			  			  
 			  values.put(DatabaseCreationManager.COLUMN_POSITION, positionId);
 			  //inserisco la foto nel db

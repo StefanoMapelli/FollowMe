@@ -5,6 +5,7 @@
     android:layout_height="match_parent"
     android:weightSum="1"
     android:orientation="vertical" >
+   
 
     <fragment
         android:id="@+id/mapLoad"
