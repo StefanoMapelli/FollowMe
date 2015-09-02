@@ -256,7 +256,7 @@ public class PersonalDataManager {
 	  public static void insertPhotoList(List<Media> photoList, String idPath) 
 	  {
 		  
-		  ArrayList<Position> posAll=getAllPositionsOfPath(idPath);
+		  ArrayList<Position> allPositionOfPath=getAllPositionsOfPath(idPath);
 		  Iterator<Media> i = photoList.iterator();
 		  Media photoItem=null;
 			
@@ -269,13 +269,19 @@ public class PersonalDataManager {
 			  values.put(DatabaseCreationManager.COLUMN_TITLE, photoItem.getTitle());
 			  
 			 
-			  //ricerco la posizione della foto nel database e ne prendo l'id per l'inserimento
-			  String[] columns=new String[1];
-			  columns[0]=DatabaseCreationManager.COLUMN_POSITION_ID;
-			  Cursor cursor =database.query(DatabaseCreationManager.TABLE_POSITION, columns, DatabaseCreationManager.COLUMN_POSITION_PARSE_ID+"='"+photoItem.getPosition().getId()+"'", null, null, null, null);
-			  cursor.moveToFirst();
-			  String positionId=cursor.getString(0);
-			  cursor.close();
+			  //ricerco la posizione della foto nel array di posizioni e ne prendo l'id per l'inserimento
+			 
+			  String positionId=null;
+			  
+			  for(Position pos : allPositionOfPath)
+			  {
+				  if(pos.getParseId().compareTo(photoItem.getPosition().getId())==0)
+				  {
+					  positionId=pos.getId();
+					  break;
+				  }
+			  }
+			  
 			  			  
 			  values.put(DatabaseCreationManager.COLUMN_POSITION, positionId);
 			  //inserisco la foto nel db
@@ -338,7 +344,7 @@ public class PersonalDataManager {
 	   */
 	  public static void insertVideoList(List<Media> videoList, String idPath) 
 	  {
-		  
+		  ArrayList<Position> allPositionOfPath=getAllPositionsOfPath(idPath);
 		  Iterator<Media> i = videoList.iterator();
 		  Media videoItem=null;
 			
@@ -349,16 +355,19 @@ public class PersonalDataManager {
 			  values.put(DatabaseCreationManager.COLUMN_FILE_PATH, videoItem.getFilePath());
 			  values.put(DatabaseCreationManager.COLUMN_TITLE, videoItem.getTitle());
 			 
-			  //ricerco la posizione della foto nel database e ne prendo l'id per l'inserimento
-			  String[] columns=new String[1];
-			  columns[0]=DatabaseCreationManager.COLUMN_POSITION_ID;
-			  Cursor cursor =database.query(DatabaseCreationManager.TABLE_POSITION, columns, DatabaseCreationManager.COLUMN_POSITION_PARSE_ID+"='"+videoItem.getPosition().getId()+"'", null, null, null, null);
-			  cursor.moveToFirst();
-			  String positionId=cursor.getString(0);
+			  //ricerco la posizione del video nel database e ne prendo l'id per l'inserimento
+			  String positionId=null;
+
+			  for(Position pos : allPositionOfPath)
+			  {
+				  if(pos.getParseId().compareTo(videoItem.getPosition().getId())==0)
+				  {
+					  positionId=pos.getId();
+					  break;
+				  }
+			  }
 
 			  values.put(DatabaseCreationManager.COLUMN_POSITION, positionId);
-			  //inserisco la foto nel db
-			  cursor.close();
 			  database.insert(DatabaseCreationManager.TABLE_VIDEO, null, values);
 		  }
 	  }
