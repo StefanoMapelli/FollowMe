@@ -3,37 +3,11 @@
     android:id="@+id/mapRecieverLinearLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:weightSum="1"
     android:orientation="vertical" >
 
     <fragment
         android:id="@+id/mapSharingReceiver"
         android:name="com.google.android.gms.maps.SupportMapFragment"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_weight="0.2"/>
-
-    <LinearLayout
-        android:id="@+id/LinearLayoutButton"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:weightSum="1"
-        android:layout_weight="0.8" >
-
-        
-        <Button
-            android:id="@+id/sharingReceiverPicturesButton"
-            android:layout_width="fill_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="0.5"
-            android:text="Pictures" />
-
-        <Button
-            android:id="@+id/sharingReceiverPositionButton"
-            android:layout_width="fill_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="0.5"
-            android:text="Position" />
-
-    </LinearLayout>
+        android:layout_height="match_parent"/>
 </com.followme.adapter.MapWrapperLayout>
