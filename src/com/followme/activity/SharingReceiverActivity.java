@@ -8,6 +8,8 @@ import java.util.List;
 
 import com.followme.adapter.MapWrapperLayout;
 import com.followme.adapter.OnInfoWindowElemTouchListener;
+import com.followme.fragment.SavePathDialogFragment;
+import com.followme.fragment.SavePathDialogFragment.SavePathDialogListener;
 import com.followme.manager.MapManager;
 import com.followme.manager.ParseManager;
 import com.followme.manager.PersonalDataManager;
@@ -47,7 +49,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class SharingReceiverActivity extends ActionBarActivity {
+public class SharingReceiverActivity extends ActionBarActivity implements SavePathDialogListener {
 	
 	private Request request;
 	private ParseObject path;
@@ -353,6 +355,13 @@ public class SharingReceiverActivity extends ActionBarActivity {
 			
 		}
 		return super.onOptionsItemSelected(item);
+	}
+	
+	@Override
+	public void onDialogPositiveClick(SavePathDialogFragment dialog) 
+	{
+		String title = dialog.getTitleText().getText().toString();
+		savePathOnLocalDB(title);
 	}
 	
 	//salvataggio di path, posizioni, photos e videos	
