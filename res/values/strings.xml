@@ -10,6 +10,9 @@
     <string name="request_dialog">There is a request for you!</string>
     <string name="show_request">Show</string>
     <string name="ignore_request">Ignore</string>
+    <string name="save_path_dialog">Enter a title for the path: </string>
+    <string name="ok">Ok</string>
+    <string name="cancel">Cancel</string>
     <string name="title_activity_requests_list">RequestsListActivity</string>
     <string name="hello_world">Hello world!</string>
     <string name="title_activity_show_details">ShowDetailsActivity</string>

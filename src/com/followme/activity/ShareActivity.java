@@ -13,6 +13,8 @@ import com.google.android.gms.maps.model.Marker;
 import com.followme.activity.R;
 import com.followme.adapter.MapWrapperLayout;
 import com.followme.adapter.OnInfoWindowElemTouchListener;
+import com.followme.fragment.SavePathDialogFragment;
+import com.followme.fragment.SavePathDialogFragment.SavePathDialogListener;
 import com.followme.manager.MapManager;
 import com.followme.manager.ParseManager;
 import com.followme.manager.PersonalDataManager;
@@ -35,6 +37,7 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.parse.ParseObject;
 
 import android.support.v7.app.ActionBarActivity;
+import android.app.DialogFragment;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.location.Location;
@@ -56,7 +59,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class ShareActivity extends ActionBarActivity {
+public class ShareActivity extends ActionBarActivity implements SavePathDialogListener {
 
 	private Contact[] contacts = null;
 	private LocationManager locationManager=null;  
@@ -447,11 +450,20 @@ public class ShareActivity extends ActionBarActivity {
 		int id = item.getItemId();
 		if (id == R.id.savePathShareItem) 
 		{
-			Date d=new Date();
-			savePathOnLocalDB(d.toString());
+			/*Date d=new Date();
+			savePathOnLocalDB(d.toString());*/
+			DialogFragment savePathDialogFragment = new SavePathDialogFragment();
+			savePathDialogFragment.show(getFragmentManager(), "savePath");
 			return true;
 		}
 		return super.onOptionsItemSelected(item);
+	}
+	
+	@Override
+	public void onDialogPositiveClick(SavePathDialogFragment dialog) 
+	{
+		String title = dialog.getTitleText().getText().toString();
+		savePathOnLocalDB(title);
 	}
 	
 	private void savePathOnLocalDB(String title) 
@@ -540,6 +552,5 @@ public class ShareActivity extends ActionBarActivity {
 	     		int status, Bundle extras) {  
 	            // TODO Auto-generated method stub           
 	     }  
-	 }
-	 
+	 }	 
 }
