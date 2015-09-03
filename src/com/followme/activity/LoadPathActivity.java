@@ -96,6 +96,7 @@ public class LoadPathActivity extends ActionBarActivity {
 				progressBar.setMessage("Path loading ...");
 				progressBar.setProgressStyle(ProgressDialog.STYLE_SPINNER);
 				progressBar.setMax(100);
+				progressBar.setProgress(0);
 				progressBar.show();
 
 			}
@@ -103,9 +104,209 @@ public class LoadPathActivity extends ActionBarActivity {
 			{
 				progressBar.dismiss();
 			}
-			else
+			else if(progress[0]==3)
 			{
-				progressBar.setProgress(progress[1]);
+				//event listener vari
+				photoTouchListener = new OnInfoWindowElemTouchListener() 
+				{
+					@Override
+					protected void onClickConfirmed(View v, Marker marker) 
+					{              
+						//intent per l'attività di gallery
+						Intent intent = new Intent(LoadPathActivity.this,MediaGalleryActivity.class);
+						//passaggio parametri all'intent
+						intent.putExtra("media", markers.toArray());
+
+						int index = markers.indexOf(Utils.getMarkerByTitle(markers, marker.getTitle()));
+
+						intent.putExtra("index", index);
+						startActivity(intent);
+					}
+				};  
+
+				videoTouchListener = new OnInfoWindowElemTouchListener() 
+				{
+					@Override
+					protected void onClickConfirmed(View v, Marker marker) 
+					{             
+						//intent per l'attività di gallery
+						Intent intent = new Intent(LoadPathActivity.this,MediaGalleryActivity.class);
+						//passaggio parametri all'intent
+						intent.putExtra("media", markers.toArray());
+
+						int index = markers.indexOf(Utils.getMarkerByTitle(markers, marker.getTitle()));
+
+						intent.putExtra("index", index);
+						startActivity(intent);
+					}
+				}; 
+
+				//info window setting
+				map.setInfoWindowAdapter(new InfoWindowAdapter() {
+					@Override
+					public View getInfoWindow(Marker marker) {
+						return null;
+					}
+
+					@Override
+					public View getInfoContents(Marker marker) {
+						if(marker.getTitle().startsWith("photo"))
+						{
+							// MapWrapperLayout initialization
+							mapWrapperLayout.init(map, Utils.getPixelsFromDp(LoadPathActivity.this, 59)); 				
+							infoWindow = (ViewGroup)getLayoutInflater().inflate(R.layout.photo_info_window_layout, null);
+							infoSnippet = (TextView)infoWindow.findViewById(R.id.PhotoSnippet);
+							infoImageView = (ImageView)infoWindow.findViewById(R.id.infoImageView);
+							photoTouchListener.setView(infoImageView);
+
+							// Setting up the infoWindow with current's marker info
+							infoSnippet.setText(marker.getSnippet());
+
+							photoTouchListener.setMarker(marker);					        
+							infoImageView.setOnTouchListener(photoTouchListener);		
+
+							//image setting
+							PhotoMarker pm = (PhotoMarker)Utils.getMarkerByTitle(markers, marker.getTitle());
+							Bitmap bitmap = Utils.getSmallBitmap(pm.getPath());
+							infoImageView.setImageBitmap(Bitmap.createScaledBitmap(
+									bitmap, 
+									bitmap.getWidth()/2, 
+									bitmap.getHeight()/2, false));
+							Utils.rotateImageView(infoImageView, pm.getPath());
+
+							// We must call this to set the current marker and infoWindow references
+							// to the MapWrapperLayout
+							mapWrapperLayout.setMarkerWithInfoWindow(marker, infoWindow);
+
+							return infoWindow;
+						}
+						else
+						{
+							// MapWrapperLayout initialization
+							mapWrapperLayout.init(map, Utils.getPixelsFromDp(LoadPathActivity.this, 59)); 				
+							infoWindow = (ViewGroup)getLayoutInflater().inflate(R.layout.photo_info_window_layout, null);
+							infoSnippet = (TextView)infoWindow.findViewById(R.id.PhotoSnippet);
+							infoImageView = (ImageView)infoWindow.findViewById(R.id.infoImageView);
+							videoTouchListener.setView(infoImageView);
+
+							// Setting up the infoWindow with current's marker info
+							infoSnippet.setText(marker.getSnippet());
+
+							videoTouchListener.setMarker(marker);					        
+							infoImageView.setOnTouchListener(videoTouchListener);		
+
+							//image setting
+							VideoMarker vm = (VideoMarker)Utils.getMarkerByTitle(markers, marker.getTitle());	
+
+							Bitmap thumb = ThumbnailUtils.createVideoThumbnail(
+									vm.getVideoUriString(),
+									MediaStore.Images.Thumbnails.MINI_KIND);
+
+							infoImageView.setImageBitmap(thumb);
+
+							// We must call this to set the current marker and infoWindow references
+							// to the MapWrapperLayout
+							mapWrapperLayout.setMarkerWithInfoWindow(marker, infoWindow);
+
+							return infoWindow;
+						}
+					}
+				});
+				
+				progressBar.setProgress(40);
+				
+				//disegno path
+				map.getUiSettings().setMapToolbarEnabled(false);
+				MapManager.drawPolygonPath(positionList, map);
+
+				//zoommo
+				CameraPosition cameraPosition = new CameraPosition.Builder()
+				.target(new LatLng(positionList.get(0).getLatitude(),positionList.get(0).getLongitude()))
+				.zoom(18)
+				.bearing(0)           
+				.tilt(0)             
+				.build();
+				map.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+				
+				progressBar.setProgress(50);
+				
+				//inserisco i marker con le foto
+				for (final Media photo : photos)
+				{
+					handler.post(new Runnable() {
+						@Override
+						public void run() 
+						{
+							//add marker
+							Marker m = map.addMarker(new MarkerOptions()
+							.position(new LatLng(photo.getPosition().getLatitude(),
+									photo.getPosition().getLongitude()))
+									.snippet(photo.getTitle())
+									.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE))
+									.title("photo"+String.valueOf(markerCounter)));
+
+
+							Date dt = new Date();
+							File newFile = new File(Environment.getExternalStorageDirectory(),
+									dt.toString()+".jpg");
+							//copy bytes to file
+							try {
+								FileOutputStream outputStream = new FileOutputStream(newFile.getAbsolutePath()); 
+
+								outputStream.write(photo.getMedia());
+								Thread.sleep(1000);
+								outputStream.flush();
+								outputStream.close();							            							            
+
+							} catch (Exception e) {
+								e.printStackTrace();
+							}
+
+							markers.add(new PhotoMarker(m.getTitle(), m.getSnippet(),newFile.getAbsolutePath()));  
+							markerCounter++;
+						}
+					});
+				}
+
+				progressBar.setProgress(75);
+
+				//inserisco i video markers
+
+				for (final Media video : videos)
+				{
+
+					//add marker
+					Marker m = map.addMarker(new MarkerOptions()
+					.position(new LatLng(video.getPosition().getLatitude(),
+							video.getPosition().getLongitude()))
+							.snippet(video.getTitle())
+							.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN))
+							.title("video"+String.valueOf(markerCounter)));
+
+					Date dt = new Date();
+					File newFile = new File(Environment.getExternalStorageDirectory(),
+							dt.toString()+".mp4");
+					//copy bytes to file
+					try 
+					{
+						FileOutputStream outputStream = new FileOutputStream(newFile.getAbsolutePath());
+
+						outputStream.write(video.getMedia());
+						Thread.sleep(1000);
+						outputStream.flush();
+						outputStream.close();							            
+					}
+					catch (Exception e) 
+					{
+						e.printStackTrace();
+					}
+
+					markers.add(new VideoMarker(m.getTitle(), m.getSnippet(),newFile.getAbsolutePath()));  
+					markerCounter++;
+
+				}
+				
+				progressBar.setProgress(100);
 			}
 		}
 
@@ -139,224 +340,9 @@ public class LoadPathActivity extends ActionBarActivity {
 			photos=PersonalDataManager.getAllPhotosOfPath(idPath);
 			videos=PersonalDataManager.getAllVideosOfPath(idPath);
 
-			//progress bar al 20%
-			publishProgress(1,20);
-
-			handler.post(new Runnable() {
-				@Override
-				public void run() 
-				{
-					photoTouchListener = new OnInfoWindowElemTouchListener() 
-					{
-						@Override
-						protected void onClickConfirmed(View v, Marker marker) 
-						{              
-							//intent per l'attività di gallery
-							Intent intent = new Intent(LoadPathActivity.this,MediaGalleryActivity.class);
-							//passaggio parametri all'intent
-							intent.putExtra("media", markers.toArray());
-
-							int index = markers.indexOf(Utils.getMarkerByTitle(markers, marker.getTitle()));
-
-							intent.putExtra("index", index);
-							startActivity(intent);
-						}
-					};  
-
-					videoTouchListener = new OnInfoWindowElemTouchListener() 
-					{
-						@Override
-						protected void onClickConfirmed(View v, Marker marker) 
-						{             
-							//intent per l'attività di gallery
-							Intent intent = new Intent(LoadPathActivity.this,MediaGalleryActivity.class);
-							//passaggio parametri all'intent
-							intent.putExtra("media", markers.toArray());
-
-							int index = markers.indexOf(Utils.getMarkerByTitle(markers, marker.getTitle()));
-
-							intent.putExtra("index", index);
-							startActivity(intent);
-						}
-					}; 
-
-					//info window setting
-					map.setInfoWindowAdapter(new InfoWindowAdapter() {
-						@Override
-						public View getInfoWindow(Marker marker) {
-							return null;
-						}
-
-						@Override
-						public View getInfoContents(Marker marker) {
-							if(marker.getTitle().startsWith("photo"))
-							{
-								// MapWrapperLayout initialization
-								mapWrapperLayout.init(map, Utils.getPixelsFromDp(LoadPathActivity.this, 59)); 				
-								infoWindow = (ViewGroup)getLayoutInflater().inflate(R.layout.photo_info_window_layout, null);
-								infoSnippet = (TextView)infoWindow.findViewById(R.id.PhotoSnippet);
-								infoImageView = (ImageView)infoWindow.findViewById(R.id.infoImageView);
-								photoTouchListener.setView(infoImageView);
-
-								// Setting up the infoWindow with current's marker info
-								infoSnippet.setText(marker.getSnippet());
-
-								photoTouchListener.setMarker(marker);					        
-								infoImageView.setOnTouchListener(photoTouchListener);		
-
-								//image setting
-								PhotoMarker pm = (PhotoMarker)Utils.getMarkerByTitle(markers, marker.getTitle());
-								Bitmap bitmap = Utils.getSmallBitmap(pm.getPath());
-								infoImageView.setImageBitmap(Bitmap.createScaledBitmap(
-										bitmap, 
-										bitmap.getWidth()/2, 
-										bitmap.getHeight()/2, false));
-								Utils.rotateImageView(infoImageView, pm.getPath());
-
-								// We must call this to set the current marker and infoWindow references
-								// to the MapWrapperLayout
-								mapWrapperLayout.setMarkerWithInfoWindow(marker, infoWindow);
-
-								return infoWindow;
-							}
-							else
-							{
-								// MapWrapperLayout initialization
-								mapWrapperLayout.init(map, Utils.getPixelsFromDp(LoadPathActivity.this, 59)); 				
-								infoWindow = (ViewGroup)getLayoutInflater().inflate(R.layout.photo_info_window_layout, null);
-								infoSnippet = (TextView)infoWindow.findViewById(R.id.PhotoSnippet);
-								infoImageView = (ImageView)infoWindow.findViewById(R.id.infoImageView);
-								videoTouchListener.setView(infoImageView);
-
-								// Setting up the infoWindow with current's marker info
-								infoSnippet.setText(marker.getSnippet());
-
-								videoTouchListener.setMarker(marker);					        
-								infoImageView.setOnTouchListener(videoTouchListener);		
-
-								//image setting
-								VideoMarker vm = (VideoMarker)Utils.getMarkerByTitle(markers, marker.getTitle());	
-
-								Bitmap thumb = ThumbnailUtils.createVideoThumbnail(
-										vm.getVideoUriString(),
-										MediaStore.Images.Thumbnails.MINI_KIND);
-
-								infoImageView.setImageBitmap(thumb);
-
-								// We must call this to set the current marker and infoWindow references
-								// to the MapWrapperLayout
-								mapWrapperLayout.setMarkerWithInfoWindow(marker, infoWindow);
-
-								return infoWindow;
-							}
-						}
-					});	
-				}
-			});
-			publishProgress(1,40);
-
-			//disegno il percorso con tutte le posizioni
-			handler.post(new Runnable() {
-				@Override
-						public void run() 
-						{
-							map.getUiSettings().setMapToolbarEnabled(false);
-							MapManager.drawPolygonPath(positionList, map);
-
-							//zoommo
-							CameraPosition cameraPosition = new CameraPosition.Builder()
-							.target(new LatLng(positionList.get(0).getLatitude(),positionList.get(0).getLongitude()))
-							.zoom(18)
-							.bearing(0)           
-							.tilt(0)             
-							.build();
-							map.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
-						}
-					});
-
-					//inserisco i marker per le foto
-					publishProgress(1,50);
-
-					for (final Media photo : photos)
-					{
-						handler.post(new Runnable() {
-							@Override
-							public void run() 
-							{
-								//add marker
-								Marker m = map.addMarker(new MarkerOptions()
-								.position(new LatLng(photo.getPosition().getLatitude(),
-										photo.getPosition().getLongitude()))
-										.snippet(photo.getTitle())
-										.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE))
-										.title("photo"+String.valueOf(markerCounter)));
-
-
-								Date dt = new Date();
-								File newFile = new File(Environment.getExternalStorageDirectory(),
-										dt.toString()+".jpg");
-								//copy bytes to file
-								try {
-									FileOutputStream outputStream = new FileOutputStream(newFile.getAbsolutePath()); 
-
-									outputStream.write(photo.getMedia());
-									Thread.sleep(1000);
-									outputStream.flush();
-									outputStream.close();							            							            
-
-								} catch (Exception e) {
-									e.printStackTrace();
-								}
-
-								markers.add(new PhotoMarker(m.getTitle(), m.getSnippet(),newFile.getAbsolutePath()));  
-								markerCounter++;
-							}
-						});
-					}
-
-					//inserisco i marker per i video
-					publishProgress(1,75);
-
-					for (final Media video : videos)
-					{
-						handler.post(new Runnable() {
-							@Override
-							public void run() 
-							{
-								//add marker
-								Marker m = map.addMarker(new MarkerOptions()
-								.position(new LatLng(video.getPosition().getLatitude(),
-										video.getPosition().getLongitude()))
-										.snippet(video.getTitle())
-										.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN))
-										.title("video"+String.valueOf(markerCounter)));
-
-								Date dt = new Date();
-								File newFile = new File(Environment.getExternalStorageDirectory(),
-										dt.toString()+".mp4");
-								//copy bytes to file
-								try 
-								{
-									FileOutputStream outputStream = new FileOutputStream(newFile.getAbsolutePath());
-
-									outputStream.write(video.getMedia());
-									Thread.sleep(1000);
-									outputStream.flush();
-									outputStream.close();							            
-								}
-								catch (Exception e) 
-								{
-									e.printStackTrace();
-								}
-
-								markers.add(new VideoMarker(m.getTitle(), m.getSnippet(),newFile.getAbsolutePath()));  
-								markerCounter++;
-							}
-						});
-					}
-
-					publishProgress(1,100);
-
+			//listener photo video path sulla mappa
+			publishProgress(3,0);	
+			
 			return null;
 		}
 	}

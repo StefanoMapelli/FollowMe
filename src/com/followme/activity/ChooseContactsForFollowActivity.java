@@ -11,7 +11,9 @@ import com.followme.manager.Utils;
 import com.followme.object.Contact;
 
 import android.support.v7.app.ActionBarActivity;
+import android.app.ProgressDialog;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -24,6 +26,7 @@ public class ChooseContactsForFollowActivity extends ActionBarActivity {
 	private Contact[] contactsItems;
 	private String userId;
 	private List<Contact> contacts;
+	private ProgressDialog progressBar;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -36,31 +39,26 @@ public class ChooseContactsForFollowActivity extends ActionBarActivity {
 		
 		if(contacts.isEmpty())
 		{
-			contacts = Utils.phoneContactsOnParse(
-					DeviceDataManager.allContacts(this), 
-					ParseManager.allContactsOnParse(this));
-
-			for (Contact c : contacts)
-			{
-				PersonalDataManager.insertContact(c);
-			}
+			refreshContactsForFollowOnClickHandler(null);
 		}
-		
-		Iterator<Contact> i = contacts.iterator();
-		Contact c;
-		int j=0;
-		contactsItems = new Contact[contacts.size()];
-		
-		while(i.hasNext())
+		else
 		{
-			c = i.next();
-			
-			contactsItems[j] = c;
-			j++;
+			Iterator<Contact> i = contacts.iterator();
+			Contact c;
+			int j=0;
+			contactsItems = new Contact[contacts.size()];
+
+			while(i.hasNext())
+			{
+				c = i.next();
+
+				contactsItems[j] = c;
+				j++;
+			}
+
+			ContactCustomAdapter adapter = new ContactCustomAdapter(this, contactsItems);
+			lv.setAdapter(adapter);
 		}
-		
-		ContactCustomAdapter adapter = new ContactCustomAdapter(this, contactsItems);
-		lv.setAdapter(adapter);
 	}
 
 	public void selectContactForFollowOnClickHandler(View v)
@@ -74,33 +72,81 @@ public class ChooseContactsForFollowActivity extends ActionBarActivity {
 		startActivity(intent);
 	}
 	
+	private class RefreshFollowContactListThread extends AsyncTask<Void, Integer, String>
+	{
+
+		@Override
+		protected void onProgressUpdate (Integer...progress)
+		{
+		
+			if(progress[0]==0)
+			{
+				progressBar = new ProgressDialog(ChooseContactsForFollowActivity.this);
+				progressBar.setCancelable(false);
+				progressBar.setMessage("Searching for new contacts...");
+				progressBar.setMax(100);
+				progressBar.show();
+			}
+			else if(progress[0]==1)
+			{
+				progressBar.setMessage("Refreshing your conacts list...");
+			}
+			else if(progress[0]==2)	
+			{
+				ContactCustomAdapter adapter = new ContactCustomAdapter(ChooseContactsForFollowActivity.this, contactsItems);
+				lv.setAdapter(adapter);
+				progressBar.dismiss();
+			}
+		}
+		
+		@Override
+		protected void onPreExecute() {
+
+			publishProgress(0);
+		}
+
+		@Override
+		protected void onPostExecute(String result) {
+
+			publishProgress(2);
+
+		}
+
+		@Override
+		protected String doInBackground(Void... params) 
+		{
+			contacts = Utils.phoneContactsOnParse(
+					DeviceDataManager.allContacts(ChooseContactsForFollowActivity.this), 
+					ParseManager.allContactsOnParse(ChooseContactsForFollowActivity.this));
+			
+			publishProgress(1);
+			
+			PersonalDataManager.deleteAllContacts();
+			for (Contact c : contacts)
+			{
+				PersonalDataManager.insertContact(c);
+			}
+			Iterator<Contact> i = contacts.iterator();
+			Contact c;
+			int j=0;
+			contactsItems = new Contact[contacts.size()];
+			
+			while(i.hasNext())
+			{
+				c = i.next();
+				
+				contactsItems[j] = c;
+				j++;
+			}
+			return null;
+		}
+		
+	}
+	
+	
 	public void refreshContactsForFollowOnClickHandler(View v)
 	{
-		contacts = Utils.phoneContactsOnParse(
-				DeviceDataManager.allContacts(this), 
-				ParseManager.allContactsOnParse(this));
-		
-		PersonalDataManager.deleteAllContacts();
-		for (Contact c : contacts)
-		{
-			PersonalDataManager.insertContact(c);
-		}
-		
-		Iterator<Contact> i = contacts.iterator();
-		Contact c;
-		int j=0;
-		contactsItems = new Contact[contacts.size()];
-		
-		while(i.hasNext())
-		{
-			c = i.next();
-			
-			contactsItems[j] = c;
-			j++;
-		}
-		
-		ContactCustomAdapter adapter = new ContactCustomAdapter(this, contactsItems);
-		lv.setAdapter(adapter);
+		new RefreshFollowContactListThread().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 	}
 	
 	@Override

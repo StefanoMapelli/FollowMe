@@ -358,12 +358,10 @@ public class SharingReceiverActivity extends ActionBarActivity {
 	//salvataggio di path, posizioni, photos e videos	
 	private void savePathOnLocalDB(String title) 
 	{
-		
 		int idPath=PersonalDataManager.insertPath(title, PersonalDataManager.getNameOfContact(request.getSender().getPhoneNumber()));
 		PersonalDataManager.insertPositionList(positionList, idPath);
 		PersonalDataManager.insertPhotoList(photos, idPath+"");
 		PersonalDataManager.insertVideoList(videos, idPath+"");
 		Toast.makeText(this, "Path saved successfully", Toast.LENGTH_LONG).show();
-		
 	}
 }
