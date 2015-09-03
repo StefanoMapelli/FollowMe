@@ -35,9 +35,12 @@ public class PathCustomAdapter extends ArrayAdapter<Path>{
 		
 		TextView pathTitle = (TextView) convertView.findViewById(R.id.savedPathTitle);
 		TextView pathOwner = (TextView) convertView.findViewById(R.id.savedPathOwner);
+		TextView pathDate= (TextView) convertView.findViewById(R.id.savedPathDate);
 		
 		pathTitle.setText("Title: "+ path.get(position).getTitle());
-		pathOwner.setText("Owner: "+ path.get(position).getOwner());				
+		pathOwner.setText("Owner: "+ path.get(position).getOwner());	
+		pathDate.setText("Date: "+ path.get(position).getDate());
+		
 		return convertView;	
 	}
 

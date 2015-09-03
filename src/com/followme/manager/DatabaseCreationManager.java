@@ -21,6 +21,7 @@ public class DatabaseCreationManager extends SQLiteOpenHelper {
 	public static final String TABLE_PATH = "path";
 	public static final String COLUMN_OWNER = "owner";
 	public static final String COLUMN_PATH_ID = "id_path";
+	public static final String COLUMN_DATE = "date";
 	
 	public static final String TABLE_CONTACT = "contact";
 	public static final String COLUMN_CONTACT_ID="id_contact";
@@ -56,32 +57,33 @@ public class DatabaseCreationManager extends SQLiteOpenHelper {
 
 	  // Database creation sql statement
 	private static final String DATABASE_CREATE = "create table "
-	      + TABLE_PERSONAL_DATA + "(" + COLUMN_ID
-	      + " INTEGER primary key autoincrement, " + COLUMN_USER_ID
-	      + " TEXT not null, "+ COLUMN_PHONE_NUMBER
-	      + " TEXT not null);";
-	
+			+ TABLE_PERSONAL_DATA + "(" + COLUMN_ID
+			+ " INTEGER primary key autoincrement, " + COLUMN_USER_ID
+			+ " TEXT not null, "+ COLUMN_PHONE_NUMBER
+			+ " TEXT not null);";
+
 	private static final String PATH_CREATE= "create table "
-		      + TABLE_PATH + "(" + COLUMN_PATH_ID
-		      + " INTEGER primary key autoincrement, " 
-		      + COLUMN_OWNER + " TEXT not null, "
-		      + COLUMN_TITLE + " TEXT not null);";
-	
+			+ TABLE_PATH + "(" + COLUMN_PATH_ID
+			+ " INTEGER primary key autoincrement, " 
+			+ COLUMN_OWNER + " TEXT not null, "
+			+ COLUMN_TITLE + " TEXT not null,"
+			+ COLUMN_DATE +" TEXT not null);";
+
 	private static final String CONTACT_CREATE= "create table "
-		      + TABLE_CONTACT + "(" + COLUMN_CONTACT_ID
-		      + " INTEGER primary key autoincrement, " 
-		      + COLUMN_NUMBER + " TEXT not null, "
-		      + COLUMN_NAME + " TEXT not null,"
-		      + COLUMN_CONTACT_PARSE_ID + " TEXT not null);";
-	
+			+ TABLE_CONTACT + "(" + COLUMN_CONTACT_ID
+			+ " INTEGER primary key autoincrement, " 
+			+ COLUMN_NUMBER + " TEXT not null, "
+			+ COLUMN_NAME + " TEXT not null,"
+			+ COLUMN_CONTACT_PARSE_ID + " TEXT not null);";
+
 	private static final String POSITION_CREATE = "create table "
-		      + TABLE_POSITION 
-		      + "(" + COLUMN_POSITION_ID + " INTEGER primary key autoincrement, " 
-		      + COLUMN_POSITION_PARSE_ID + " TEXT not null, "
-		      + COLUMN_PATH + " INTEGER not null, "
-		      + COLUMN_COUNTER + " INTEGER not null, "
-		      + COLUMN_LATITUDE_POSITION + " REAL not null, "
-		      + COLUMN_LONGITUDE_POSITION + " REAL not null);";
+			+ TABLE_POSITION 
+			+ "(" + COLUMN_POSITION_ID + " INTEGER primary key autoincrement, " 
+			+ COLUMN_POSITION_PARSE_ID + " TEXT not null, "
+			+ COLUMN_PATH + " INTEGER not null, "
+			+ COLUMN_COUNTER + " INTEGER not null, "
+			+ COLUMN_LATITUDE_POSITION + " REAL not null, "
+			+ COLUMN_LONGITUDE_POSITION + " REAL not null);";
 	
 	private static final String PHOTO_CREATE  = "create table "
 		      + TABLE_PHOTO 
@@ -103,6 +105,7 @@ public class DatabaseCreationManager extends SQLiteOpenHelper {
 		      + COLUMN_POSITION + " INTEGER not null, "
 		      + COLUMN_TITLE + " TEXT not null, "
 		      + COLUMN_FILE + " BLOB not null);";
+	
 
 	public DatabaseCreationManager(Context context, String name, CursorFactory factory,
 			int version) {

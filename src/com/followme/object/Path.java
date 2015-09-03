@@ -5,6 +5,7 @@ public class Path {
 	private String id;
 	private String title;
 	private String owner;
+	private String date;
 	
 	public Path()
 	{
@@ -34,6 +35,14 @@ public class Path {
 	}
 	public void setOwner(String owner) {
 		this.owner = owner;
+	}
+
+	public String getDate() {
+		return date;
+	}
+
+	public void setDate(String date) {
+		this.date = date;
 	}
 	
 	

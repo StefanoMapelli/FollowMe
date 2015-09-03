@@ -3,8 +3,10 @@ package com.followme.activity;
 import java.util.ArrayList;
 
 import com.followme.adapter.PathCustomAdapter;
+import com.followme.manager.ParseManager;
 import com.followme.manager.PersonalDataManager;
 import com.followme.object.Path;
+import com.followme.object.Request;
 
 import android.support.v7.app.ActionBarActivity;
 import android.content.Intent;
@@ -45,6 +47,35 @@ public class SavedPathListActivity extends ActionBarActivity {
    				startActivity(intent);
 			}
         });
+	}
+	
+	
+	//onClickHandler quando viene eliminato un path
+	public void deleteSavedPathOnClickHandler(View v) {
+		
+		View parentRow = (View) v.getParent();
+		int position = listView.getPositionForView(parentRow);
+		Path itemToRemove = pathList.get(position);
+		
+		//eliminare il path dal db locale
+		PersonalDataManager.deletePath(itemToRemove.getId());
+		//reset the arraylist
+		int i = 0;
+		for (Path r : pathList)
+		{
+			if(r.getId().compareTo(itemToRemove.getId())==0)
+			{
+				pathList.remove(i);
+				break;
+			}
+			i++;
+		}
+		if(pathList.isEmpty())
+		{
+			finish();
+		}
+		//rimuovere dalla listview
+		adapter.remove(itemToRemove);		
 	}
 
 	@Override

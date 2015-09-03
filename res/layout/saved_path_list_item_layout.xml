@@ -1,21 +1,62 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout 
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
+    android:descendantFocusability="blocksDescendants"
+    android:orientation="horizontal"
     android:weightSum="1" 
-    android:descendantFocusability="blocksDescendants">
-    
-    <TextView
-        android:id="@+id/savedPathTitle"
+    android:background="#494949">
+
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_weight="0.5"/>
+        android:descendantFocusability="blocksDescendants"
+        android:orientation="vertical"
+        android:weightSum="1" 
+        android:layout_weight="0.2"
+        android:background="#494949">
+
+        <TextView
+            android:id="@+id/savedPathTitle"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="0.33"
+        	android:textSize="20sp"
+        	android:textColor="#FFFFFF"
+        	android:paddingLeft="6sp"
+            />
+        
+        <TextView
+            android:id="@+id/savedPathDate"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="0.33"
+        	android:textSize="20sp"
+        	android:textColor="#FFFFFF"
+        	android:paddingLeft="6sp"
+            />
+
+        <TextView
+            android:id="@+id/savedPathOwner"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="0.33"
+            android:gravity="center_vertical"
+            android:textColor="#FFFFFF"
+        	android:textSize="20sp"
+        	android:paddingLeft="6sp"
+             />
+        
+    </LinearLayout>
     
-    <TextView
-        android:id="@+id/savedPathOwner"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_weight="0.5"/>
+    <ImageButton
+            android:id="@+id/deletePathButton"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="0.8"
+            android:onClick="deleteSavedPathOnClickHandler"
+            android:src="@drawable/bin"
+            android:background="#494949" />
     
 </LinearLayout>

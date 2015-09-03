@@ -3,6 +3,7 @@ package com.followme.manager;
 import java.io.File;
 import java.io.FileInputStream;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
@@ -66,9 +67,11 @@ public class PersonalDataManager {
 	   */
 	  public static int insertPath(String title, String ownerUser) 
 	  {
+		  Date date=new Date();
 		  ContentValues values = new ContentValues();
 		  values.put(DatabaseCreationManager.COLUMN_TITLE, title);
 		  values.put(DatabaseCreationManager.COLUMN_OWNER, ownerUser);
+		  values.put(DatabaseCreationManager.COLUMN_DATE, date.toString().replace("CEST ", ""));
 		  long pathId=database.insert(DatabaseCreationManager.TABLE_PATH, null,values);
 		  return (int) pathId;
 	  }
@@ -82,10 +85,11 @@ public class PersonalDataManager {
 	  {
 		  ArrayList<Path> pathList=new ArrayList<Path>();  
 		  
-		  String[] allPathColumns = new String[3];
+		  String[] allPathColumns = new String[4];
 		  allPathColumns[0]=DatabaseCreationManager.COLUMN_PATH_ID;
 		  allPathColumns[1]=DatabaseCreationManager.COLUMN_OWNER;
 		  allPathColumns[2]=DatabaseCreationManager.COLUMN_TITLE;
+		  allPathColumns[3]=DatabaseCreationManager.COLUMN_DATE;
 		  
 		  Cursor cursor =database.query(DatabaseCreationManager.TABLE_PATH, allPathColumns, null, null, null, null, null);
 
@@ -97,6 +101,7 @@ public class PersonalDataManager {
 				  pathObject.setId(cursor.getInt(0)+"");
 				  pathObject.setOwner(cursor.getString(1));
 				  pathObject.setTitle(cursor.getString(2));
+				  pathObject.setDate(cursor.getString(3));
 				  pathList.add(pathObject);
 				  cursor.moveToNext();
 			  }
@@ -557,4 +562,13 @@ public class PersonalDataManager {
 			  return "";
 		  }
 	  }
+
+	  /**
+	   * This method delete from db the selected path
+	   * @param id
+	   */
+	public static void deletePath(String id) 
+	{
+		database.delete(DatabaseCreationManager.TABLE_PATH, DatabaseCreationManager.COLUMN_PATH_ID+"="+id, null);
+	}
 }
