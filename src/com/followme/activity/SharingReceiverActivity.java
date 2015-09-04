@@ -36,6 +36,9 @@ import android.support.v7.app.ActionBarActivity;
 import android.app.DialogFragment;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.Matrix;
 import android.media.ThumbnailUtils;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -197,9 +200,18 @@ public class SharingReceiverActivity extends ActionBarActivity implements SavePa
 			        
 			        Bitmap thumb = ThumbnailUtils.createVideoThumbnail(
 							vm.getVideoUriString(),
-			                MediaStore.Images.Thumbnails.MINI_KIND);
+			                MediaStore.Images.Thumbnails.MINI_KIND);			        
+			        Bitmap play = BitmapFactory.decodeResource(getResources(), R.drawable.play);
+			        Bitmap playIcon = Bitmap.createScaledBitmap(play,
+			        		play.getWidth()/3, play.getHeight()/3, false);
+			        		;
+					Bitmap bmOverlay = Bitmap.createBitmap(thumb.getWidth(), thumb.getHeight(), thumb.getConfig());
+			        Canvas canvas = new Canvas(bmOverlay);
+			        canvas.drawBitmap(thumb, new Matrix(), null);
+					canvas.drawBitmap(playIcon,(thumb.getWidth()/2) - (playIcon.getWidth()/2),
+												(thumb.getHeight()/2) - (playIcon.getHeight()/2), null);
 			        
-			        infoImageView.setImageBitmap(thumb);
+			        infoImageView.setImageBitmap(bmOverlay);
 	                	                		  
 	                // We must call this to set the current marker and infoWindow references
 	                // to the MapWrapperLayout
