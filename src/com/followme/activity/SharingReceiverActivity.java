@@ -33,6 +33,7 @@ import com.parse.ParseObject;
 
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.ActionBarActivity;
+import android.app.DialogFragment;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.media.ThumbnailUtils;
@@ -69,6 +70,8 @@ public class SharingReceiverActivity extends ActionBarActivity implements SavePa
 	private ArrayList<CustomMarker> markers = new ArrayList<CustomMarker>();
 	private int markerCounter = 0;
 	private FindNewPositions networkThread;
+	private Marker marker;
+	private String senderName;
 	private Handler handler;
 
 	@Override
@@ -81,6 +84,7 @@ public class SharingReceiverActivity extends ActionBarActivity implements SavePa
 		mapWrapperLayout = (MapWrapperLayout)findViewById(R.id.mapRecieverLinearLayout);
 		map.getUiSettings().setMapToolbarEnabled(false);
 		request = (Request) getIntent().getSerializableExtra("acceptedRequest");
+		senderName = PersonalDataManager.getNameOfContact(request.getSender().getPhoneNumber());
 		counterPosition=-1;
 		counterPhoto = -1;
 		counterVideo = -1;
@@ -173,7 +177,7 @@ public class SharingReceiverActivity extends ActionBarActivity implements SavePa
 	                
 	                return infoWindow;
 	            }
-            	else
+            	else if(marker.getTitle().startsWith("video"))
             	{
 					// MapWrapperLayout initialization
 			        mapWrapperLayout.init(map, Utils.getPixelsFromDp(SharingReceiverActivity.this, 59)); 				
@@ -202,6 +206,10 @@ public class SharingReceiverActivity extends ActionBarActivity implements SavePa
 	                mapWrapperLayout.setMarkerWithInfoWindow(marker, infoWindow);
 	                
 	                return infoWindow;
+            	}
+            	else
+            	{
+            		return null;
             	}
             }
         });	
@@ -232,6 +240,19 @@ public class SharingReceiverActivity extends ActionBarActivity implements SavePa
 							.tilt(0)             
 							.build();
 							map.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+							
+							if(marker != null)
+							{
+								marker.remove();
+							}
+							//add position marker
+							Marker m = map.addMarker(new MarkerOptions()
+				            .position(new LatLng(positionList.get(positionList.size()-1).getLatitude(),
+				            		positionList.get(positionList.size()-1).getLongitude()))
+				            .snippet(request.getSender().getPhoneNumber())
+				            .title(senderName));
+							marker=m;
+							
 							MapManager.drawPolygonPath(positionList, map);
 						}
 					});
@@ -349,8 +370,8 @@ public class SharingReceiverActivity extends ActionBarActivity implements SavePa
 		int id = item.getItemId();
 		if (id == R.id.savePathShareReceiving) {
 			
-			Date d=new Date();
-			savePathOnLocalDB(d.toString());
+			DialogFragment savePathDialogFragment = new SavePathDialogFragment();
+			savePathDialogFragment.show(getFragmentManager(), "savePath");
 			return true;
 			
 		}

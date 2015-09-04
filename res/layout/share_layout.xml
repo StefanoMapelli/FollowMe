@@ -22,28 +22,28 @@
 	    android:orientation="horizontal" >
 
 	    <ImageButton
+	        android:id="@+id/photoButton"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:layout_alignParentLeft="true"
+	        android:layout_centerVertical="true"
+	        android:layout_marginLeft="100dp"
+	        android:layout_weight="0.5"
+	        android:background="@drawable/photo"
+	        android:onClick="photoButtonOnClickHandler"
+	        android:text="Photo" />
+
+	    <ImageButton
 	        android:id="@+id/videoButton"
 	        android:layout_width="wrap_content"
 	        android:layout_height="wrap_content"
 	        android:layout_alignParentRight="true"
 	        android:layout_centerVertical="true"
-	        android:layout_marginRight="71dp"
+	        android:layout_marginRight="100dp"
 	        android:layout_weight="0.5"
 	        android:background="@drawable/video"
 	        android:onClick="videoButtonOnClickHandler"
 	        android:text="Video" />
-
-	    <ImageButton
-	        android:id="@+id/photoButton"
-	        android:layout_width="wrap_content"
-	        android:layout_height="wrap_content"
-	        android:layout_centerVertical="true"
-	        android:layout_marginRight="77dp"
-	        android:layout_toLeftOf="@+id/videoButton"
-	        android:layout_weight="0.5"
-	        android:background="@drawable/photo"
-	        android:onClick="photoButtonOnClickHandler"
-	        android:text="Photo" />
 
 	</RelativeLayout>
 
