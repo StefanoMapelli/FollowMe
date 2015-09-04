@@ -9,7 +9,6 @@ import com.followme.manager.ParseManager;
 import com.followme.manager.PersonalDataManager;
 import com.followme.object.Contact;
 import com.followme.object.Fence;
-import com.followme.object.Request;
 import com.google.android.gms.maps.model.LatLng;
 
 import android.support.v7.app.ActionBarActivity;
@@ -59,9 +58,6 @@ public class FenceControlActivity extends ActionBarActivity {
 		double fenceLongitude=getIntent().getDoubleExtra("fenceLongitude",0);
 		LatLng position=new LatLng(fenceLatitude,fenceLongitude);
 		List<Contact> contactList = new ArrayList<Contact>();
-		
-		
-		
 		
 		//aggiungo i dati alla lista nell view
 		for(int i=0; i < objects.length; i++)

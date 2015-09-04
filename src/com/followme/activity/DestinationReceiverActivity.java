@@ -15,6 +15,9 @@ import com.parse.ParseObject;
 
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.ActionBarActivity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Color;
 import android.location.Location;
 import android.location.LocationListener;
@@ -41,6 +44,8 @@ public class DestinationReceiverActivity extends ActionBarActivity {
 	private Circle destinationCircle;
 	private CheckDestinationStatus checkDestinationThread;
 	private Handler handler;
+	private int finishMode=1; //1 destroyed by follower, 2 destroyed by receiver
+	
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -94,6 +99,53 @@ public class DestinationReceiverActivity extends ActionBarActivity {
 		
 	}
 	
+	
+
+	@Override
+	public void onBackPressed()
+	{
+		new AlertDialog.Builder(this)
+	    .setTitle("Attention")
+	    .setMessage("Are you sure you want to close the destination?")
+	    .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+	        public void onClick(DialogInterface dialog, int which)
+	        { 
+	        	Toast.makeText(DestinationReceiverActivity.this, "Your destination is the world",Toast.LENGTH_LONG).show();
+	            finishMode=2;
+	        	finish();
+	        }
+	     })
+	    .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+	        public void onClick(DialogInterface dialog, int which) 
+	        { 
+	            
+	        }
+	     })
+	    .setIcon(android.R.drawable.ic_dialog_alert)
+	    .show();
+		
+	}
+	
+	@Override
+	public void onDestroy()
+	{
+		super.onDestroy();
+		if(finishMode==1)
+		{
+			checkDestinationThread.cancel(true);
+			ParseManager.deleteRequestAndDestination(this, destinationRequest.getId(), destinationParseObject);
+		}
+		else
+		{
+			checkDestinationThread.cancel(true);
+			ParseManager.updateRequestStatusById(this, destinationRequest.getId(), "chiusa");
+		}
+		
+		Intent intent = new Intent(DestinationReceiverActivity.this, MainActivity.class);
+		intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+		startActivity(intent);
+	}
+	
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
@@ -141,6 +193,8 @@ public class DestinationReceiverActivity extends ActionBarActivity {
 		@Override
 		protected String doInBackground(Void... params) 
 		{				
+			if(isCancelled())
+				return null;
 			
 			while(true)
 			{	
@@ -173,6 +227,18 @@ public class DestinationReceiverActivity extends ActionBarActivity {
 							destinationCircle.setFillColor(Color.GREEN);
 						}
 					});
+				}
+				
+				//controllo se la richiesta è stata chiusa dal follower
+
+				boolean isActive=ParseManager.isRequestActive(DestinationReceiverActivity.this, destinationRequest.getId());
+				
+				if(!isActive)
+				{
+					//notificare all'utente che l'activity è stata chiusa dal follower
+					Toast.makeText(DestinationReceiverActivity.this, "You haven't a destination!!! The follower closes it ",Toast.LENGTH_LONG).show();
+		            finishMode=1;
+					finish();
 				}
 				
 				try {

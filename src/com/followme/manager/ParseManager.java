@@ -868,7 +868,7 @@ public class ParseManager {
 
 	
 	
-	private static ParseObject getDestinationbyId(Context context,
+	public static ParseObject getDestinationbyId(Context context,
 			String id) {
 		
 		List<ParseObject> objects = null;
@@ -970,9 +970,22 @@ public class ParseManager {
 	public static void deleteRequestAndFence(
 			Context context, String idRequest,
 			ParseObject fenceParseObject) {
+		
+		Parse.initialize(context,"x9hwNnRfTCCYGXPVJNKaR7zYTIMOdKeLkerRQJT2" ,"hi7GT6rUlp9uTfw6XQzdEjnTqwgPnRPoikPehgVf");
 
 		deleteRequest(context, idRequest);
 		fenceParseObject.deleteInBackground();
+		
+	}
+
+	public static void deleteRequestAndDestination(
+			Context context,
+			String idRequest, ParseObject destinationParseObject) {
+		
+		Parse.initialize(context,"x9hwNnRfTCCYGXPVJNKaR7zYTIMOdKeLkerRQJT2" ,"hi7GT6rUlp9uTfw6XQzdEjnTqwgPnRPoikPehgVf");
+		
+		deleteRequest(context, idRequest);
+		destinationParseObject.deleteInBackground();
 		
 	}
 	

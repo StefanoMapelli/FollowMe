@@ -174,10 +174,13 @@ public class DestinationSettingActivity extends ActionBarActivity {
 	{
 		if(destinationCircle!=null)
 		{
-			String destinationId = ParseManager.insertDestination(this, radius, destinationPosition);
+			String[] destinationIdList=new String[contactsList.length];
+			String[] requestIdList=new String[contactsList.length];
+			
 			for(int i=0; i<contactsList.length; i++)
 			{
-				ParseManager.insertRequest(this, "destinazione", userId, contactsList[i].getId(), null, destinationId, null);
+				destinationIdList[i] = ParseManager.insertDestination(this, radius, destinationPosition);
+				requestIdList[i] = ParseManager.insertRequest(this, "destinazione", userId, contactsList[i].getId(), null, destinationIdList[i], null);
 			}
 
 			Intent intent = new Intent(DestinationSettingActivity.this,DestinationControlActivity.class);
@@ -185,7 +188,8 @@ public class DestinationSettingActivity extends ActionBarActivity {
 			intent.putExtra("destinationLongitude", destinationPosition.longitude);
 			intent.putExtra("radius", radius);
 			intent.putExtra("contactsList", contactsList);
-			intent.putExtra("destinationId", destinationId);
+			intent.putExtra("destinationIdList", destinationIdList);
+			intent.putExtra("requestIdList", requestIdList);
 			startActivity(intent);
 		}
 	}
