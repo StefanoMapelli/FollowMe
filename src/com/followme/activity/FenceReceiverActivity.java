@@ -245,8 +245,14 @@ public class FenceReceiverActivity extends ActionBarActivity {
 				
 				if(!isActive)
 				{
-					//notificare all'utente che l'activity è stata chiusa dal follower
-					Toast.makeText(FenceReceiverActivity.this, "You are free!!! The follower destroy the fence",Toast.LENGTH_LONG).show();
+					handler.post(new Runnable() {
+						@Override
+						public void run() 
+						{
+							//notificare all'utente che l'activity è stata chiusa dal follower
+							Toast.makeText(FenceReceiverActivity.this, "You are free!!! The follower destroy the fence",Toast.LENGTH_LONG).show();
+						}
+					});
 		            finishMode=1;
 					finish();
 				}

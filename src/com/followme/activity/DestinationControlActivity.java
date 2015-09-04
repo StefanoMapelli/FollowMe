@@ -53,7 +53,7 @@ public class DestinationControlActivity extends ActionBarActivity {
 		}
 
 		int radius  = getIntent().getIntExtra("radius", 0);
-		String idDestination=getIntent().getStringExtra("destinationIdList");
+		Object[] destinationIdList =(Object[])getIntent().getSerializableExtra("destinationIdList");
 		double destinationLatitude=getIntent().getDoubleExtra("destinationLatitude",0);
 		double destinationLongitude=getIntent().getDoubleExtra("destinationLongitude",0);
 		LatLng position=new LatLng(destinationLatitude,destinationLongitude);
@@ -67,7 +67,7 @@ public class DestinationControlActivity extends ActionBarActivity {
 
 		for(int i=0; i < contactList.size(); i++)
 		{
-			destinationList.add(new Destination(radius,contactList.get(i),position,idDestination, false));			
+			destinationList.add(new Destination(radius,contactList.get(i),position,(String)destinationIdList[i], false));			
 		}
 
 		//set the adapter
