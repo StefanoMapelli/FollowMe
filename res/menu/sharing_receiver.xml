@@ -7,6 +7,13 @@
         android:id="@+id/savePathShareReceiving"
         android:orderInCategory="100"
         android:title="Save Path"
-        app:showAsAction="never"/>
+        app:showAsAction="always" 
+        android:icon="@drawable/floppy_disk"/>
+    <item
+        android:id="@+id/galleryItemReceiving"
+        android:orderInCategory="100"
+        android:title="Gallery"
+    	app:showAsAction="always" 
+        android:icon="@drawable/gallery"/>
 
 </menu>

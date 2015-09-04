@@ -253,7 +253,7 @@ public class SharingReceiverActivity extends ActionBarActivity implements SavePa
 							.position(new LatLng(photo.getPosition().getLatitude(),
 												 photo.getPosition().getLongitude()))
 									.snippet(photo.getTitle())
-									.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE))
+									.icon(BitmapDescriptorFactory.fromResource(R.drawable.camera_marker))
 									.title("photo"+String.valueOf(markerCounter)));
 
 
@@ -297,7 +297,7 @@ public class SharingReceiverActivity extends ActionBarActivity implements SavePa
 							.position(new LatLng(video.getPosition().getLatitude(),
 											     video.getPosition().getLongitude()))
 									.snippet(video.getTitle())
-									.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN))
+									.icon(BitmapDescriptorFactory.fromResource(R.drawable.movie_marker))
 									.title("video"+String.valueOf(markerCounter)));
 							map.getUiSettings().setMapToolbarEnabled(false);
 
@@ -353,6 +353,15 @@ public class SharingReceiverActivity extends ActionBarActivity implements SavePa
 			savePathOnLocalDB(d.toString());
 			return true;
 			
+		}
+		else if (id == R.id.galleryItemReceiving && !markers.isEmpty())
+		{
+			//intent per l'attività di gallery
+			Intent intent = new Intent(SharingReceiverActivity.this,MediaGalleryActivity.class);
+			//passaggio parametri all'intent
+			intent.putExtra("media", markers.toArray());					
+			intent.putExtra("index", 0);
+			startActivity(intent);
 		}
 		return super.onOptionsItemSelected(item);
 	}

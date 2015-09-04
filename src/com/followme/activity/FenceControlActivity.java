@@ -92,6 +92,7 @@ public class FenceControlActivity extends ActionBarActivity {
 	@Override
 	public void onBackPressed()
 	{
+		checkFencesThread.cancel(true);
 		new AlertDialog.Builder(this)
 	    .setTitle("Attention")
 	    .setMessage("Are you sure you want to destroy the fence?")
@@ -106,7 +107,8 @@ public class FenceControlActivity extends ActionBarActivity {
 	    .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
 	        public void onClick(DialogInterface dialog, int which) 
 	        { 
-	            
+	        	checkFencesThread=new CheckFences();
+	    		checkFencesThread.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 	        }
 	     })
 	    .setIcon(android.R.drawable.ic_dialog_alert)
@@ -119,9 +121,9 @@ public class FenceControlActivity extends ActionBarActivity {
 	@Override
 	public void onDestroy()
 	{
+		super.onDestroy();
 		if(finishMode==1)
 		{
-			checkFencesThread.cancel(true);
 			for(int i=0; i<requestIdList.size();i++)
 			{
 				ParseManager.deleteRequestAndFence(
@@ -133,7 +135,6 @@ public class FenceControlActivity extends ActionBarActivity {
 		}
 		else
 		{
-			checkFencesThread.cancel(true);
 			for(int i=0; i<requestIdList.size();i++)
 			{
 				ParseManager.updateRequestStatusById(this, (String)requestIdList.get(i), "chiusa");
@@ -162,6 +163,9 @@ public class FenceControlActivity extends ActionBarActivity {
 		{			
 			while(true)
 			{	
+				if(isCancelled())
+					return null;
+				
 				Fence fenceObject;
 				
 				for(int i=0; i<fenceList.size();i++)
@@ -226,16 +230,6 @@ public class FenceControlActivity extends ActionBarActivity {
 						}
 					}
 				}
-				//controllo se la richiesta è stata chiusa dallo user
-				for(int i=0; i<requestIdList.size();i++)
-				{
-					
-				}
-
-				
-				
-				
-				
 				try {
 					Thread.sleep(10000);
 				} catch (InterruptedException e) {

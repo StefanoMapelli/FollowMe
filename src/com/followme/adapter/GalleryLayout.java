@@ -15,6 +15,9 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.Matrix;
 import android.media.ThumbnailUtils;
 import android.provider.MediaStore;
 import android.util.AttributeSet;
@@ -92,7 +95,14 @@ public class GalleryLayout extends HorizontalScrollView {
 						vm.getVideoUriString(),
 		                MediaStore.Images.Thumbnails.FULL_SCREEN_KIND);		        
 				title.setText(vm.getSnippet());
-				image.setImageBitmap(thumb);
+				
+				Bitmap playIcon = BitmapFactory.decodeResource(getResources(), R.drawable.play);
+				Bitmap bmOverlay = Bitmap.createBitmap(thumb.getWidth(), thumb.getHeight(), thumb.getConfig());
+		        Canvas canvas = new Canvas(bmOverlay);
+		        canvas.drawBitmap(thumb, new Matrix(), null);
+				canvas.drawBitmap(playIcon,(thumb.getWidth()/2) - (playIcon.getWidth()/2),
+											(thumb.getHeight()/2) - (playIcon.getHeight()/2), null);
+				image.setImageBitmap(bmOverlay);
 				
 				image.setOnClickListener(new OnClickListener()
 				{

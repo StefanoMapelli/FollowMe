@@ -12,28 +12,39 @@
         android:name="com.google.android.gms.maps.SupportMapFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_weight="0.2"/>
-	
-	<LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:weightSum="1"
-        android:layout_weight="0.8"
-        android:orientation="horizontal" >
+        android:layout_weight="0.1"/>
 
-        <Button
-            android:id="@+id/photoButton"
-            android:layout_width="fill_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="0.5"
-            android:text="Photo" />
-        
-        <Button
-            android:id="@+id/videoButton"
-            android:layout_width="fill_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="0.5"
-            android:text="Video" />
-        
-     </LinearLayout>
+        <RelativeLayout
+	    android:layout_width="match_parent"
+	    android:layout_height="match_parent"
+	    android:layout_weight="0.9"
+	    android:background="#000000"
+	    android:orientation="horizontal" >
+
+	    <ImageButton
+	        android:id="@+id/videoButton"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:layout_alignParentRight="true"
+	        android:layout_centerVertical="true"
+	        android:layout_marginRight="71dp"
+	        android:layout_weight="0.5"
+	        android:background="@drawable/video"
+	        android:onClick="videoButtonOnClickHandler"
+	        android:text="Video" />
+
+	    <ImageButton
+	        android:id="@+id/photoButton"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:layout_centerVertical="true"
+	        android:layout_marginRight="77dp"
+	        android:layout_toLeftOf="@+id/videoButton"
+	        android:layout_weight="0.5"
+	        android:background="@drawable/photo"
+	        android:onClick="photoButtonOnClickHandler"
+	        android:text="Photo" />
+
+	</RelativeLayout>
+
 </com.followme.adapter.MapWrapperLayout>

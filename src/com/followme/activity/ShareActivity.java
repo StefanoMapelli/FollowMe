@@ -52,9 +52,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem; 
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -79,8 +77,6 @@ public class ShareActivity extends ActionBarActivity implements SavePathDialogLi
     private ImageView infoImageView;
     private OnInfoWindowElemTouchListener photoTouchListener;	
     private OnInfoWindowElemTouchListener videoTouchListener;
-	private Button photoButton;
-	private Button videoButton;
 	private String photoFileName;
 	private String videoFileName;
 	private Uri videoUri;
@@ -95,8 +91,6 @@ public class ShareActivity extends ActionBarActivity implements SavePathDialogLi
 		Log.i("CREATE", "FATTA CREATE");
 		setContentView(R.layout.share_layout);
 		map = ((SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.shareMap)).getMap();
-		photoButton = (Button) findViewById(R.id.photoButton);
-		videoButton = (Button) findViewById(R.id.videoButton);
 		mapWrapperLayout = (MapWrapperLayout)findViewById(R.id.map_linear_layout);
 	     
 		
@@ -269,51 +263,41 @@ public class ShareActivity extends ActionBarActivity implements SavePathDialogLi
             	}
             }
         });	
-		
-		photoButton.setOnClickListener(new OnClickListener()
+	}
+	
+	public void photoButtonOnClickHandler(View v)
+	{
+		if(location != null)
 		{
-			@Override
-			public void onClick(View v) 
-			{	
-				if(location != null)
-				{
-					Date dt = new Date();
-					File tempFile = new File(Environment.getExternalStorageDirectory(),
-		                      dt.toString()+".jpg");
-					photoFileName = tempFile.getAbsolutePath();
-					Uri uri = Uri.fromFile(tempFile);
-					
-					Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-					intent.putExtra(MediaStore.EXTRA_OUTPUT, uri);
-					startActivityForResult(intent,0);
-				}
-			}
+			Date dt = new Date();
+			File tempFile = new File(Environment.getExternalStorageDirectory(),
+					dt.toString()+".jpg");
+			photoFileName = tempFile.getAbsolutePath();
+			Uri uri = Uri.fromFile(tempFile);
+
+			Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+			intent.putExtra(MediaStore.EXTRA_OUTPUT, uri);
+			startActivityForResult(intent,0);
+		}
+	}
+	
+	public void videoButtonOnClickHandler(View v)
+	{
+		if(location != null)
+		{
+			Date dt = new Date();
+			File tempFile = new File(Environment.getExternalStorageDirectory(),
+                      dt.toString()+".mp4");
+			videoFileName = tempFile.getAbsolutePath();
+			Uri uri = Uri.fromFile(tempFile);
 			
-		});
-		
-		videoButton.setOnClickListener(new OnClickListener()
-		{
-			@Override
-			public void onClick(View v) 
-			{
-				if(location != null)
-				{
-					Date dt = new Date();
-					File tempFile = new File(Environment.getExternalStorageDirectory(),
-		                      dt.toString()+".mp4");
-					videoFileName = tempFile.getAbsolutePath();
-					Uri uri = Uri.fromFile(tempFile);
-					
-					//intent per l'attività di video
-					Intent intent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
-					intent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY, 0);
-					intent.putExtra(MediaStore.EXTRA_SIZE_LIMIT, 10485760L);
-					intent.putExtra(MediaStore.EXTRA_OUTPUT, uri);
-					startActivityForResult(intent,1);
-				}
-			}
-		});
-		
+			//intent per l'attività di video
+			Intent intent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
+			intent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY, 0);
+			intent.putExtra(MediaStore.EXTRA_SIZE_LIMIT, 10485760L);
+			intent.putExtra(MediaStore.EXTRA_OUTPUT, uri);
+			startActivityForResult(intent,1);
+		}
 	}
 	
 	@Override
@@ -380,7 +364,7 @@ public class ShareActivity extends ActionBarActivity implements SavePathDialogLi
 	            .position(new LatLng(photo.getPosition().getLatitude(),
 	            					 photo.getPosition().getLongitude()))
 	            .snippet(photo.getTitle())
-	            .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE))
+	            .icon(BitmapDescriptorFactory.fromResource(R.drawable.camera_marker))
 	            .title("photo"+String.valueOf(markerCounter)));
 		        map.getUiSettings().setMapToolbarEnabled(false);
 		        		        
@@ -417,7 +401,7 @@ public class ShareActivity extends ActionBarActivity implements SavePathDialogLi
 	            .position(new LatLng(video.getPosition().getLatitude(),
 	            					 video.getPosition().getLongitude()))
 	            .snippet(video.getTitle())
-	            .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN))
+	            .icon(BitmapDescriptorFactory.fromResource(R.drawable.movie_marker))
 	            .title("video"+String.valueOf(markerCounter)));
 		        map.getUiSettings().setMapToolbarEnabled(false);
 		        		    
@@ -455,6 +439,15 @@ public class ShareActivity extends ActionBarActivity implements SavePathDialogLi
 			DialogFragment savePathDialogFragment = new SavePathDialogFragment();
 			savePathDialogFragment.show(getFragmentManager(), "savePath");
 			return true;
+		}
+		else if (id == R.id.galleryShareItem && !markers.isEmpty())
+		{
+			//intent per l'attività di gallery
+			Intent intent = new Intent(ShareActivity.this,MediaGalleryActivity.class);
+			//passaggio parametri all'intent
+			intent.putExtra("media", markers.toArray());					
+			intent.putExtra("index", 0);
+			startActivity(intent);
 		}
 		return super.onOptionsItemSelected(item);
 	}

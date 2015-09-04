@@ -1,7 +1,6 @@
 package com.followme.activity;
 
 
-import com.followme.fragment.RequestDialogFragment;
 import com.followme.manager.MapManager;
 import com.followme.manager.ParseManager;
 import com.followme.manager.Utils;
@@ -131,6 +130,7 @@ public class FenceReceiverActivity extends ActionBarActivity {
 	@Override
 	public void onDestroy()
 	{
+		super.onDestroy();
 		if(finishMode==1)
 		{
 			checkFenceThread.cancel(true);
@@ -195,10 +195,12 @@ public class FenceReceiverActivity extends ActionBarActivity {
 
 		@Override
 		protected String doInBackground(Void... params) 
-		{				
-			
+		{							
 			while(true)
 			{	
+				if(isCancelled())
+					return null;
+				
 				float[] results=new float[1];
 				myLocation=MapManager.getLastKnownLocation(FenceReceiverActivity.this, locationManager);
 				Location.distanceBetween(myLocation.getLatitude(), myLocation.getLongitude(), center.latitude, center.longitude, results);
