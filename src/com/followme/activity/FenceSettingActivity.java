@@ -177,10 +177,12 @@ public class FenceSettingActivity extends ActionBarActivity {
 	{
 		if(fenceCircle!=null)
 		{
-			String fenceId = ParseManager.insertFence(this, radius, fencePosition);
+			String[] fenceIdList=new String[contactsList.length];
+			String[] requestIdList=new String[contactsList.length];
 			for(int i=0; i<contactsList.length; i++)
 			{
-				ParseManager.insertRequest(this, "recinto", userId, contactsList[i].getId(), null, null, fenceId);
+				fenceIdList[i] = ParseManager.insertFence(this, radius, fencePosition);
+				requestIdList[i]=ParseManager.insertRequest(this, "recinto", userId, contactsList[i].getId(), null, null, fenceIdList[i]);
 			}
 			
 			Intent intent = new Intent(FenceSettingActivity.this,FenceControlActivity.class);
@@ -188,7 +190,8 @@ public class FenceSettingActivity extends ActionBarActivity {
 			intent.putExtra("fenceLongitude", fencePosition.longitude);
 			intent.putExtra("radius", radius);
 			intent.putExtra("contactsList", contactsList);
-			intent.putExtra("fenceId", fenceId);
+			intent.putExtra("fenceIdList", fenceIdList);
+			intent.putExtra("requestIdList", requestIdList);
 			startActivity(intent);
 		}
 	}

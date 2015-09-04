@@ -1,6 +1,7 @@
 package com.followme.activity;
 
 
+import com.followme.fragment.RequestDialogFragment;
 import com.followme.manager.MapManager;
 import com.followme.manager.ParseManager;
 import com.followme.manager.Utils;
@@ -16,6 +17,8 @@ import com.parse.ParseObject;
 
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.ActionBarActivity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.graphics.Color;
 import android.location.Location;
 import android.location.LocationListener;
@@ -42,6 +45,7 @@ public class FenceReceiverActivity extends ActionBarActivity {
 	private Circle fenceCircle;
 	private CheckFenceStatus checkFenceThread;
 	private Handler handler;
+	private int finishMode=1; //1 destroyed by follower, 2 destroyed by receiver
 	
 	
 	@Override
@@ -91,10 +95,52 @@ public class FenceReceiverActivity extends ActionBarActivity {
 			Log.i("GPS", "gps not enabled");
 		}
 		
+		
 		checkFenceThread = new CheckFenceStatus();
 		checkFenceThread.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 		
 		
+	}
+	
+	
+	@Override
+	public void onBackPressed()
+	{
+		new AlertDialog.Builder(this)
+	    .setTitle("Attention")
+	    .setMessage("Are you sure you want to destroy the fence?")
+	    .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+	        public void onClick(DialogInterface dialog, int which)
+	        { 
+	        	Toast.makeText(FenceReceiverActivity.this, "You are free!!! Freedom",Toast.LENGTH_LONG).show();
+	            finishMode=2;
+	        	finish();
+	        }
+	     })
+	    .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+	        public void onClick(DialogInterface dialog, int which) 
+	        { 
+	            
+	        }
+	     })
+	    .setIcon(android.R.drawable.ic_dialog_alert)
+	    .show();
+		
+	}
+	
+	@Override
+	public void onDestroy()
+	{
+		if(finishMode==1)
+		{
+			checkFenceThread.cancel(true);
+			ParseManager.deleteRequestAndFence(this, fenceRequest.getId(), fenceParseObject);
+		}
+		else
+		{
+			checkFenceThread.cancel(true);
+			ParseManager.updateRequestStatusById(this, fenceRequest.getId(), "chiusa");
+		}
 	}
 
 	@Override
@@ -184,6 +230,18 @@ public class FenceReceiverActivity extends ActionBarActivity {
 						}
 					});
 					
+				}
+				
+				//controllo se la richiesta è stata chiusa dal follower
+
+				boolean isActive=ParseManager.isRequestActive(FenceReceiverActivity.this, fenceRequest.getId());
+				
+				if(!isActive)
+				{
+					//notificare all'utente che l'activity è stata chiusa dal follower
+					Toast.makeText(FenceReceiverActivity.this, "You are free!!! The follower destroy the fence",Toast.LENGTH_LONG).show();
+		            finishMode=1;
+					finish();
 				}
 				
 				try {

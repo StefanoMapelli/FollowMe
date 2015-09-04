@@ -1,21 +1,27 @@
 package com.followme.activity;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import com.followme.adapter.FenceCustomAdapter;
 import com.followme.manager.ParseManager;
+import com.followme.manager.PersonalDataManager;
 import com.followme.object.Contact;
 import com.followme.object.Fence;
+import com.followme.object.Request;
 import com.google.android.gms.maps.model.LatLng;
 
 import android.support.v7.app.ActionBarActivity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ListView;
+import android.widget.Toast;
 
 public class FenceControlActivity extends ActionBarActivity {
 	
@@ -24,6 +30,8 @@ public class FenceControlActivity extends ActionBarActivity {
 	private FenceCustomAdapter adapter;
 	private CheckFences checkFencesThread;
 	private Handler handler;
+	private int finishMode=1;
+	private ArrayList<String> requestIdList=new ArrayList<String>();
 	
 	
 	@Override
@@ -37,11 +45,21 @@ public class FenceControlActivity extends ActionBarActivity {
 		//recupero i dati dall'intent
 		Object[] objects = (Object[]) getIntent().getSerializableExtra("contactsList");
 		int radius  = getIntent().getIntExtra("radius", 0);
-		String idFence=getIntent().getStringExtra("fenceId");
+		Object[] fenceIdList=(Object[]) getIntent().getSerializableExtra("fenceIdList");
+		Object[] requestIdArray=(Object[]) getIntent().getSerializableExtra("requestIdList");
+
+		//aggiungo i dati alla lista nell view
+		for(int i=0; i < requestIdArray.length; i++)
+		{
+			requestIdList.add((String) requestIdArray[i]);
+		}
+		
 		double fenceLatitude=getIntent().getDoubleExtra("fenceLatitude",0);
 		double fenceLongitude=getIntent().getDoubleExtra("fenceLongitude",0);
 		LatLng position=new LatLng(fenceLatitude,fenceLongitude);
 		List<Contact> contactList = new ArrayList<Contact>();
+		
+		
 		
 		
 		//aggiungo i dati alla lista nell view
@@ -53,7 +71,7 @@ public class FenceControlActivity extends ActionBarActivity {
 		
 		for(int i=0; i < contactList.size(); i++)
 		{
-			fenceList.add(new Fence(radius,contactList.get(i),position,idFence, true));			
+			fenceList.add(new Fence(radius,contactList.get(i),position,((String) fenceIdList[i]), true));			
 		}
 		
 		//set the adapter
@@ -70,6 +88,59 @@ public class FenceControlActivity extends ActionBarActivity {
 		getMenuInflater().inflate(R.menu.fence_control, menu);
 		return true;
 	}
+	
+	@Override
+	public void onBackPressed()
+	{
+		new AlertDialog.Builder(this)
+	    .setTitle("Attention")
+	    .setMessage("Are you sure you want to destroy the fence?")
+	    .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+	        public void onClick(DialogInterface dialog, int which)
+	        { 
+	        	Toast.makeText(FenceControlActivity.this, "Fence destroyed",Toast.LENGTH_LONG).show();
+	            finishMode=2;
+	        	finish();
+	        }
+	     })
+	    .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+	        public void onClick(DialogInterface dialog, int which) 
+	        { 
+	            
+	        }
+	     })
+	    .setIcon(android.R.drawable.ic_dialog_alert)
+	    .show();
+		
+	}
+	
+	
+	
+	@Override
+	public void onDestroy()
+	{
+		if(finishMode==1)
+		{
+			checkFencesThread.cancel(true);
+			for(int i=0; i<requestIdList.size();i++)
+			{
+				ParseManager.deleteRequestAndFence(
+						this,
+						(String) requestIdList.get(i),
+						ParseManager.getFencebyId(this,
+								fenceList.get(i).getIdFence()));
+			}
+		}
+		else
+		{
+			checkFencesThread.cancel(true);
+			for(int i=0; i<requestIdList.size();i++)
+			{
+				ParseManager.updateRequestStatusById(this, (String)requestIdList.get(i), "chiusa");
+			}
+			
+		}
+	}	
 
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
@@ -111,6 +182,59 @@ public class FenceControlActivity extends ActionBarActivity {
 						
 					}
 				}
+				
+				Iterator<String> iterator = requestIdList.iterator();
+				
+				while(iterator.hasNext())
+				{
+					String idReq=iterator.next();
+					boolean isActive=ParseManager.isRequestActive(FenceControlActivity.this, idReq);
+					
+					if(!isActive)
+					{
+						final int j=requestIdList.indexOf(idReq);
+						//notificare all'utente che l'activity è stata chiusa dallo user
+						handler.post(new Runnable() {
+							@Override
+							public void run() 
+							{
+								Toast.makeText(FenceControlActivity.this, "The user "+PersonalDataManager.getNameOfContact(fenceList.get(j).getUser().getPhoneNumber())+" destroys the fence",Toast.LENGTH_LONG).show();
+							}
+						});
+						
+						//cancello dalle liste ogni volta che una richiesta viene chiusa
+						ParseManager.deleteRequestAndFence(FenceControlActivity.this, idReq, ParseManager.getFencebyId(FenceControlActivity.this,fenceList.get(j).getIdFence()));
+						fenceList.remove(j);
+						iterator.remove();
+						
+						//aggiorno l'adapter
+						adapter = new FenceCustomAdapter(FenceControlActivity.this, fenceList);
+
+						handler.post(new Runnable() {
+							@Override
+							public void run() 
+							{
+								listViewFence.setAdapter(adapter);
+							}
+						});
+						
+						//se non ci sono più fence chiudo l'activity
+						if(requestIdList.isEmpty())
+						{
+							finishMode=1;
+							finish();
+						}
+					}
+				}
+				//controllo se la richiesta è stata chiusa dallo user
+				for(int i=0; i<requestIdList.size();i++)
+				{
+					
+				}
+
+				
+				
+				
 				
 				try {
 					Thread.sleep(10000);

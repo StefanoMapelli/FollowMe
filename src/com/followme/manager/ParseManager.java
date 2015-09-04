@@ -9,6 +9,7 @@ import android.content.Context;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.followme.activity.MainActivity;
 import com.followme.object.Contact;
 import com.followme.object.Media;
 import com.followme.object.Position;
@@ -46,7 +47,7 @@ public class ParseManager {
 	 * @param sender
 	 * @param receiver
 	 */
-	public static void insertRequest(Context context, String type, String senderId, String receiverId, String pathId, String destinationId, String fenceId)
+	public static String insertRequest(Context context, String type, String senderId, String receiverId, String pathId, String destinationId, String fenceId)
 	{
 		List<ParseObject> objects = null;	
 		Parse.initialize(context,"x9hwNnRfTCCYGXPVJNKaR7zYTIMOdKeLkerRQJT2" ,"hi7GT6rUlp9uTfw6XQzdEjnTqwgPnRPoikPehgVf");
@@ -116,7 +117,12 @@ public class ParseManager {
 		newReq.put("idMittente", senderPo);
 		newReq.put("idDestinatario", receiverPo);
 		newReq.put("stato", "non visualizzata");
-		newReq.saveInBackground();
+		try {
+			newReq.save();
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+		return newReq.getObjectId();
 	}
 	
 	/**
@@ -887,6 +893,86 @@ public class ParseManager {
 		Parse.initialize(context,"x9hwNnRfTCCYGXPVJNKaR7zYTIMOdKeLkerRQJT2" ,"hi7GT6rUlp9uTfw6XQzdEjnTqwgPnRPoikPehgVf");
 		destinationParseObject.put("arrivato", isArrived);
 		destinationParseObject.saveInBackground();
+		
+	}
+	
+	/**
+	 * This method updates the status of a request item on parse db, selcted by id
+	 * @param context
+	 * @param idRequest id of the request
+	 * @param status string of the new state to be updated
+	 */
+	public static void updateRequestStatusById(
+			Context context,
+			String idRequest,
+			String status) {
+		
+		Parse.initialize(context,"x9hwNnRfTCCYGXPVJNKaR7zYTIMOdKeLkerRQJT2" ,"hi7GT6rUlp9uTfw6XQzdEjnTqwgPnRPoikPehgVf");
+		List<ParseObject> objects = null;
+		ParseObject reqPo=null;
+		
+		ParseQuery<ParseObject> query = ParseQuery.getQuery("Richiesta");
+		query.whereEqualTo("objectId", idRequest);		
+		
+		try {
+			objects=query.find();
+			reqPo=objects.get(0);
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+		
+		reqPo.put("stato", status);
+		reqPo.saveInBackground();
+		
+	}
+
+	/**
+	 * This method checks if the request is already active and not closed
+	 * @param mainActivity
+	 * @param id
+	 * @return
+	 */
+	public static boolean isRequestActive(Context context, String id) {
+		
+		List<ParseObject> objects = null;
+		Parse.initialize(context,"x9hwNnRfTCCYGXPVJNKaR7zYTIMOdKeLkerRQJT2" ,"hi7GT6rUlp9uTfw6XQzdEjnTqwgPnRPoikPehgVf");
+	
+		ParseQuery<ParseObject> query = ParseQuery.getQuery("Richiesta");
+		query.whereEqualTo("objectId", id);
+		query.whereEqualTo("stato", "chiusa");
+		
+		try {
+			objects=query.find();
+			if(objects.isEmpty())
+			{
+				return true;
+			}
+			else
+			{
+				return false;
+			}
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+		
+		return true;
+		
+		
+	}
+
+	
+	/**
+	 * This method deletes the request and the relative fence
+	 * @param fenceReceiverActivity
+	 * @param id
+	 * @param fenceParseObject
+	 */
+	public static void deleteRequestAndFence(
+			Context context, String idRequest,
+			ParseObject fenceParseObject) {
+
+		deleteRequest(context, idRequest);
+		fenceParseObject.deleteInBackground();
 		
 	}
 	
