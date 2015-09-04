@@ -144,7 +144,7 @@ public class FenceReceiverActivity extends ActionBarActivity {
 		}
 		
 		Intent intent = new Intent(FenceReceiverActivity.this, MainActivity.class);
-		intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+		intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 		startActivity(intent);
 	}
 
