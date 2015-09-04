@@ -15,6 +15,7 @@ import com.google.android.gms.maps.model.LatLng;
 import android.support.v7.app.ActionBarActivity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
@@ -141,6 +142,9 @@ public class FenceControlActivity extends ActionBarActivity {
 			}
 			
 		}
+		Intent intent = new Intent(FenceControlActivity.this, MainActivity.class);
+		intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+		startActivity(intent);
 	}	
 
 	@Override

@@ -18,6 +18,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v7.app.ActionBarActivity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Color;
 import android.location.Location;
 import android.location.LocationListener;
@@ -141,6 +142,10 @@ public class FenceReceiverActivity extends ActionBarActivity {
 			checkFenceThread.cancel(true);
 			ParseManager.updateRequestStatusById(this, fenceRequest.getId(), "chiusa");
 		}
+		
+		Intent intent = new Intent(FenceReceiverActivity.this, MainActivity.class);
+		intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+		startActivity(intent);
 	}
 
 	@Override
