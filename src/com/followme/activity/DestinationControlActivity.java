@@ -76,7 +76,6 @@ public class DestinationControlActivity extends ActionBarActivity {
 		checkDestinationsThread=new CheckDestinations();
 		checkDestinationsThread.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);	
 	}
-
 	
 	@Override
 	public void onBackPressed()
@@ -148,7 +147,13 @@ public class DestinationControlActivity extends ActionBarActivity {
 		// automatically handle clicks on the Home/Up button, so long
 		// as you specify a parent activity in AndroidManifest.xml.
 		int id = item.getItemId();
-		if (id == R.id.action_settings) {
+		if (id == R.id.destinationDetailsButton) {
+			
+			Destination itemToShow = destinationList.get(0);
+			
+			Intent intent = new Intent(DestinationControlActivity.this, ShowFenceOrDestinationActivity.class);
+			intent.putExtra("circle", itemToShow);
+			startActivity(intent);
 			return true;
 		}
 		return super.onOptionsItemSelected(item);

@@ -8,7 +8,9 @@ import com.followme.adapter.FenceCustomAdapter;
 import com.followme.manager.ParseManager;
 import com.followme.manager.PersonalDataManager;
 import com.followme.object.Contact;
+import com.followme.object.Destination;
 import com.followme.object.Fence;
+import com.followme.object.Path;
 import com.google.android.gms.maps.model.LatLng;
 
 import android.support.v7.app.ActionBarActivity;
@@ -20,6 +22,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -78,7 +81,7 @@ public class FenceControlActivity extends ActionBarActivity {
 		checkFencesThread.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 		
 	}
-
+	
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
@@ -149,7 +152,12 @@ public class FenceControlActivity extends ActionBarActivity {
 		// automatically handle clicks on the Home/Up button, so long
 		// as you specify a parent activity in AndroidManifest.xml.
 		int id = item.getItemId();
-		if (id == R.id.action_settings) {
+		if (id == R.id.fenceDetailsButton) {
+			Fence itemToShow = fenceList.get(0);
+			
+			Intent intent = new Intent(FenceControlActivity.this, ShowFenceOrDestinationActivity.class);
+			intent.putExtra("circle", itemToShow);
+			startActivity(intent);
 			return true;
 		}
 		return super.onOptionsItemSelected(item);

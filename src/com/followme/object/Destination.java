@@ -1,13 +1,20 @@
 package com.followme.object;
 
+import java.io.Serializable;
+
 import com.google.android.gms.maps.model.LatLng;
 
-public class Destination {
+public class Destination implements Serializable{
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 5599732300461906164L;
 	private String idDestination;
 	private int radius;
 	private Contact user;
-	private LatLng center;
+	private double centerLatitude;
+	private double centerLongitude;
 	private boolean inTheDestination;
 	
 	
@@ -15,7 +22,8 @@ public class Destination {
 		super();
 		this.radius = radius;
 		this.user = user;
-		this.center = center;
+		this.centerLatitude = center.latitude;
+		this.centerLongitude = center.longitude;
 		this.idDestination=idDestination;
 		this.setInTheDestination(inTheDestination);
 	}
@@ -32,10 +40,11 @@ public class Destination {
 		this.radius = radius;
 	}
 	public LatLng getCenter() {
-		return center;
+		return new LatLng(centerLatitude, centerLongitude);
 	}
 	public void setCenter(LatLng center) {
-		this.center = center;
+		this.centerLatitude = center.latitude;
+		this.centerLongitude = center.longitude;
 	}
 	public Contact getUser() {
 		return user;

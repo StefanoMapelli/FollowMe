@@ -19,26 +19,17 @@ import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
-import android.view.View.OnClickListener;
-import android.widget.Button;
 
 public class MainActivity extends ActionBarActivity  {
 	
 	private User user=new User("","");
 	private ParseObject userParseObject;
-	
-	private Button shareButton;
-	private Button followButton;
-	private Button loadButton;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
 	{
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.main_activity_layout);
-		shareButton = (Button) findViewById(R.id.shareButton);
-		followButton = (Button) findViewById(R.id.followButton);
-		loadButton = (Button) findViewById(R.id.loadButton);
 		
 		boolean esito;
 		try
@@ -70,41 +61,26 @@ public class MainActivity extends ActionBarActivity  {
 			//carico l'id presente su parse
 			user.setId(ParseManager.getId(this, PersonalDataManager.getPhoneNumber()));
 			userParseObject=ParseManager.getUser(this, user.getId());
-		}
+		}		
 		
-		
-		new NetworkActivity().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-		
-		shareButton.setOnClickListener(new OnClickListener()
-		{
-
-			@Override
-			public void onClick(View v) 
-			{
-				//intent per l'attività di share
-				Intent intent = new Intent(MainActivity.this,ChooseContactsForSharingActivity.class);
-				intent.putExtra("userId", user.getId());
-				startActivity(intent);
-			}
-			
-		});
-		
-		followButton.setOnClickListener(new OnClickListener()
-		{
-
-			@Override
-			public void onClick(View v) 
-			{
-				//intent per l'attività di follow
-				Intent intent = new Intent(MainActivity.this,ChooseContactsForFollowActivity.class);
-				intent.putExtra("userId", user.getId());
-				startActivity(intent);
-			}
-			
-		});
-		
+		new NetworkActivity().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);		
 	}
 	
+	public void followOnClickHandler(View v)
+	{
+		//intent per l'attività di follow
+		Intent intent = new Intent(MainActivity.this,ChooseContactsForFollowActivity.class);
+		intent.putExtra("userId", user.getId());
+		startActivity(intent);
+	}
+	
+	public void shareOnClickHandler(View v)
+	{
+		//intent per l'attività di share
+		Intent intent = new Intent(MainActivity.this,ChooseContactsForSharingActivity.class);
+		intent.putExtra("userId", user.getId());
+		startActivity(intent);
+	}
 	
 	public void loadPathsOnClickHandler(View v)
 	{

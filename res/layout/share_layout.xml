@@ -28,7 +28,6 @@
 	        android:layout_alignParentLeft="true"
 	        android:layout_centerVertical="true"
 	        android:layout_marginLeft="100dp"
-	        android:layout_weight="0.5"
 	        android:background="@drawable/photo"
 	        android:onClick="photoButtonOnClickHandler"
 	        android:text="Photo" />
@@ -40,7 +39,6 @@
 	        android:layout_alignParentRight="true"
 	        android:layout_centerVertical="true"
 	        android:layout_marginRight="100dp"
-	        android:layout_weight="0.5"
 	        android:background="@drawable/video"
 	        android:onClick="videoButtonOnClickHandler"
 	        android:text="Video" />

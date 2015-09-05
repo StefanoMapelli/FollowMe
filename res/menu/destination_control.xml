@@ -3,10 +3,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="com.followme.activity.DestinationControlActivity" >
 
-    <item
-        android:id="@+id/action_settings"
-        android:orderInCategory="100"
-        android:title="@string/action_settings"
-        app:showAsAction="never"/>
+      <item android:id="@+id/destinationDetailsButton"
+          android:title="Destination Details"
+          app:showAsAction="always"
+          android:icon="@drawable/circle" />
 
 </menu>

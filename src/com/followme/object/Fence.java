@@ -1,13 +1,20 @@
 package com.followme.object;
 
+import java.io.Serializable;
+
 import com.google.android.gms.maps.model.LatLng;
 
-public class Fence {
+public class Fence implements Serializable{
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 428402105120732091L;
 	private String idFence;
 	private int radius;
 	private Contact user;
-	private LatLng center;
+	private double centerLatitude;
+	private double centerLongitude;
 	private boolean inTheFence;
 	
 	
@@ -15,7 +22,8 @@ public class Fence {
 		super();
 		this.radius = radius;
 		this.user = user;
-		this.center = center;
+		this.centerLatitude = center.latitude;
+		this.centerLongitude = center.longitude;
 		this.idFence=idFence;
 		this.setInTheFence(inTheFence);
 	}
@@ -32,10 +40,11 @@ public class Fence {
 		this.radius = radius;
 	}
 	public LatLng getCenter() {
-		return center;
+		return new LatLng(centerLatitude, centerLongitude);
 	}
 	public void setCenter(LatLng center) {
-		this.center = center;
+		this.centerLatitude = center.latitude;
+		this.centerLongitude = center.longitude;
 	}
 	public Contact getUser() {
 		return user;

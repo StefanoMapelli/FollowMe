@@ -67,12 +67,12 @@
         <activity
             android:name=".ChooseContactsForSharingActivity"
             android:label="@string/app_name"
-            android:screenOrientation="portrait">
+            android:screenOrientation="portrait" >
         </activity>
         <activity
             android:name=".FollowActivity"
             android:label="@string/app_name"
-            android:screenOrientation="portrait">
+            android:screenOrientation="portrait" >
         </activity>
         <activity
             android:name=".ShareActivity"
@@ -169,8 +169,12 @@
         </activity>
         <activity
             android:name=".LoadPathActivity"
-            android:label="@string/title_activity_load_path" 
+            android:label="@string/title_activity_load_path"
             android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name=".ShowFenceOrDestinationActivity"
+            android:label="@string/title_activity_show_fence_or_destination" >
         </activity>
     </application>
 

@@ -35,5 +35,6 @@
     <string name="title_activity_path_receiver">PathReceiverActivity</string>
     <string name="title_activity_saved_path_list">Saved Paths</string>
     <string name="title_activity_load_path">LoadPath</string>
+    <string name="title_activity_show_fence_or_destination">ShowFenceOrDestinationActivity</string>
 
 </resources>

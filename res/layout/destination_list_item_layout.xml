@@ -3,7 +3,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:weightSum="1" >
+    android:weightSum="1" 
+    android:background="#494949" >
     
     <TextView
         android:id="@+id/userToDestination"
@@ -26,13 +27,13 @@
         android:layout_weight="0.25"
         android:clickable="true" 
         />
-    
+ 
+
     <TextView
+        android:layout_weight="0.25"
         android:id="@+id/statusOfTheDestination"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_weight="0.25"
-        android:clickable="true"
-        android:text="No" />
+        android:clickable="true" />
     
 </LinearLayout>
