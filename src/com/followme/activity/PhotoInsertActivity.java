@@ -9,16 +9,13 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.ViewTreeObserver;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 
 public class PhotoInsertActivity extends ActionBarActivity {
 
 	private ImageView imageView;
-	private Button saveButton;
 	private EditText titleEditText;
 	
 	@Override
@@ -26,7 +23,6 @@ public class PhotoInsertActivity extends ActionBarActivity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_photo_insert);
 		imageView = (ImageView) findViewById(R.id.imageViewToSave);
-		saveButton = (Button) findViewById(R.id.saveButtonPhoto);
 		titleEditText = (EditText) findViewById(R.id.inputTitlePhoto);
 		
 		final String fileName = getIntent().getStringExtra("fileName");
@@ -42,19 +38,14 @@ public class PhotoInsertActivity extends ActionBarActivity {
 		        return true;
 		    }
 		});	
-	 			
-		saveButton.setOnClickListener(new OnClickListener()
-		{
-			@Override
-			public void onClick(View v) 
-			{							
-				Intent intent = new Intent();
-				intent.putExtra("title", titleEditText.getText().toString());
-				setResult(Activity.RESULT_OK, intent);
-                finish();
-			}
-			
-		}); 
+	}
+	
+	public void saveOnClickHandler(View v)
+	{
+		Intent intent = new Intent();
+		intent.putExtra("title", titleEditText.getText().toString());
+		setResult(Activity.RESULT_OK, intent);
+        finish();
 	}
 	
 	@Override

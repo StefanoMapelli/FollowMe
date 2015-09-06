@@ -5,54 +5,56 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:weightSum="1" >
-
-    <FrameLayout
+    
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_weight="0.2" >
+        android:layout_weight="0.1"
+        android:orientation="vertical"
+        android:weightSum="1" >
 
-        <VideoView
-            android:id="@+id/videoViewToSave"
+        <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_gravity="center" />
+            android:layout_weight="0.2"
+			android:background="#000000"  >
 
-    </FrameLayout>
-  
-     <TextView
-         android:layout_width="match_parent"
-         android:layout_height="match_parent"
-         android:layout_weight="0.4"
-         android:gravity="center"
-         android:text="Insert a title for the video:"
-         android:textSize="24sp" />
-    
- 	<LinearLayout
- 	    android:layout_width="match_parent"
- 	    android:layout_height="match_parent"
- 	    android:orientation="horizontal"
- 	    android:layout_weight="0.4"
- 	    android:weightSum="1" >
-    	
-            <EditText
-        		android:id="@+id/inputTitleVideo"
-        		android:layout_width="match_parent"
-        		android:layout_height="match_parent"
-        		android:ems="10"
-        		android:layout_weight="0.3"
-        		android:inputType="textMultiLine" >
+            <VideoView
+                android:id="@+id/videoViewToSave"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_gravity="center" />
+        </FrameLayout>
 
-        		<requestFocus />
-    		</EditText>
-    		
-    		<Button
-        		android:id="@+id/saveButtonVideo"
-        		android:layout_width="match_parent"
-        		android:layout_height="match_parent"
-        		android:layout_weight="0.7"
-        		android:text="Save" />
-    		
+        <EditText
+            android:id="@+id/inputTitleVideo"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="0.8"
+            android:ems="10"
+            android:background="#494949"
+            android:hint="Title for the video"
+            android:inputType="textMultiLine" >
+
+            <requestFocus />
+        </EditText>
     </LinearLayout>
+        <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="0.9"
+        android:background="#000000"
+        android:orientation="horizontal" >
+
+        <ImageButton
+            android:id="@+id/saveButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:background="@drawable/done_selector"
+            android:onClick="saveOnClickHandler"
+            android:text="Save" />
+    </RelativeLayout>
     
 </LinearLayout>
 

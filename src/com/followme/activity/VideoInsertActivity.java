@@ -9,8 +9,6 @@ import android.util.DisplayMetrics;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.View.OnClickListener;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.MediaController;
 import android.widget.VideoView;
@@ -18,7 +16,6 @@ import android.widget.VideoView;
 public class VideoInsertActivity extends ActionBarActivity {
 
 	private VideoView videoView;
-	private Button saveButton;
 	private EditText titleEditText;
 	
 	@Override
@@ -26,7 +23,6 @@ public class VideoInsertActivity extends ActionBarActivity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_video_insert);
 		videoView = (VideoView) findViewById(R.id.videoViewToSave);
-		saveButton = (Button) findViewById(R.id.saveButtonVideo);
 		titleEditText = (EditText) findViewById(R.id.inputTitleVideo);
 		
 		Uri videoUri = Uri.parse(getIntent().getStringExtra("videoUri"));				
@@ -39,24 +35,18 @@ public class VideoInsertActivity extends ActionBarActivity {
         DisplayMetrics dm=new DisplayMetrics();            
         this.getWindowManager().getDefaultDisplay().getMetrics(dm);
         int width=dm.widthPixels;
-        videoView.setMinimumWidth(width);
-        
+        videoView.setMinimumWidth(width);       
         videoView.start();
-		
-		saveButton.setOnClickListener(new OnClickListener()
-		{
-			@Override
-			public void onClick(View v) 
-			{							
-				Intent intent = new Intent();
-				intent.putExtra("title", titleEditText.getText().toString());
-				setResult(Activity.RESULT_OK, intent);
-                finish();
-			}
-			
-		}); 
 	}
 
+	public void saveOnClickHandler(View v)
+	{
+		Intent intent = new Intent();
+		intent.putExtra("title", titleEditText.getText().toString());
+		setResult(Activity.RESULT_OK, intent);
+        finish();
+	}
+	
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.

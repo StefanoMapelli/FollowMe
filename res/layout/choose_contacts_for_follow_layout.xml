@@ -10,29 +10,35 @@
         android:id="@+id/contactListFollow"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_weight="0.2" >
+        android:layout_weight="0.1" >
     </ListView>
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:weightSum="1"
-        android:layout_weight="0.8" >
+        android:layout_weight="0.9" 
+         android:background="#000000">
         
-    	<Button
+    	<ImageButton
         	android:id="@+id/contactSelectFollowButton"
-        	android:layout_width="match_parent"
-        	android:layout_height="match_parent"
-        	android:layout_weight="0.5"
+        	android:layout_width="wrap_content"
+        	android:layout_height="wrap_content"
+        	android:layout_alignParentLeft="true"
+	        android:layout_centerVertical="true"
+	        android:layout_marginLeft="100dp"
+	        android:background="@drawable/done_selector"
         	android:onClick="selectContactForFollowOnClickHandler"
         	android:text="Follow" />
     	
-    	<Button
+    	<ImageButton
         	android:id="@+id/refreshFollowButton"
-        	android:layout_width="match_parent"
-        	android:layout_height="match_parent"
-        	android:layout_weight="0.5"
+        	android:layout_width="wrap_content"
+        	android:layout_height="wrap_content"
+        	 android:layout_alignParentRight="true"
+	        android:layout_centerVertical="true"
+	        android:layout_marginRight="100dp"
+	        android:background="@drawable/refresh_selector"
         	android:onClick="refreshContactsForFollowOnClickHandler"
         	android:text="Refresh" />
-    </LinearLayout>
+    </RelativeLayout>
 </LinearLayout>
