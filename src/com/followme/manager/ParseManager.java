@@ -988,5 +988,16 @@ public class ParseManager {
 		destinationParseObject.deleteInBackground();
 		
 	}
+
+	public static void deleteRequestAndFollowPath(
+			Context context, String idRequest,
+			ParseObject pathParseObject) {
+
+		Parse.initialize(context,"x9hwNnRfTCCYGXPVJNKaR7zYTIMOdKeLkerRQJT2" ,"hi7GT6rUlp9uTfw6XQzdEjnTqwgPnRPoikPehgVf");
+
+		deleteRequest(context, idRequest);
+		pathParseObject.deleteInBackground();
+		
+	}
 	
 }

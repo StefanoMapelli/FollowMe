@@ -106,6 +106,7 @@ public class FenceReceiverActivity extends ActionBarActivity {
 	@Override
 	public void onBackPressed()
 	{
+		checkFenceThread.cancel(true);
 		new AlertDialog.Builder(this)
 	    .setTitle("Attention")
 	    .setMessage("Are you sure you want to destroy the fence?")
@@ -120,7 +121,8 @@ public class FenceReceiverActivity extends ActionBarActivity {
 	    .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
 	        public void onClick(DialogInterface dialog, int which) 
 	        { 
-	            
+	        	checkFenceThread = new CheckFenceStatus();
+	    		checkFenceThread.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 	        }
 	     })
 	    .setIcon(android.R.drawable.ic_dialog_alert)
@@ -134,12 +136,10 @@ public class FenceReceiverActivity extends ActionBarActivity {
 		super.onDestroy();
 		if(finishMode==1)
 		{
-			checkFenceThread.cancel(true);
 			ParseManager.deleteRequestAndFence(this, fenceRequest.getId(), fenceParseObject);
 		}
 		else
 		{
-			checkFenceThread.cancel(true);
 			ParseManager.updateRequestStatusById(this, fenceRequest.getId(), "chiusa");
 		}
 		

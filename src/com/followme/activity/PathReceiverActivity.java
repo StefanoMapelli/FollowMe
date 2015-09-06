@@ -12,10 +12,16 @@ import com.google.android.gms.maps.model.LatLng;
 import com.parse.ParseObject;
 
 import android.support.v7.app.ActionBarActivity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.graphics.Color;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -30,11 +36,17 @@ public class PathReceiverActivity extends ActionBarActivity {
 	private LocationManager locationManager=null;  
 	private LocationListener locationListener=null;  
 	private GoogleMap map;
+	private Handler handler;
+	private int finishMode=1; //1 destroyed by follower, 2 destroyed by receiver
+	private CheckRequestPathStatus checkRequestThread;
+	
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_path_receiver);
+		
+		handler=new Handler();
 		map = ((SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.followPathReveiverMap)).getMap();
 		pathRequest=(Request) getIntent().getSerializableExtra("acceptedRequest");
 		path = ParseManager.getPathOfRequest(this, pathRequest);
@@ -69,7 +81,61 @@ public class PathReceiverActivity extends ActionBarActivity {
 		{
 			Log.i("GPS", "gps not enabled");
 		}
+		
+		checkRequestThread=new CheckRequestPathStatus();
+		checkRequestThread.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 	}
+	
+	
+	@Override
+	public void onBackPressed()
+	{
+		checkRequestThread.cancel(true);
+		new AlertDialog.Builder(this)
+	    .setTitle("Attention")
+	    .setMessage("Are you sure you want to stop the activity?")
+	    .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+	        public void onClick(DialogInterface dialog, int which)
+	        { 
+	        	Toast.makeText(PathReceiverActivity.this, "No one follows you",Toast.LENGTH_LONG).show();
+	            finishMode=2;
+	        	finish();
+	        }
+	     })
+	    .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+	        public void onClick(DialogInterface dialog, int which) 
+	        { 
+	        	checkRequestThread=new CheckRequestPathStatus();
+	    		checkRequestThread.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+	        }
+	     })
+	    .setIcon(android.R.drawable.ic_dialog_alert)
+	    .show();
+		
+	}
+	
+	@Override
+	public void onDestroy()
+	{
+		super.onDestroy();
+		if(finishMode==1)
+		{
+			ParseManager.deleteRequestAndFollowPath(this, pathRequest.getId(), path);
+		}
+		else
+		{
+			ParseManager.updateRequestStatusById(this, pathRequest.getId(), "chiusa");
+		}
+		
+		Intent intent = new Intent(PathReceiverActivity.this, MainActivity.class);
+		intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+		startActivity(intent);
+	}
+	
+	
+	
+	
+	
 
 	/*----------Listener class to get coordinates ------------- */  
 	 private class MyLocationListener implements LocationListener 
@@ -156,4 +222,44 @@ public class PathReceiverActivity extends ActionBarActivity {
 		}
 		return super.onOptionsItemSelected(item);
 	}
+	
+	
+	
+	
+	private class CheckRequestPathStatus extends AsyncTask<Void, Integer, String>
+    {
+
+		@Override
+		protected String doInBackground(Void... params) 
+		{							
+			while(true)
+			{		
+				if(isCancelled())
+					return null;
+				//controllo se la richiesta è stata chiusa dal follower
+
+				boolean isActive=ParseManager.isRequestActive(PathReceiverActivity.this, pathRequest.getId());
+				
+				if(!isActive)
+				{
+					handler.post(new Runnable() {
+						@Override
+						public void run() 
+						{
+							//notificare all'utente che l'activity è stata chiusa dal follower
+							Toast.makeText(PathReceiverActivity.this, "You are free!!! No one follows you",Toast.LENGTH_LONG).show();
+						}
+					});
+		            finishMode=1;
+					finish();
+				}
+				
+				try {
+					Thread.sleep(5000);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+    }
 }

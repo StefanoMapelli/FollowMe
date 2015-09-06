@@ -1,6 +1,7 @@
 package com.followme.activity;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import com.followme.manager.MapManager;
@@ -19,6 +20,9 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.parse.ParseObject;
 
 import android.support.v7.app.ActionBarActivity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
@@ -39,6 +43,8 @@ public class PathControlActivity extends ActionBarActivity {
 	private Handler handler;
 	private FindNewPositions findNewPositionsThread;
 	private Menu optionsMenu;
+	private ArrayList<String> requestIdList=new ArrayList<String>();
+	private int finishMode=1;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -66,8 +72,8 @@ public class PathControlActivity extends ActionBarActivity {
 			//inizializzazione arraylist
 			paths.add(new ArrayList<Position>());
 			counterPositions.add(-1);
-			//invio delle richieste
-			ParseManager.insertRequest(this, "percorso", userId, contactsList.get(contactsList.indexOf(c)).getId(), pathId, null, null);
+			//invio delle richieste e salvataggio nell'array list
+			requestIdList.add(ParseManager.insertRequest(this, "percorso", userId, contactsList.get(contactsList.indexOf(c)).getId(), pathId, null, null));
 		}
 		findNewPositionsThread = new FindNewPositions();
 		findNewPositionsThread.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
@@ -88,6 +94,64 @@ public class PathControlActivity extends ActionBarActivity {
 		}
 		return true;
 	}
+	
+	
+	
+	@Override
+	public void onBackPressed()
+	{
+		findNewPositionsThread.cancel(true);
+		new AlertDialog.Builder(this)
+	    .setTitle("Attention")
+	    .setMessage("Are you sure you want to stop follow the users?")
+	    .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+	        public void onClick(DialogInterface dialog, int which)
+	        { 
+	        	Toast.makeText(PathControlActivity.this, "You stop follow!",Toast.LENGTH_LONG).show();
+	            finishMode=2;
+	        	finish();
+	        }
+	     })
+	    .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+	        public void onClick(DialogInterface dialog, int which) 
+	        { 
+	        	findNewPositionsThread=new FindNewPositions();
+	        	findNewPositionsThread.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+	        }
+	     })
+	    .setIcon(android.R.drawable.ic_dialog_alert)
+	    .show();	
+	}
+	
+	
+	@Override
+	public void onDestroy()
+	{
+		super.onDestroy();
+		if(finishMode==1)
+		{
+			for(int i=0; i<requestIdList.size();i++)
+			{
+				ParseManager.deleteRequestAndFollowPath(
+						this,
+						(String) requestIdList.get(i), pathObjects.get(i));
+			}
+		}
+		else
+		{
+			for(int i=0; i<requestIdList.size();i++)
+			{
+				ParseManager.updateRequestStatusById(this, (String)requestIdList.get(i), "chiusa");
+			}
+			
+		}
+		Intent intent = new Intent(PathControlActivity.this, MainActivity.class);
+		intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+		startActivity(intent);
+	}
+	
+	
+	
 
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
@@ -137,6 +201,10 @@ public class PathControlActivity extends ActionBarActivity {
 		return super.onOptionsItemSelected(item);
 	}
 	
+	
+	
+	
+	
 	private class FindNewPositions extends AsyncTask<Void, Integer, String>
     {
 
@@ -145,6 +213,9 @@ public class PathControlActivity extends ActionBarActivity {
 		{				
 			while(true)
 			{	
+				if(isCancelled())
+					return null;
+				
 				handler.post(new Runnable() {
 					@Override
 					public void run() 
@@ -213,7 +284,40 @@ public class PathControlActivity extends ActionBarActivity {
 							i++;
 						}
 					}
-				});						
+				});	
+				
+				Iterator<String> iterator = requestIdList.iterator();
+				
+				while(iterator.hasNext())
+				{
+					String idReq=iterator.next();
+					boolean isActive=ParseManager.isRequestActive(PathControlActivity.this, idReq);
+					
+					if(!isActive)
+					{
+						final int j=requestIdList.indexOf(idReq);
+						//notificare all'utente che l'activity è stata chiusa dallo user
+						handler.post(new Runnable() {
+							@Override
+							public void run() 
+							{
+								Toast.makeText(PathControlActivity.this, contactsList.get(j).getName() +" stops the follow activity",Toast.LENGTH_LONG).show();
+							}
+						});
+						
+						//cancello dalle liste ogni volta che una richiesta viene chiusa
+						ParseManager.deleteRequestAndFollowPath(PathControlActivity.this, idReq, pathObjects.get(j));
+						pathObjects.remove(j);
+						iterator.remove();
+						
+						//se non ci sono più follow chiudo l'activity
+						if(requestIdList.isEmpty())
+						{
+							finishMode=1;
+							finish();
+						}
+					}
+				}
 				try {
 					Thread.sleep(5000);
 				} catch (InterruptedException e) {
