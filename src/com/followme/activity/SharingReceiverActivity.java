@@ -33,7 +33,9 @@ import com.parse.ParseObject;
 
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.ActionBarActivity;
+import android.app.AlertDialog;
 import android.app.DialogFragment;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -76,6 +78,7 @@ public class SharingReceiverActivity extends ActionBarActivity implements SavePa
 	private Marker marker;
 	private String senderName;
 	private Handler handler;
+	private int finishMode=1; //1 destroyed by follower, 2 destroyed by receiver
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -227,6 +230,52 @@ public class SharingReceiverActivity extends ActionBarActivity implements SavePa
         });	
 	}
 	
+	
+	@Override
+	public void onBackPressed()
+	{
+		networkThread.cancel(true);
+		new AlertDialog.Builder(this)
+	    .setTitle("Attention")
+	    .setMessage("Are you sure you want to stop sharing activity?")
+	    .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+	        public void onClick(DialogInterface dialog, int which)
+	        { 
+	        	Toast.makeText(SharingReceiverActivity.this, "Sharing finished",Toast.LENGTH_LONG).show();
+	            finishMode=2;
+	        	finish();
+	        }
+	     })
+	    .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+	        public void onClick(DialogInterface dialog, int which) 
+	        { 
+	        	networkThread = new FindNewPositions();
+	        	networkThread.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+	        }
+	     })
+	    .setIcon(android.R.drawable.ic_dialog_alert)
+	    .show();
+		
+	}
+	
+	@Override
+	public void onDestroy()
+	{
+		super.onDestroy();
+		if(finishMode==1)
+		{
+			ParseManager.deleteRequestAndFollowPath(this, request.getId(), path);
+		}
+		else
+		{
+			ParseManager.updateRequestStatusById(this, request.getId(), "chiusa");
+		}
+		
+		Intent intent = new Intent(SharingReceiverActivity.this, MainActivity.class);
+		intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+		startActivity(intent);
+	}
+	
 	private class FindNewPositions extends AsyncTask<Void, Integer, String>
     {
 
@@ -234,7 +283,9 @@ public class SharingReceiverActivity extends ActionBarActivity implements SavePa
 		protected String doInBackground(Void... params) 
 		{				
 			while(true)
-			{					
+			{		
+				if(isCancelled())
+					return null;
 				//ricerco le nuove posizioni
 				List<Position> newPositions = ParseManager.getNewPosition(SharingReceiverActivity.this, path, counterPosition);
 				positionList.addAll(newPositions);
@@ -358,6 +409,23 @@ public class SharingReceiverActivity extends ActionBarActivity implements SavePa
 				if(!newVideos.isEmpty())
 					counterVideo=newVideos.get(newVideos.size()-1).getCounter();
 				videos.addAll(newVideos);
+				
+				
+				boolean isActive=ParseManager.isRequestActive(SharingReceiverActivity.this, request.getId());
+				
+				if(!isActive)
+				{
+					handler.post(new Runnable() {
+						@Override
+						public void run() 
+						{
+							//notificare all'utente che l'activity è stata chiusa dal follower
+							Toast.makeText(SharingReceiverActivity.this, "Sharing terminated by the user",Toast.LENGTH_LONG).show();
+						}
+					});
+		            finishMode=1;
+					finish();
+				}
 
 				try {
 					Thread.sleep(5000);
