@@ -11,10 +11,12 @@ import com.followme.object.User;
 import com.parse.ParseObject;
 
 import android.app.AlertDialog;
+import android.app.FragmentTransaction;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -24,12 +26,15 @@ public class MainActivity extends ActionBarActivity  {
 	
 	private User user=new User("","");
 	private ParseObject userParseObject;
+	private Handler handler;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
 	{
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.main_activity_layout);
+		
+		handler=new Handler();
 		
 		boolean esito;
 		try
@@ -156,9 +161,18 @@ public class MainActivity extends ActionBarActivity  {
 					
 					if(!requestsList.isEmpty())
 					{
-						//notificare l'utente della presenza di richieste
-						RequestDialogFragment rdf = new RequestDialogFragment(requestsList);
-						rdf.show(getFragmentManager(), null);
+						final RequestDialogFragment rdf = new RequestDialogFragment(requestsList);
+						handler.post(new Runnable() {
+							@Override
+							public void run() 
+							{
+								FragmentTransaction ft = getFragmentManager().beginTransaction();
+								ft.add(rdf, null);
+								ft.commitAllowingStateLoss();
+								//notificare l'utente della presenza di richieste
+								//rdf.show(getFragmentManager(), null);
+							}
+						});
 					}
 				}
 								
