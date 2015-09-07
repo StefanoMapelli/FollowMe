@@ -15,13 +15,13 @@ import android.support.v7.app.ActionBarActivity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Color;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
+import android.provider.Settings;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -37,8 +37,9 @@ public class PathReceiverActivity extends ActionBarActivity {
 	private LocationListener locationListener=null;  
 	private GoogleMap map;
 	private Handler handler;
-	private int finishMode=1; //1 destroyed by follower, 2 destroyed by receiver
+	private int finishMode=1;//1 destroyed by follower, 2 destroyed by receiver
 	private CheckRequestPathStatus checkRequestThread;
+	private boolean pausedForGPS=false;
 	
 	
 	@Override
@@ -50,6 +51,7 @@ public class PathReceiverActivity extends ActionBarActivity {
 		map = ((SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.followPathReveiverMap)).getMap();
 		pathRequest=(Request) getIntent().getSerializableExtra("acceptedRequest");
 		path = ParseManager.getPathOfRequest(this, pathRequest);
+		checkRequestThread=new CheckRequestPathStatus();
 		
 		if (Utils.displayGpsStatus(this)) 
 		{
@@ -76,16 +78,74 @@ public class PathReceiverActivity extends ActionBarActivity {
 			}
 			
 			map.setMyLocationEnabled(true);
+			checkRequestThread=new CheckRequestPathStatus();
+			checkRequestThread.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 		} 
 		else
 		{
-			Log.i("GPS", "gps not enabled");
-		}
-		
-		checkRequestThread=new CheckRequestPathStatus();
-		checkRequestThread.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+			new AlertDialog.Builder(this)
+			.setTitle("Attention")
+			.setMessage("Your GPS is not enabled. Please enable it now!")
+			.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+				public void onClick(DialogInterface dialog, int which)
+				{ 
+					pausedForGPS=true;
+					PathReceiverActivity.this.startActivity(new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS));			    
+				}
+			})
+			.setIcon(android.R.drawable.ic_dialog_alert)
+			.show();
+		}		
 	}
 	
+	@Override
+	public void onResume()
+	{
+		super.onResume();
+		if(pausedForGPS)
+		{
+			if(Utils.displayGpsStatus(this))
+			{
+				Toast.makeText(PathReceiverActivity.this, "GPS enabled",Toast.LENGTH_LONG).show();
+			    locationListener = new MyLocationListener(); 
+				locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+				locationManager.requestLocationUpdates(LocationManager  
+			    .GPS_PROVIDER, 5000, 10,locationListener); 
+				
+				location = MapManager.getLastKnownLocation(PathReceiverActivity.this, locationManager);
+				
+				if(location != null)
+				{
+					Log.i("GPS", "FIRST LOCATION");
+					ParseManager.insertPosition(PathReceiverActivity.this, path, location.getLatitude(), location.getLongitude(), positionCounter);						 
+					positionCounter++;
+					 
+					CameraPosition cameraPosition = new CameraPosition.Builder()
+					.target(new LatLng(location.getLatitude(),location.getLongitude()))
+					.zoom(18)
+					.bearing(0)           
+					.tilt(0)             
+					.build();
+					map.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+					
+				}
+				
+				map.setMyLocationEnabled(true);
+				
+				checkRequestThread=new CheckRequestPathStatus();
+				checkRequestThread.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+				pausedForGPS=false;
+			}
+			else
+			{
+				Toast.makeText(this, "GPS not enabled",Toast.LENGTH_LONG).show();
+
+				checkRequestThread.cancel(true);
+				finishMode=2;
+				finish();
+			}
+		}
+	}
 	
 	@Override
 	public void onBackPressed()

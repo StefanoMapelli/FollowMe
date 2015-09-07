@@ -62,52 +62,44 @@ public class FenceSettingActivity extends ActionBarActivity {
 		}
 		userId = getIntent().getStringExtra("userId");
 		
-		if (Utils.displayGpsStatus(this)) 
+		locationListener = new MyLocationListener(); 
+		locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+		locationManager.requestLocationUpdates(LocationManager  
+				.GPS_PROVIDER, 5000, 10,locationListener); 
+		myLocation=MapManager.getLastKnownLocation(this, locationManager);
+		if(myLocation!=null)
 		{
-			locationListener = new MyLocationListener(); 
-			locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
-			locationManager.requestLocationUpdates(LocationManager  
-		    .GPS_PROVIDER, 5000, 10,locationListener); 
-			myLocation=MapManager.getLastKnownLocation(this, locationManager);
-			if(myLocation!=null)
-			{
-				//posiziono la camera nel luogo dove mi trovo sulla mappa
-				CameraPosition cameraPosition = new CameraPosition.Builder()
-				.target(new LatLng(myLocation.getLatitude(),myLocation.getLongitude()))
-				.zoom(17)
-				.bearing(0)           
-				.tilt(0)             
-				.build();
-				map.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));	
-			}
-			
-			
-			//quando un utente clicca in modo prolungato sulla mappa la posizione diventa centro 
-			//del nostro recinto
-			map.setOnMapLongClickListener(new GoogleMap.OnMapLongClickListener() {
-
-		        @Override
-		        public void onMapLongClick(LatLng point) {
-		        	
-		        	if(fenceCircle!=null)
-		        	{
-		        		//elimino il precedente circle disegnato sulla mappa
-		        		fenceCircle.remove();
-		        	}
-		        	fencePosition=point;
-		        	fenceCircle=MapManager.drawFenceCircle(fencePosition, radius, map);
-		        	radiusLabel.setText(radius+"");
-		          
-		        }
-		});
-		} 
-		else
-		{
-			Log.i("GPS", "gps not enabled");
+			//posiziono la camera nel luogo dove mi trovo sulla mappa
+			CameraPosition cameraPosition = new CameraPosition.Builder()
+			.target(new LatLng(myLocation.getLatitude(),myLocation.getLongitude()))
+			.zoom(17)
+			.bearing(0)           
+			.tilt(0)             
+			.build();
+			map.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));	
 		}
-		
+
+
+		//quando un utente clicca in modo prolungato sulla mappa la posizione diventa centro 
+		//del nostro recinto
+		map.setOnMapLongClickListener(new GoogleMap.OnMapLongClickListener() {
+
+			@Override
+			public void onMapLongClick(LatLng point) {
+
+				if(fenceCircle!=null)
+				{
+					//elimino il precedente circle disegnato sulla mappa
+					fenceCircle.remove();
+				}
+				fencePosition=point;
+				fenceCircle=MapManager.drawFenceCircle(fencePosition, radius, map);
+				radiusLabel.setText(radius+"");
+
+			}
+		});
 		Toast.makeText(this, "Hold tap to create your fence on the map",Toast.LENGTH_LONG).show();
-		
+
 		
 		radiusLabel.addTextChangedListener(new TextWatcher(){
 	        public void afterTextChanged(Editable s) {

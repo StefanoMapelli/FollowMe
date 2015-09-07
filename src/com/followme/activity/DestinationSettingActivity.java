@@ -60,50 +60,43 @@ public class DestinationSettingActivity extends ActionBarActivity {
 		}
 		userId = getIntent().getStringExtra("userId");
 		
-		if (Utils.displayGpsStatus(this)) 
+		locationListener = new MyLocationListener(); 
+		locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+		locationManager.requestLocationUpdates(LocationManager  
+				.GPS_PROVIDER, 5000, 10,locationListener); 
+		myLocation=MapManager.getLastKnownLocation(this, locationManager);
+		if(myLocation!=null)
 		{
-			locationListener = new MyLocationListener(); 
-			locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
-			locationManager.requestLocationUpdates(LocationManager  
-		    .GPS_PROVIDER, 5000, 10,locationListener); 
-			myLocation=MapManager.getLastKnownLocation(this, locationManager);
-			if(myLocation!=null)
-			{
-				//posiziono la camera nel luogo dove mi trovo sulla mappa
-				CameraPosition cameraPosition = new CameraPosition.Builder()
-				.target(new LatLng(myLocation.getLatitude(),myLocation.getLongitude()))
-				.zoom(17)
-				.bearing(0)           
-				.tilt(0)             
-				.build();
-				map.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));	
-			}
-			
-			
-			//quando un utente clicca in modo prolungato sulla mappa la posizione diventa centro 
-			//della nostra destinazione
-			
-			map.setOnMapLongClickListener(new GoogleMap.OnMapLongClickListener() {
-
-				@Override
-				public void onMapLongClick(LatLng point) {
-
-					if(destinationCircle!=null)
-					{
-						//elimino il precedente circle disegnato sulla mappa
-						destinationCircle.remove();
-					}
-					destinationPosition=point;
-					destinationCircle=MapManager.drawDestinationCircle(destinationPosition, radius, map);
-					radiusLabel.setText(radius+"");
-
-				}
-			});
-		} 
-		else
-		{
-			Toast.makeText(this, "GPS not enabled",Toast.LENGTH_LONG).show();
+			//posiziono la camera nel luogo dove mi trovo sulla mappa
+			CameraPosition cameraPosition = new CameraPosition.Builder()
+			.target(new LatLng(myLocation.getLatitude(),myLocation.getLongitude()))
+			.zoom(17)
+			.bearing(0)           
+			.tilt(0)             
+			.build();
+			map.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));	
 		}
+
+
+		//quando un utente clicca in modo prolungato sulla mappa la posizione diventa centro 
+		//della nostra destinazione
+
+		map.setOnMapLongClickListener(new GoogleMap.OnMapLongClickListener() {
+
+			@Override
+			public void onMapLongClick(LatLng point) {
+
+				if(destinationCircle!=null)
+				{
+					//elimino il precedente circle disegnato sulla mappa
+					destinationCircle.remove();
+				}
+				destinationPosition=point;
+				destinationCircle=MapManager.drawDestinationCircle(destinationPosition, radius, map);
+				radiusLabel.setText(radius+"");
+
+			}
+		});
 		
 		Toast.makeText(this, "Hold tap to create your destination on the map",Toast.LENGTH_LONG).show();
 		

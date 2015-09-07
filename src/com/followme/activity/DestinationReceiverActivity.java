@@ -25,7 +25,7 @@ import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
-import android.util.Log;
+import android.provider.Settings;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
@@ -44,7 +44,8 @@ public class DestinationReceiverActivity extends ActionBarActivity {
 	private Circle destinationCircle;
 	private CheckDestinationStatus checkDestinationThread;
 	private Handler handler;
-	private int finishMode=1; //1 destroyed by follower, 2 destroyed by receiver
+	private int finishMode=1;//1 destroyed by follower, 2 destroyed by receiver
+	private boolean pausedForGPS=false;
 	
 
 	@Override
@@ -67,6 +68,7 @@ public class DestinationReceiverActivity extends ActionBarActivity {
 		
 		FragmentManager fm = getSupportFragmentManager();
 		map = ((SupportMapFragment) fm.findFragmentById(R.id.mapDestinationReceiver)).getMap();
+		checkDestinationThread = new CheckDestinationStatus();
 		
 		if (Utils.displayGpsStatus(this)) 
 		{
@@ -88,22 +90,75 @@ public class DestinationReceiverActivity extends ActionBarActivity {
 
 			//disegno la destinazione sulla mappa
 			destinationCircle=MapManager.drawDestinationCircle(center, radius, map);
+			
+			checkDestinationThread = new CheckDestinationStatus();
+			checkDestinationThread.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 		} 
 		else
 		{
-			Log.i("GPS", "gps not enabled");
-		}
-		
-		checkDestinationThread = new CheckDestinationStatus();
-		checkDestinationThread.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-		
+			new AlertDialog.Builder(this)
+			.setTitle("Attention")
+			.setMessage("Your GPS is not enabled. Please enable it now!")
+			.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+				public void onClick(DialogInterface dialog, int which)
+				{ 
+					pausedForGPS=true;
+					DestinationReceiverActivity.this.startActivity(new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS));				    
+				}
+			})
+			.setIcon(android.R.drawable.ic_dialog_alert)
+			.show();
+		}		
 	}
 	
-	
+	@Override
+	public void onResume()
+	{
+		super.onResume();
+		if(pausedForGPS)
+		{
+			if(Utils.displayGpsStatus(this))
+			{
+				Toast.makeText(DestinationReceiverActivity.this, "GPS enabled",Toast.LENGTH_LONG).show();
+			    locationListener = new MyLocationListener(); 
+				locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+				locationManager.requestLocationUpdates(LocationManager  
+			    .GPS_PROVIDER, 5000, 10,locationListener); 
+				map.setMyLocationEnabled(true);
+				
+				//posiziono la camera nel luogo dove si trova la destinazione sulla mappa
+				CameraPosition cameraPosition = new CameraPosition.Builder()
+				.target(center)
+				.zoom(17)
+				.bearing(0)           
+				.tilt(0)             
+				.build();
+				map.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+
+
+				//disegno la destinazione sulla mappa
+				destinationCircle=MapManager.drawDestinationCircle(center, radius, map);
+				
+				checkDestinationThread = new CheckDestinationStatus();
+				checkDestinationThread.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+				
+				pausedForGPS=false;
+			}
+			else
+			{
+				Toast.makeText(this, "GPS not enabled",Toast.LENGTH_LONG).show();
+
+				checkDestinationThread.cancel(true);
+				finishMode=2;
+				finish();
+			}
+		}
+	}
 
 	@Override
 	public void onBackPressed()
 	{
+		checkDestinationThread.cancel(true);
 		new AlertDialog.Builder(this)
 	    .setTitle("Attention")
 	    .setMessage("Are you sure you want to close the destination?")
@@ -118,7 +173,8 @@ public class DestinationReceiverActivity extends ActionBarActivity {
 	    .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
 	        public void onClick(DialogInterface dialog, int which) 
 	        { 
-	            
+				checkDestinationThread=new CheckDestinationStatus();
+				checkDestinationThread.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 	        }
 	     })
 	    .setIcon(android.R.drawable.ic_dialog_alert)
@@ -131,13 +187,11 @@ public class DestinationReceiverActivity extends ActionBarActivity {
 	{
 		super.onDestroy();
 		if(finishMode==1)
-		{
-			checkDestinationThread.cancel(true);
+		{			
 			ParseManager.deleteRequestAndDestination(this, destinationRequest.getId(), destinationParseObject);
 		}
 		else
 		{
-			checkDestinationThread.cancel(true);
 			ParseManager.updateRequestStatusById(this, destinationRequest.getId(), "chiusa");
 		}
 		
@@ -195,44 +249,49 @@ public class DestinationReceiverActivity extends ActionBarActivity {
 		{				
 			if(isCancelled())
 				return null;
-			
+
 			while(true)
 			{	
 				float[] results=new float[1];
 				myLocation=MapManager.getLastKnownLocation(DestinationReceiverActivity.this, locationManager);
-				Location.distanceBetween(myLocation.getLatitude(), myLocation.getLongitude(), center.latitude, center.longitude, results);
-				
-				if(results[0]<radius+1 && !destination.isInTheDestination())
+
+				if(myLocation != null)
 				{
-					ParseManager.updateDestinationStatus(DestinationReceiverActivity.this, destinationParseObject, true);
-					destination.setInTheDestination(true);
-					handler.post(new Runnable() {
-						@Override
-						public void run() 
-						{
-							destinationCircle.setFillColor(Color.RED);
-							Toast.makeText(DestinationReceiverActivity.this, "You are arrived!!!",Toast.LENGTH_LONG).show();
-						
-						}
-					});
+					Location.distanceBetween(myLocation.getLatitude(), myLocation.getLongitude(), center.latitude, center.longitude, results);
+
+					if(results[0]<radius+1 && !destination.isInTheDestination())
+					{
+						ParseManager.updateDestinationStatus(DestinationReceiverActivity.this, destinationParseObject, true);
+						destination.setInTheDestination(true);
+						handler.post(new Runnable() {
+							@Override
+							public void run() 
+							{
+								destinationCircle.setFillColor(Color.RED);
+								Toast.makeText(DestinationReceiverActivity.this, "You are arrived!!!",Toast.LENGTH_LONG).show();
+
+							}
+						});
+					}
+					else if(results[0]>radius+1 && destination.isInTheDestination())
+					{
+						ParseManager.updateDestinationStatus(DestinationReceiverActivity.this, destinationParseObject, false);
+						handler.post(new Runnable() {
+							@Override
+							public void run() 
+							{
+								destination.setInTheDestination(false);
+								destinationCircle.setFillColor(Color.GREEN);
+							}
+						});
+					}
+
 				}
-				else if(results[0]>radius+1 && destination.isInTheDestination())
-				{
-					ParseManager.updateDestinationStatus(DestinationReceiverActivity.this, destinationParseObject, false);
-					handler.post(new Runnable() {
-						@Override
-						public void run() 
-						{
-							destination.setInTheDestination(false);
-							destinationCircle.setFillColor(Color.GREEN);
-						}
-					});
-				}
-				
+
 				//controllo se la richiesta è stata chiusa dal follower
 
 				boolean isActive=ParseManager.isRequestActive(DestinationReceiverActivity.this, destinationRequest.getId());
-				
+
 				if(!isActive)
 				{
 					handler.post(new Runnable() {
@@ -243,11 +302,11 @@ public class DestinationReceiverActivity extends ActionBarActivity {
 							Toast.makeText(DestinationReceiverActivity.this, "You haven't a destination!!! The follower closes it ",Toast.LENGTH_LONG).show();
 						}
 					});
-										
-		            finishMode=1;
+
+					finishMode=1;
 					finish();
 				}
-				
+
 				try {
 					Thread.sleep(5000);
 				} catch (InterruptedException e) {

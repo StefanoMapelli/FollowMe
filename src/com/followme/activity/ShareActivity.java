@@ -56,6 +56,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.provider.MediaStore;
+import android.provider.Settings;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem; 
@@ -92,10 +93,11 @@ public class ShareActivity extends ActionBarActivity implements SavePathDialogLi
 	private ArrayList<Media> photos = new ArrayList<Media>();
 	private ArrayList<Media> videos = new ArrayList<Media>();
 	private ArrayList<Position> positionList=new ArrayList<Position>();
-	private int finishMode=1;
+	private int finishMode=1;  
 	private ArrayList<String> requestIdList=new ArrayList<String>();
 	private CheckRequestShare checkRequestThread;
 	private Handler handler;
+	private boolean pausedForGPS=false;
 
 
 	@Override
@@ -134,6 +136,8 @@ public class ShareActivity extends ActionBarActivity implements SavePathDialogLi
 			requestIdList.add(ParseManager.insertRequest(this, "condivisione", userId, contacts[i].getId(), pathId, null, null));
 		}
 
+		checkRequestThread=new CheckRequestShare();
+		
 		if (Utils.displayGpsStatus(this)) 
 		{
 			locationListener = new MyLocationListener(); 
@@ -165,10 +169,24 @@ public class ShareActivity extends ActionBarActivity implements SavePathDialogLi
 			}
 
 			map.setMyLocationEnabled(true);
+			
+			checkRequestThread=new CheckRequestShare();
+			checkRequestThread.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 		} 
 		else
 		{
-			Log.i("GPS", "gps not enabled");
+			new AlertDialog.Builder(this)
+			.setTitle("Attention")
+			.setMessage("Your GPS is not enabled. Please enable it now!")
+			.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+				public void onClick(DialogInterface dialog, int which)
+				{ 
+					pausedForGPS=true;
+					ShareActivity.this.startActivity(new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS));				    
+				}
+			})
+			.setIcon(android.R.drawable.ic_dialog_alert)
+			.show();
 		}
 
 		photoTouchListener = new OnInfoWindowElemTouchListener() 
@@ -286,11 +304,65 @@ public class ShareActivity extends ActionBarActivity implements SavePathDialogLi
 				}
 			}
 		});	
-
-		checkRequestThread=new CheckRequestShare();
-		checkRequestThread.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 	}
+	
+	@Override
+	public void onResume()
+	{
+		super.onResume();
+		if(pausedForGPS)
+		{
+			if(Utils.displayGpsStatus(this))
+			{
+				Toast.makeText(ShareActivity.this, "GPS enabled",Toast.LENGTH_LONG).show();
+				locationListener = new MyLocationListener(); 
+				locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+				locationManager.requestLocationUpdates(LocationManager  
+						.GPS_PROVIDER, 5000, 10,locationListener); 
 
+				location = MapManager.getLastKnownLocation(ShareActivity.this, locationManager);
+
+				if(location != null)
+				{
+					Log.i("GPS", "FIRST LOCATION");
+					String id = ParseManager.insertPosition(ShareActivity.this, pathParseObject, location.getLatitude(), location.getLongitude(), positionCounter);
+
+					lastPosition = new Position(location.getLatitude(),location.getLongitude(), positionCounter);
+					lastPosition.setId(id);
+
+					positionList.add(lastPosition);
+
+					positionCounter++;
+
+					CameraPosition cameraPosition = new CameraPosition.Builder()
+					.target(new LatLng(location.getLatitude(),location.getLongitude()))
+					.zoom(18)
+					.bearing(0)           
+					.tilt(0)             
+					.build();
+					map.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+					
+					checkRequestThread=new CheckRequestShare();
+					checkRequestThread.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+				}
+				else
+				{
+					Toast.makeText(ShareActivity.this, "Searching for a valid location...",Toast.LENGTH_LONG).show();
+				}
+
+				map.setMyLocationEnabled(true);
+				pausedForGPS=false;
+			}
+			else
+			{
+				Toast.makeText(ShareActivity.this, "GPS not enabled",Toast.LENGTH_LONG).show();
+				
+				checkRequestThread.cancel(true);
+				finishMode=2;
+				finish();
+			}
+		}
+	}
 	public void photoButtonOnClickHandler(View v)
 	{
 		if(location != null)
@@ -646,7 +718,6 @@ public class ShareActivity extends ActionBarActivity implements SavePathDialogLi
 		})
 		.setIcon(android.R.drawable.ic_dialog_alert)
 		.show();
-
 	}
 
 	@Override
@@ -662,9 +733,12 @@ public class ShareActivity extends ActionBarActivity implements SavePathDialogLi
 		}
 		else
 		{
-			for(int i=0; i<requestIdList.size();i++)
+			if(finishMode==2)
 			{
-				ParseManager.updateRequestStatusById(this, requestIdList.get(i), "chiusa");
+				for(int i=0; i<requestIdList.size();i++)
+				{
+					ParseManager.updateRequestStatusById(this, requestIdList.get(i), "chiusa");
+				}
 			}
 		}
 

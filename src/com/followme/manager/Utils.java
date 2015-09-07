@@ -13,11 +13,11 @@ import java.util.List;
 
 import android.content.ContentResolver;
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
-import android.graphics.Matrix;
 import android.location.LocationManager;
 import android.media.ExifInterface;
 import android.net.Uri;
@@ -28,8 +28,6 @@ import android.widget.ImageView;
 
 import com.followme.object.Contact;
 import com.followme.object.CustomMarker;
-import com.followme.object.PhotoMarker;
-import com.followme.object.VideoMarker;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 
 public class Utils {

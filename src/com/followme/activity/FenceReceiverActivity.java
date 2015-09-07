@@ -1,6 +1,5 @@
 package com.followme.activity;
 
-
 import com.followme.manager.MapManager;
 import com.followme.manager.ParseManager;
 import com.followme.manager.Utils;
@@ -26,7 +25,7 @@ import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
-import android.util.Log;
+import android.provider.Settings;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
@@ -46,6 +45,7 @@ public class FenceReceiverActivity extends ActionBarActivity {
 	private CheckFenceStatus checkFenceThread;
 	private Handler handler;
 	private int finishMode=1; //1 destroyed by follower, 2 destroyed by receiver
+	private boolean pausedForGPS=false;
 	
 	
 	@Override
@@ -68,6 +68,7 @@ public class FenceReceiverActivity extends ActionBarActivity {
 		
 		FragmentManager fm = getSupportFragmentManager();
 		map = ((SupportMapFragment) fm.findFragmentById(R.id.mapFenceReceiver)).getMap();
+		checkFenceThread = new CheckFenceStatus();
 		
 		if (Utils.displayGpsStatus(this)) 
 		{
@@ -89,19 +90,69 @@ public class FenceReceiverActivity extends ActionBarActivity {
 
 			//disegno il recinto sulla mappa
 			fenceCircle=MapManager.drawFenceCircle(center, radius, map);
+			
+			checkFenceThread = new CheckFenceStatus();
+			checkFenceThread.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 		} 
 		else
 		{
-			Log.i("GPS", "gps not enabled");
-		}
-		
-		
-		checkFenceThread = new CheckFenceStatus();
-		checkFenceThread.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-		
-		
+			new AlertDialog.Builder(this)
+			.setTitle("Attention")
+			.setMessage("Your GPS is not enabled. Please enable it now!")
+			.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+				public void onClick(DialogInterface dialog, int which)
+				{ 
+					pausedForGPS=true;
+					FenceReceiverActivity.this.startActivity(new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS));				    
+				}
+			})
+			.setIcon(android.R.drawable.ic_dialog_alert)
+			.show();
+		}		
 	}
 	
+	@Override
+	public void onResume()
+	{
+		super.onResume();
+		if(pausedForGPS)
+		{
+			if(Utils.displayGpsStatus(this))
+			{
+				Toast.makeText(FenceReceiverActivity.this, "GPS enabled",Toast.LENGTH_LONG).show();
+			    locationListener = new MyLocationListener(); 
+				locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+				locationManager.requestLocationUpdates(LocationManager  
+			    .GPS_PROVIDER, 5000, 10,locationListener); 
+				map.setMyLocationEnabled(true);
+				
+				//posiziono la camera nel luogo dove mi trovo sulla mappa
+				CameraPosition cameraPosition = new CameraPosition.Builder()
+				.target(center)
+				.zoom(17)
+				.bearing(0)           
+				.tilt(0)             
+				.build();
+				map.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+
+				//disegno il recinto sulla mappa
+				fenceCircle=MapManager.drawFenceCircle(center, radius, map);
+				
+				checkFenceThread = new CheckFenceStatus();
+				checkFenceThread.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+				
+				pausedForGPS=false;
+			}
+			else
+			{
+				Toast.makeText(this, "GPS not enabled",Toast.LENGTH_LONG).show();
+
+				checkFenceThread.cancel(true);
+				finishMode=2;
+				finish();
+			}
+		}		
+	}
 	
 	@Override
 	public void onBackPressed()
@@ -208,41 +259,43 @@ public class FenceReceiverActivity extends ActionBarActivity {
 				
 				float[] results=new float[1];
 				myLocation=MapManager.getLastKnownLocation(FenceReceiverActivity.this, locationManager);
-				Location.distanceBetween(myLocation.getLatitude(), myLocation.getLongitude(), center.latitude, center.longitude, results);
-				
-				if(results[0]>radius+1 && fence.isInTheFence())
+				if(myLocation != null)
 				{
-					ParseManager.updateFenceStatus(FenceReceiverActivity.this, fenceParseObject, true);
-					fence.setInTheFence(false);
-					handler.post(new Runnable() {
-						@Override
-						public void run() 
-						{
-							fenceCircle.setFillColor(Color.RED);
-							Toast.makeText(FenceReceiverActivity.this, "Where are you going? Pay attention to the fence!!!",Toast.LENGTH_LONG).show();
-						
-						}
-					});
-					
+					Location.distanceBetween(myLocation.getLatitude(), myLocation.getLongitude(), center.latitude, center.longitude, results);
+
+					if(results[0]>radius+1 && fence.isInTheFence())
+					{
+						ParseManager.updateFenceStatus(FenceReceiverActivity.this, fenceParseObject, true);
+						fence.setInTheFence(false);
+						handler.post(new Runnable() {
+							@Override
+							public void run() 
+							{
+								fenceCircle.setFillColor(Color.RED);
+								Toast.makeText(FenceReceiverActivity.this, "Where are you going? Pay attention to the fence!!!",Toast.LENGTH_LONG).show();
+
+							}
+						});
+
 					}
-				else if(results[0]<radius && !fence.isInTheFence())
-				{
-					ParseManager.updateFenceStatus(FenceReceiverActivity.this, fenceParseObject, false);
-					handler.post(new Runnable() {
-						@Override
-						public void run() 
-						{
-							fence.setInTheFence(true);
-							fenceCircle.setFillColor(Color.BLUE);
-						}
-					});
-					
+					else if(results[0]<radius && !fence.isInTheFence())
+					{
+						ParseManager.updateFenceStatus(FenceReceiverActivity.this, fenceParseObject, false);
+						handler.post(new Runnable() {
+							@Override
+							public void run() 
+							{
+								fence.setInTheFence(true);
+								fenceCircle.setFillColor(Color.BLUE);
+							}
+						});
+
+					}
 				}
-				
 				//controllo se la richiesta è stata chiusa dal follower
 
 				boolean isActive=ParseManager.isRequestActive(FenceReceiverActivity.this, fenceRequest.getId());
-				
+
 				if(!isActive)
 				{
 					handler.post(new Runnable() {
@@ -253,10 +306,10 @@ public class FenceReceiverActivity extends ActionBarActivity {
 							Toast.makeText(FenceReceiverActivity.this, "You are free!!! The follower destroy the fence",Toast.LENGTH_LONG).show();
 						}
 					});
-		            finishMode=1;
+					finishMode=1;
 					finish();
 				}
-				
+
 				try {
 					Thread.sleep(5000);
 				} catch (InterruptedException e) {
