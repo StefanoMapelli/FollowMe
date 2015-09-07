@@ -1,9 +1,9 @@
 package com.followme.activity;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.followme.activity.R;
-import com.followme.fragment.RequestDialogFragment;
 import com.followme.manager.ParseManager;
 import com.followme.manager.PersonalDataManager;
 import com.followme.object.Request;
@@ -11,22 +11,27 @@ import com.followme.object.User;
 import com.parse.ParseObject;
 
 import android.app.AlertDialog;
-import android.app.FragmentTransaction;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Vibrator;
 import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 
 public class MainActivity extends ActionBarActivity  {
 	
 	private User user=new User("","");
 	private ParseObject userParseObject;
+	private List<Request> requestsList=new ArrayList<Request>();
+	private Menu menu;
 	private Handler handler;
+	private Vibrator vibrator;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
@@ -35,6 +40,7 @@ public class MainActivity extends ActionBarActivity  {
 		setContentView(R.layout.main_activity_layout);
 		
 		handler=new Handler();
+		vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
 		
 		boolean esito;
 		try
@@ -132,50 +138,124 @@ public class MainActivity extends ActionBarActivity  {
 	    .setIcon(android.R.drawable.ic_dialog_alert)
 	    .show();
 	}
-	
-	 @Override
-	    public boolean onCreateOptionsMenu(Menu menu) {
-	        MenuInflater inflater = getMenuInflater();
-	        inflater.inflate(R.menu.activity_main_actions, menu);
-	 
-	        return super.onCreateOptionsMenu(menu);
-	    }
-	
+
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		
+		MenuInflater inflater = getMenuInflater();
+
+		inflater.inflate(R.menu.activity_main_actions, menu);
+		
+		this.menu = menu;
+		this.menu.getItem(0).setVisible(false);
+
+		return super.onCreateOptionsMenu(menu);
+	}
+
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		// Handle action bar item clicks here. The action bar will
+		// automatically handle clicks on the Home/Up button, so long
+		// as you specify a parent activity in AndroidManifest.xml.
+		int id = item.getItemId();
+		if (id == R.id.openRequestNotificationList) 
+		{
+			Intent intent = new Intent(this,RequestsListActivity.class);
+			intent.putExtra("incomingRequests", requestsList.toArray());
+			startActivity(intent);
+			requestsList.clear();
+		}
+		return super.onOptionsItemSelected(item);
+	}
+
 	private class NetworkActivity extends AsyncTask<Void, Integer, String>
-    {
-		
-		
+	{
+
+
 
 		@Override
 		protected String doInBackground(Void... params) 
 		{	
-			List<Request> requestsList;
-			
+			int oldRequestNumber=0;
 			while(true)
 			{	
 				if(!(user.getPhoneNumber().compareTo("")==0))
 				{
+					oldRequestNumber=requestsList.size();
 					//roba da fare per chiedere a parse se c'è roba per me
-					requestsList=ParseManager.checkRequests(MainActivity.this, userParseObject);
-					ParseManager.visualizeRquests(MainActivity.this, requestsList);
+					requestsList.addAll(ParseManager.checkRequests(MainActivity.this, userParseObject));
+					ParseManager.visualizeRquests(MainActivity.this, requestsList);		
+
+					int requestNumber=requestsList.size();
 					
-					if(!requestsList.isEmpty())
+					if(requestNumber>oldRequestNumber)
 					{
-						final RequestDialogFragment rdf = new RequestDialogFragment(requestsList);
 						handler.post(new Runnable() {
 							@Override
 							public void run() 
 							{
-								FragmentTransaction ft = getFragmentManager().beginTransaction();
-								ft.add(rdf, null);
-								ft.commitAllowingStateLoss();
-								//notificare l'utente della presenza di richieste
-								//rdf.show(getFragmentManager(), null);
+								vibrator.vibrate(200);
+							}
+						});
+					}
+										
+					if(requestNumber==0)
+					{
+						handler.post(new Runnable() {
+							@Override
+							public void run() 
+							{
+								menu.getItem(0).setVisible(false);
+							}
+						});
+						
+					}
+					else if(requestNumber==1)
+					{
+						handler.post(new Runnable() {
+							@Override
+							public void run() 
+							{
+								menu.getItem(0).setIcon(getResources().getDrawable(R.drawable.request_1));
+								menu.getItem(0).setVisible(true);
+							}
+						});
+					}
+					else if(requestNumber==2)
+					{
+						handler.post(new Runnable() {
+							@Override
+							public void run() 
+							{
+								menu.getItem(0).setIcon(getResources().getDrawable(R.drawable.request_2));
+								menu.getItem(0).setVisible(true);
+							}
+						});
+					}
+					else if(requestNumber==3)
+					{
+						handler.post(new Runnable() {
+							@Override
+							public void run() 
+							{
+								menu.getItem(0).setIcon(getResources().getDrawable(R.drawable.request_3));
+								menu.getItem(0).setVisible(true);
+							}
+						});
+					}
+					else if(requestNumber>=4)
+					{
+						handler.post(new Runnable() {
+							@Override
+							public void run() 
+							{
+								menu.getItem(0).setIcon(getResources().getDrawable(R.drawable.request_4));
+								menu.getItem(0).setVisible(true);
 							}
 						});
 					}
 				}
-								
+
 				try {
 					Thread.sleep(5000);
 				} catch (InterruptedException e) {
@@ -183,5 +263,5 @@ public class MainActivity extends ActionBarActivity  {
 				}
 			}
 		}
-    }
+	}
 }
