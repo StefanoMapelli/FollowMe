@@ -9,13 +9,13 @@ import android.content.Context;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.followme.activity.MainActivity;
 import com.followme.object.Contact;
 import com.followme.object.Media;
 import com.followme.object.Position;
 import com.followme.object.Request;
 import com.followme.object.User;
 import com.google.android.gms.maps.model.LatLng;
+import com.parse.DeleteCallback;
 import com.parse.GetCallback;
 import com.parse.Parse;
 import com.parse.ParseException;
@@ -32,13 +32,20 @@ public class ParseManager {
 	 * Method that inserts the phone number in parse database.
 	 * @param phoneNumber : phone number to update or insert
 	 */
-	public static void insertPhoneNumber(Context context, String phoneNumber)
+	public static void insertPhoneNumber(final Context context, String phoneNumber)
 	{
 		final String pNumber=phoneNumber;
 		Parse.initialize(context,"x9hwNnRfTCCYGXPVJNKaR7zYTIMOdKeLkerRQJT2" ,"hi7GT6rUlp9uTfw6XQzdEjnTqwgPnRPoikPehgVf");
 		ParseObject address = new ParseObject("Utente");
 		address.put("numero", pNumber);
-		address.saveInBackground();											
+		address.saveInBackground(new SaveCallback() {
+			  public void done(ParseException e) {
+				  if(e != null)
+				  {
+					  Toast.makeText(context, "Make sure your internet connection is enabled!", Toast.LENGTH_LONG).show();
+				  }
+			  }
+		});		
 	}
 	
 	/**
@@ -60,8 +67,8 @@ public class ParseManager {
 		try {
 			objects=query.find();
 			senderPo=objects.get(0);
-		} catch (ParseException e) {
-			e.printStackTrace();
+		} catch (ParseException e) {			
+			return null;
 		}
 		
 		//get receiver parse object
@@ -72,7 +79,7 @@ public class ParseManager {
 			objects=query.find();
 			receiverPo=objects.get(0);
 		} catch (ParseException e) {
-			e.printStackTrace();
+			return null;
 		}
 		
 		//get path parse object
@@ -93,7 +100,7 @@ public class ParseManager {
 				objects=query.find();
 				destinationPo=objects.get(0);
 			} catch (ParseException e) {
-				e.printStackTrace();
+				return null;
 			}	
 			newReq.put("idDestinazione", destinationPo);
 		}
@@ -108,7 +115,7 @@ public class ParseManager {
 				objects=query.find();
 				fencePo=objects.get(0);
 			} catch (ParseException e) {
-				e.printStackTrace();
+				return null;
 			}
 			newReq.put("idRecinto", fencePo);
 		}
@@ -120,7 +127,7 @@ public class ParseManager {
 		try {
 			newReq.save();
 		} catch (ParseException e) {
-			e.printStackTrace();
+			return null;
 		}
 		return newReq.getObjectId();
 	}
@@ -137,7 +144,7 @@ public class ParseManager {
 		try {
 			newPath.save();
 		} catch (ParseException e) {
-			e.printStackTrace();
+			return null;
 		}
 		return newPath.getObjectId();
 	}
@@ -158,7 +165,7 @@ public class ParseManager {
 			newFence.put("uscito", false);
 			newFence.save();
 		} catch (ParseException e) {
-			e.printStackTrace();
+			return null;
 		}
 		
 		return newFence.getObjectId();
@@ -180,7 +187,7 @@ public class ParseManager {
 			newFence.put("arrivato", false);
 			newFence.save();
 		} catch (ParseException e) {
-			e.printStackTrace();
+			return null;
 		}
 		
 		return newFence.getObjectId();
@@ -205,7 +212,7 @@ public class ParseManager {
 		try {
 			newPos.save();
 		} catch (ParseException e) {
-			e.printStackTrace();
+			return null;
 		}
 		return newPos.getObjectId();
 	}
@@ -245,7 +252,14 @@ public class ParseManager {
 					newPhoto.saveInBackground(new SaveCallback(){
 						public void done(ParseException e)
 						{
-							Toast.makeText(context, "Image uploaded!", Toast.LENGTH_LONG).show();
+							if(e != null)
+							{
+								Toast.makeText(context, "Make sure your internet connection is enabled!", Toast.LENGTH_LONG).show();
+							}
+							else
+							{
+								Toast.makeText(context, "Image uploaded!", Toast.LENGTH_LONG).show();
+							}
 						}
 					});
 			  }
@@ -288,8 +302,15 @@ public class ParseManager {
 					newPhoto.saveInBackground(new SaveCallback(){
 						public void done(ParseException e)
 						{
-							Log.i("UPLOAD","ORA FINE UPLOAD:"+new Date().toString());
-							Toast.makeText(context, "Video uploaded!", Toast.LENGTH_LONG).show();
+							if(e != null)
+							{
+								Toast.makeText(context, "Make sure your internet connection is enabled!", Toast.LENGTH_LONG).show();
+							}
+							else
+							{
+								Log.i("UPLOAD","ORA FINE UPLOAD:"+new Date().toString());
+								Toast.makeText(context, "Video uploaded!", Toast.LENGTH_LONG).show();
+							}
 						}
 					});
 			  }
@@ -316,9 +337,8 @@ public class ParseManager {
 			objects = query.find();
 			return objects.get(0).getObjectId();
 		} catch (ParseException e) {
-			e.printStackTrace();
+			return null;
 		}
-		return null;
 	}
 	
 	/**
@@ -337,9 +357,8 @@ public class ParseManager {
 			objects=query.find();
 			return objects.get(0);
 		} catch (ParseException e) {
-			e.printStackTrace();
-		}
-		return null;		
+			return null;
+		}	
 	}
 	
 	/**
@@ -347,7 +366,7 @@ public class ParseManager {
 	 * @param phoneNumber : phoneNumber to check
 	 * @return : true it phoneNumber already exists
 	 */
-	public static boolean phoneNumberExists(Context context, String phoneNumber)
+	public static Boolean phoneNumberExists(Context context, String phoneNumber)
 	{
 		List<ParseObject> objects = null;
 		Parse.initialize(context,"x9hwNnRfTCCYGXPVJNKaR7zYTIMOdKeLkerRQJT2" ,"hi7GT6rUlp9uTfw6XQzdEjnTqwgPnRPoikPehgVf");
@@ -366,10 +385,8 @@ public class ParseManager {
 				return false;
 			}
 		} catch (ParseException e) {
-			e.printStackTrace();
+			return null;
 		}
-		
-		return false;
 	}
 	
 	/**
@@ -391,7 +408,7 @@ public class ParseManager {
 		try {
 			objects=query.find();
 		} catch (ParseException e) {
-			e.printStackTrace();
+			return null;
 		}
 		
 		Iterator<ParseObject> i = objects.iterator();
@@ -418,7 +435,7 @@ public class ParseManager {
 	 * @param context 
 	 * @param requests : list of requests to update
 	 */
-	public static void visualizeRquests(Context context, List<Request> requests)
+	public static void visualizeRquests(final Context context, List<Request> requests)
 	{
 		Parse.initialize(context,"x9hwNnRfTCCYGXPVJNKaR7zYTIMOdKeLkerRQJT2" ,"hi7GT6rUlp9uTfw6XQzdEjnTqwgPnRPoikPehgVf");
 		
@@ -429,7 +446,19 @@ public class ParseManager {
 			  public void done(ParseObject po, ParseException e) {
 			    if (e == null) {
 			    	po.put("stato", "visualizzata");
-			    	po.saveInBackground();
+			    	po.saveInBackground(new SaveCallback() {					
+						@Override
+						public void done(ParseException e) {
+							if(e != null)
+							{
+								Toast.makeText(context, "Make sure your internet connection is enabled!", Toast.LENGTH_LONG).show();
+							}
+						}
+					});
+			    }
+			    else
+			    {
+					Toast.makeText(context, "Make sure your internet connection is enabled!", Toast.LENGTH_LONG).show();
 			    }
 			  }
 			});
@@ -441,7 +470,7 @@ public class ParseManager {
 	 * @param context
 	 * @param id : id of the request to delete.
 	 */
-	public static void deleteRequest(Context context, String id)
+	public static boolean deleteRequest(final Context context, String id)
 	{
 		List<ParseObject> objects = null;	
 		Parse.initialize(context,"x9hwNnRfTCCYGXPVJNKaR7zYTIMOdKeLkerRQJT2" ,"hi7GT6rUlp9uTfw6XQzdEjnTqwgPnRPoikPehgVf");
@@ -454,10 +483,15 @@ public class ParseManager {
 			objects=query.find();
 			po=objects.get(0);
 		} catch (ParseException e) {
-			e.printStackTrace();
+			return false;
 		}
 		
-		po.deleteInBackground();
+		try {
+			po.delete();
+		} catch (ParseException e) {
+			return false;
+		}
+		return true;
 	}
 	
 	/**
@@ -476,7 +510,7 @@ public class ParseManager {
 			objects=query.find();
 			pathPo=objects.get(0);
 		} catch (ParseException e) {
-			e.printStackTrace();
+			return null;
 		}
 		
 		return pathPo;
@@ -498,7 +532,7 @@ public class ParseManager {
 			objects=query.find();
 			pathPo=objects.get(0);
 		} catch (ParseException e) {
-			e.printStackTrace();
+			return null;
 		}
 		
 		return pathPo;
@@ -520,7 +554,7 @@ public class ParseManager {
 			objects=query.find();
 			pathPo=objects.get(0);
 		} catch (ParseException e) {
-			e.printStackTrace();
+			return null;
 		}
 		
 		return pathPo;
@@ -551,7 +585,7 @@ public class ParseManager {
 			}
 			
 		} catch (ParseException e) {
-			e.printStackTrace();
+			return null;
 		}	
 		return path;
 	}
@@ -571,7 +605,7 @@ public class ParseManager {
 		try {
 			objects=query.find();
 		} catch (ParseException e) {
-			e.printStackTrace();
+			return null;
 		}
 		
 		Iterator<ParseObject> i = objects.iterator();
@@ -606,7 +640,7 @@ public class ParseManager {
 		try {
 			objects=query.find();
 		} catch (ParseException e) {
-			e.printStackTrace();
+			return null;
 		}
 		
 		Iterator<ParseObject> i = objects.iterator();
@@ -645,7 +679,7 @@ public class ParseManager {
 		try {
 			objects=query.find();
 		} catch (ParseException e) {
-			e.printStackTrace();
+			return null;
 		}
 		
 		Iterator<ParseObject> i = objects.iterator();
@@ -668,7 +702,7 @@ public class ParseManager {
 									  po.getString("didascalia"),
 									  position,null, po.getInt("contatore"));
 			} catch (ParseException e) {
-				e.printStackTrace();
+				return null;
 			}
 			newPhotos.add(mediaItem);
 		}
@@ -695,7 +729,7 @@ public class ParseManager {
 		try {
 			objects=query.find();
 		} catch (ParseException e) {
-			e.printStackTrace();
+			return null;
 		}
 		
 		Iterator<ParseObject> i = objects.iterator();
@@ -718,14 +752,14 @@ public class ParseManager {
 						  po.getString("didascalia"),
 						  position,null, po.getInt("contatore"));
 			} catch (ParseException e) {
-				e.printStackTrace();
+				return null;
 			}
 			newVides.add(mediaItem);
 		}
 		return newVides;
 	}
 
-	public static boolean isInTheFence(Context context, String idFence) {
+	public static Boolean isInTheFence(Context context, String idFence) {
 		
 		List<ParseObject> objects = null;
 		Parse.initialize(context,"x9hwNnRfTCCYGXPVJNKaR7zYTIMOdKeLkerRQJT2" ,"hi7GT6rUlp9uTfw6XQzdEjnTqwgPnRPoikPehgVf");
@@ -745,11 +779,8 @@ public class ParseManager {
 				return false;
 			}
 		} catch (ParseException e) {
-			e.printStackTrace();
+			return null;
 		}
-		
-		return true;
-		
 	}
 
 	
@@ -780,18 +811,26 @@ public class ParseManager {
 			}
 			
 		} catch (ParseException e) {
-			e.printStackTrace();
+			return null;
 		}	
 		
 		return getFencebyId(context, fence.getObjectId());
 		
 	}
 
-	public static void updateFenceStatus(Context context, ParseObject fenceParseObject, boolean isExit) {
+	public static void updateFenceStatus(final Context context, ParseObject fenceParseObject, boolean isExit) {
 				
 		Parse.initialize(context,"x9hwNnRfTCCYGXPVJNKaR7zYTIMOdKeLkerRQJT2" ,"hi7GT6rUlp9uTfw6XQzdEjnTqwgPnRPoikPehgVf");
 		fenceParseObject.put("uscito", isExit);
-		fenceParseObject.saveInBackground();
+		fenceParseObject.saveInBackground(new SaveCallback() {
+			@Override
+			public void done(ParseException e) {
+				if(e!=null)
+				{
+					Toast.makeText(context, "Make sure your internet connection is enabled!", Toast.LENGTH_LONG).show();
+				}
+			}
+		});
 	}
 
 	
@@ -801,7 +840,7 @@ public class ParseManager {
 	 * @param idDestination
 	 * @return
 	 */
-	public static boolean isInTheDestination(
+	public static Boolean isInTheDestination(
 			Context context,
 			String idDestination) {
 		
@@ -823,10 +862,8 @@ public class ParseManager {
 				return true;
 			}
 		} catch (ParseException e) {
-			e.printStackTrace();
+			return null;
 		}
-		
-		return false;
 	}
 
 	
@@ -860,7 +897,7 @@ public class ParseManager {
 			}
 			
 		} catch (ParseException e) {
-			e.printStackTrace();
+			return null;
 		}	
 		
 		return getDestinationbyId(context, destination.getObjectId());
@@ -879,7 +916,7 @@ public class ParseManager {
 			objects=query.find();
 			destPo=objects.get(0);
 		} catch (ParseException e) {
-			e.printStackTrace();
+			return null;
 		}
 		
 		return destPo;
@@ -887,12 +924,17 @@ public class ParseManager {
 	}
 
 	public static void updateDestinationStatus(
-			Context context,
+			final Context context,
 			ParseObject destinationParseObject, boolean isArrived) {
 		
 		Parse.initialize(context,"x9hwNnRfTCCYGXPVJNKaR7zYTIMOdKeLkerRQJT2" ,"hi7GT6rUlp9uTfw6XQzdEjnTqwgPnRPoikPehgVf");
 		destinationParseObject.put("arrivato", isArrived);
-		destinationParseObject.saveInBackground();
+		destinationParseObject.saveInBackground(new SaveCallback() {			
+			@Override
+			public void done(ParseException e) {
+				Toast.makeText(context, "Make sure your internet connection is enabled!", Toast.LENGTH_LONG).show();
+			}
+		});
 		
 	}
 	
@@ -902,8 +944,8 @@ public class ParseManager {
 	 * @param idRequest id of the request
 	 * @param status string of the new state to be updated
 	 */
-	public static void updateRequestStatusById(
-			Context context,
+	public static boolean updateRequestStatusById(
+			final Context context,
 			String idRequest,
 			String status) {
 		
@@ -918,11 +960,20 @@ public class ParseManager {
 			objects=query.find();
 			reqPo=objects.get(0);
 		} catch (ParseException e) {
-			e.printStackTrace();
+			return false;
 		}
 		
 		reqPo.put("stato", status);
-		reqPo.saveInBackground();
+		reqPo.saveInBackground(new SaveCallback() {			
+			@Override
+			public void done(ParseException e) {
+				if(e!=null)
+				{
+					Toast.makeText(context, "Make sure your internet connection is enabled!", Toast.LENGTH_LONG).show();
+				}
+			}
+		});
+		return true;
 		
 	}
 
@@ -932,7 +983,7 @@ public class ParseManager {
 	 * @param id
 	 * @return
 	 */
-	public static boolean isRequestActive(Context context, String id) {
+	public static Boolean isRequestActive(Context context, String id) {
 		
 		List<ParseObject> objects = null;
 		Parse.initialize(context,"x9hwNnRfTCCYGXPVJNKaR7zYTIMOdKeLkerRQJT2" ,"hi7GT6rUlp9uTfw6XQzdEjnTqwgPnRPoikPehgVf");
@@ -952,12 +1003,8 @@ public class ParseManager {
 				return false;
 			}
 		} catch (ParseException e) {
-			e.printStackTrace();
+			return null;
 		}
-		
-		return true;
-		
-		
 	}
 
 	
@@ -968,35 +1015,55 @@ public class ParseManager {
 	 * @param fenceParseObject
 	 */
 	public static void deleteRequestAndFence(
-			Context context, String idRequest,
+			final Context context, String idRequest,
 			ParseObject fenceParseObject) {
 		
 		Parse.initialize(context,"x9hwNnRfTCCYGXPVJNKaR7zYTIMOdKeLkerRQJT2" ,"hi7GT6rUlp9uTfw6XQzdEjnTqwgPnRPoikPehgVf");
 
 		deleteRequest(context, idRequest);
-		fenceParseObject.deleteInBackground();
+		fenceParseObject.deleteInBackground(new DeleteCallback() {			
+			@Override
+			public void done(ParseException e) {
+				if(e!=null)
+				{
+					Toast.makeText(context, "Make sure your internet connection is enabled!", Toast.LENGTH_LONG).show();
+				}
+			}
+		});
 		
 	}
 
 	public static void deleteRequestAndDestination(
-			Context context,
+			final Context context,
 			String idRequest, ParseObject destinationParseObject) {
 		
 		Parse.initialize(context,"x9hwNnRfTCCYGXPVJNKaR7zYTIMOdKeLkerRQJT2" ,"hi7GT6rUlp9uTfw6XQzdEjnTqwgPnRPoikPehgVf");
 		
 		deleteRequest(context, idRequest);
-		destinationParseObject.deleteInBackground();
+		destinationParseObject.deleteInBackground(new DeleteCallback() {			
+			@Override
+			public void done(ParseException e) {
+				if(e!=null)
+					Toast.makeText(context, "Make sure your internet connection is enabled!", Toast.LENGTH_LONG).show();
+			}
+		});
 		
 	}
 
 	public static void deleteRequestAndFollowPath(
-			Context context, String idRequest,
+			final Context context, String idRequest,
 			ParseObject pathParseObject) {
 
 		Parse.initialize(context,"x9hwNnRfTCCYGXPVJNKaR7zYTIMOdKeLkerRQJT2" ,"hi7GT6rUlp9uTfw6XQzdEjnTqwgPnRPoikPehgVf");
 
 		deleteRequest(context, idRequest);
-		pathParseObject.deleteInBackground();
+		pathParseObject.deleteInBackground(new DeleteCallback() {			
+			@Override
+			public void done(ParseException e) {
+				if(e!=null)
+					Toast.makeText(context, "Make sure your internet connection is enabled!", Toast.LENGTH_LONG).show();
+			}
+		});
 		
 	}
 	

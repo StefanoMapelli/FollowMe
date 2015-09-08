@@ -98,6 +98,7 @@ public class ShareActivity extends ActionBarActivity implements SavePathDialogLi
 	private CheckRequestShare checkRequestThread;
 	private Handler handler;
 	private boolean pausedForGPS=false;
+	private boolean dialogShow=false;
 
 
 	@Override
@@ -166,6 +167,10 @@ public class ShareActivity extends ActionBarActivity implements SavePathDialogLi
 				.tilt(0)             
 				.build();
 				map.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+			}
+			else
+			{
+				Toast.makeText(ShareActivity.this, "Searching for a valid location...",Toast.LENGTH_LONG).show();
 			}
 
 			map.setMyLocationEnabled(true);
@@ -652,6 +657,32 @@ public class ShareActivity extends ActionBarActivity implements SavePathDialogLi
 			{		
 				if(isCancelled())
 					return null;
+				
+				if(!Utils.displayGpsStatus(ShareActivity.this) && !dialogShow)
+				{
+					handler.post(new Runnable() {
+						@Override
+						public void run() 
+						{
+							dialogShow = true;
+							new AlertDialog.Builder(ShareActivity.this)
+							.setTitle("Attention")
+							.setMessage("Your GPS is not enabled. Please enable it now!")
+							.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+								public void onClick(DialogInterface dialog, int which)
+								{ 
+									pausedForGPS=true;
+									dialogShow = false;
+									ShareActivity.this.startActivity(new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS));				    
+								}
+							})
+							.setIcon(android.R.drawable.ic_dialog_alert)
+							.show();
+						}
+					});
+					
+				}
+				
 				Iterator<String> iterator = requestIdList.iterator();
 
 				while(iterator.hasNext())

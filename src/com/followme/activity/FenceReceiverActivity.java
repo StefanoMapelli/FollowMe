@@ -46,6 +46,7 @@ public class FenceReceiverActivity extends ActionBarActivity {
 	private Handler handler;
 	private int finishMode=1; //1 destroyed by follower, 2 destroyed by receiver
 	private boolean pausedForGPS=false;
+	private boolean dialogShow=false;
 	
 	
 	@Override
@@ -256,6 +257,30 @@ public class FenceReceiverActivity extends ActionBarActivity {
 			{	
 				if(isCancelled())
 					return null;
+				
+				if(!Utils.displayGpsStatus(FenceReceiverActivity.this) && !dialogShow)
+				{
+					handler.post(new Runnable() {
+						@Override
+						public void run() 
+						{
+							dialogShow=true;
+							new AlertDialog.Builder(FenceReceiverActivity.this)
+							.setTitle("Attention")
+							.setMessage("Your GPS is not enabled. Please enable it now!")
+							.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+								public void onClick(DialogInterface dialog, int which)
+								{ 
+									pausedForGPS=true;
+									dialogShow=false;
+									FenceReceiverActivity.this.startActivity(new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS));				    
+								}
+							})
+							.setIcon(android.R.drawable.ic_dialog_alert)
+							.show();
+						}
+					});
+				}
 				
 				float[] results=new float[1];
 				myLocation=MapManager.getLastKnownLocation(FenceReceiverActivity.this, locationManager);

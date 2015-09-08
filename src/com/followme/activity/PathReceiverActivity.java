@@ -40,6 +40,7 @@ public class PathReceiverActivity extends ActionBarActivity {
 	private int finishMode=1;//1 destroyed by follower, 2 destroyed by receiver
 	private CheckRequestPathStatus checkRequestThread;
 	private boolean pausedForGPS=false;
+	private boolean dialogShow=false;
 	
 	
 	@Override
@@ -75,6 +76,10 @@ public class PathReceiverActivity extends ActionBarActivity {
 				.tilt(0)             
 				.build();
 				map.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+			}
+			else
+			{
+				Toast.makeText(PathReceiverActivity.this, "Searching for a valid location...",Toast.LENGTH_LONG).show();
 			}
 			
 			map.setMyLocationEnabled(true);
@@ -128,6 +133,10 @@ public class PathReceiverActivity extends ActionBarActivity {
 					.build();
 					map.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
 					
+				}
+				else
+				{
+					Toast.makeText(PathReceiverActivity.this, "Searching for a valid location...",Toast.LENGTH_LONG).show();
 				}
 				
 				map.setMyLocationEnabled(true);
@@ -298,6 +307,30 @@ public class PathReceiverActivity extends ActionBarActivity {
 					return null;
 				//controllo se la richiesta è stata chiusa dal follower
 
+				if(!Utils.displayGpsStatus(PathReceiverActivity.this) && !dialogShow)
+				{
+					handler.post(new Runnable() {
+						@Override
+						public void run() 
+						{
+							dialogShow=true;
+							new AlertDialog.Builder(PathReceiverActivity.this)
+							.setTitle("Attention")
+							.setMessage("Your GPS is not enabled. Please enable it now!")
+							.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+								public void onClick(DialogInterface dialog, int which)
+								{ 
+									pausedForGPS=true;
+									dialogShow=false;
+									PathReceiverActivity.this.startActivity(new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS));				    
+								}
+							})
+							.setIcon(android.R.drawable.ic_dialog_alert)
+							.show();
+						}
+					});
+				}
+				
 				boolean isActive=ParseManager.isRequestActive(PathReceiverActivity.this, pathRequest.getId());
 				
 				if(!isActive)
