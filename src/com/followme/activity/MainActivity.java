@@ -254,6 +254,7 @@ public class MainActivity extends ActionBarActivity  {
 						String id = ParseManager.getId(MainActivity.this, PersonalDataManager.getPhoneNumber());
 						if(id == null)
 						{
+							
 							handler.post(new Runnable() {
 								@Override
 								public void run() 
