@@ -46,10 +46,9 @@ public class RequestCustomAdapter extends ArrayAdapter<Request>{
 		
 		if(requests.get(position).getType().compareTo("condivisione")==0 || requests.get(position).getType().compareTo("percorso")==0)
 		{
-			ImageButton buttonShowDetails = (ImageButton) convertView.findViewById(R.id.acceptRequestButton);
+			ImageButton buttonShowDetails = (ImageButton) convertView.findViewById(R.id.showDetailsRequestButton);
 			buttonShowDetails.setVisibility(View.INVISIBLE);
 		}
-				
 		return convertView;	
 	}
 
