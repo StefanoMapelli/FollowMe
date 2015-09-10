@@ -10,7 +10,6 @@ import com.followme.object.Request;
 import com.followme.object.User;
 import com.parse.ParseObject;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -175,9 +174,6 @@ public class MainActivity extends ActionBarActivity  {
 
 	private class NetworkActivity extends AsyncTask<Void, Integer, String>
 	{
-
-
-
 		@Override
 		protected String doInBackground(Void... params) 
 		{	
@@ -205,6 +201,12 @@ public class MainActivity extends ActionBarActivity  {
 							    NotificationManager mNotificationManager = (NotificationManager)
 							                                                getSystemService(notificationService);
 							    
+							    Intent resultIntent = new Intent(MainActivity.this,RequestsListActivity.class);
+							    resultIntent.putExtra("incomingRequests", requestsList.toArray());
+							    resultIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+
+							    PendingIntent resultPendingIntent = PendingIntent.getActivity(MainActivity.this, 0, resultIntent, 0);
+							   
 							    //notifica
 							    NotificationCompat.Builder mBuilder =
 										new NotificationCompat.Builder(MainActivity.this);
@@ -212,6 +214,7 @@ public class MainActivity extends ActionBarActivity  {
 								mBuilder.setContentTitle("Follow Me");
 								mBuilder.setContentText("There's a request for you.");
 								mBuilder.setAutoCancel(true);
+								mBuilder.setContentIntent(resultPendingIntent);								
 								
 							    // the next two lines initialize the Notification, using the configurations
 							    // above
