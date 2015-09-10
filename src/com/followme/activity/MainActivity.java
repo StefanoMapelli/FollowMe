@@ -27,6 +27,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Toast;
 
 public class MainActivity extends ActionBarActivity  {
 	
@@ -74,8 +75,20 @@ public class MainActivity extends ActionBarActivity  {
 			PersonalDataManager.open();
 			user.setPhoneNumber(PersonalDataManager.getPhoneNumber());
 			//carico l'id presente su parse
-			user.setId(ParseManager.getId(this, PersonalDataManager.getPhoneNumber()));
-			userParseObject=ParseManager.getUser(this, user.getId());
+			String id = ParseManager.getId(this, PersonalDataManager.getPhoneNumber());
+			if(id == null)
+			{
+				Toast.makeText(this, "Make sure your internet connection is enabled!", Toast.LENGTH_LONG).show();
+			}
+			else
+			{
+				user.setId(id);
+				userParseObject=ParseManager.getUser(this, user.getId());
+				if(userParseObject == null)
+				{
+					Toast.makeText(this, "Make sure your internet connection is enabled!", Toast.LENGTH_LONG).show();
+				}
+			}
 		}		
 		
 		new NetworkActivity().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);		
@@ -117,6 +130,10 @@ public class MainActivity extends ActionBarActivity  {
 				//carico il numero di telefono salvato sul db
 				user.setPhoneNumber(PersonalDataManager.getPhoneNumber());
 				userParseObject=ParseManager.getUser(this,user.getId());
+				if(userParseObject == null)
+				{
+					Toast.makeText(this, "Make sure your internet connection is enabled!", Toast.LENGTH_LONG).show();
+				}
 			}
 		}
 	}
@@ -149,7 +166,7 @@ public class MainActivity extends ActionBarActivity  {
 		MenuInflater inflater = getMenuInflater();
 
 		inflater.inflate(R.menu.activity_main_actions, menu);
-		
+
 		this.menu = menu;
 		this.menu.getItem(0).setVisible(false);
 
@@ -184,113 +201,253 @@ public class MainActivity extends ActionBarActivity  {
 				{
 					oldRequestNumber=requestsList.size();
 					//roba da fare per chiedere a parse se c'è roba per me
-					requestsList.addAll(ParseManager.checkRequests(MainActivity.this, userParseObject));
-					ParseManager.visualizeRquests(MainActivity.this, requestsList);		
+					if(userParseObject==null)
+					{
+						userParseObject=ParseManager.getUser(MainActivity.this, user.getId());
 
-					int requestNumber=requestsList.size();
-					
-					if(requestNumber>oldRequestNumber)
-					{
-						handler.post(new Runnable() {
-							@Override
-							public void run() 
-							{
-								vibrator.vibrate(200);
-								
-								String notificationService = Context.NOTIFICATION_SERVICE;
-							    NotificationManager mNotificationManager = (NotificationManager)
-							                                                getSystemService(notificationService);
-							    
-							    Intent resultIntent = new Intent(MainActivity.this,RequestsListActivity.class);
-							    resultIntent.putExtra("incomingRequests", requestsList.toArray());
-							    resultIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+						if(userParseObject==null)
+						{
+							Toast.makeText(MainActivity.this, "Make sure your internet connection is enabled!", Toast.LENGTH_LONG).show();				
+						}
+						else
+						{
+							List<Request> list = ParseManager.checkRequests(MainActivity.this, userParseObject);
 
-							    PendingIntent resultPendingIntent = PendingIntent.getActivity(MainActivity.this, 0, resultIntent, 0);
-							   
-							    //notifica
-							    NotificationCompat.Builder mBuilder =
-										new NotificationCompat.Builder(MainActivity.this);
-								mBuilder.setSmallIcon(R.drawable.follow);
-								mBuilder.setContentTitle("Follow Me");
-								mBuilder.setContentText("There's a request for you.");
-								mBuilder.setAutoCancel(true);
-								mBuilder.setContentIntent(resultPendingIntent);								
-								
-							    // the next two lines initialize the Notification, using the configurations
-							    // above
-							    Notification notification = mBuilder.build();
-							    
-							    final int HELLO_ID = 1;
-							    mNotificationManager.notify(HELLO_ID, notification);
-								
-								
-								
-							}
-						});
-					}
-										
-					if(requestNumber==0)
-					{
-						handler.post(new Runnable() {
-							@Override
-							public void run() 
+							if(list == null)
 							{
-								menu.getItem(0).setVisible(false);
+								Toast.makeText(MainActivity.this, "Make sure your internet connection is enabled!", Toast.LENGTH_LONG).show();				
 							}
-						});
-						
-					}
-					else if(requestNumber==1)
-					{
-						handler.post(new Runnable() {
-							@Override
-							public void run() 
+							else
 							{
-								menu.getItem(0).setIcon(getResources().getDrawable(R.drawable.request_1));
-								menu.getItem(0).setVisible(true);
-							}
-						});
-					}
-					else if(requestNumber==2)
-					{
-						handler.post(new Runnable() {
-							@Override
-							public void run() 
-							{
-								menu.getItem(0).setIcon(getResources().getDrawable(R.drawable.request_2));
-								menu.getItem(0).setVisible(true);
-							}
-						});
-					}
-					else if(requestNumber==3)
-					{
-						handler.post(new Runnable() {
-							@Override
-							public void run() 
-							{
-								menu.getItem(0).setIcon(getResources().getDrawable(R.drawable.request_3));
-								menu.getItem(0).setVisible(true);
-							}
-						});
-					}
-					else if(requestNumber>=4)
-					{
-						handler.post(new Runnable() {
-							@Override
-							public void run() 
-							{
-								menu.getItem(0).setIcon(getResources().getDrawable(R.drawable.request_4));
-								menu.getItem(0).setVisible(true);
-							}
-						});
-					}
-				}
+								requestsList.addAll(list);
+								ParseManager.visualizeRquests(MainActivity.this, requestsList);		
 
-				try {
-					Thread.sleep(5000);
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				}
+								int requestNumber=requestsList.size();
+
+								if(requestNumber>oldRequestNumber)
+								{
+									handler.post(new Runnable() {
+										@Override
+										public void run() 
+										{
+											vibrator.vibrate(200);
+
+											String notificationService = Context.NOTIFICATION_SERVICE;
+											NotificationManager mNotificationManager = (NotificationManager)
+													getSystemService(notificationService);
+
+											Intent resultIntent = new Intent(MainActivity.this,RequestsListActivity.class);
+											resultIntent.putExtra("incomingRequests", requestsList.toArray());
+											resultIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+
+											PendingIntent resultPendingIntent = PendingIntent.getActivity(MainActivity.this, 0, resultIntent, 0);
+
+											//notifica
+											NotificationCompat.Builder mBuilder =
+													new NotificationCompat.Builder(MainActivity.this);
+											mBuilder.setSmallIcon(R.drawable.follow);
+											mBuilder.setContentTitle("Follow Me");
+											mBuilder.setContentText("There's a request for you.");
+											mBuilder.setAutoCancel(true);
+											mBuilder.setContentIntent(resultPendingIntent);								
+
+											// the next two lines initialize the Notification, using the configurations
+											// above
+											Notification notification = mBuilder.build();
+
+											final int HELLO_ID = 1;
+											mNotificationManager.notify(HELLO_ID, notification);
+
+
+
+										}
+									});
+								}
+
+								if(requestNumber==0)
+								{
+									handler.post(new Runnable() {
+										@Override
+										public void run() 
+										{
+											menu.getItem(0).setVisible(false);
+										}
+									});
+
+								}
+								else if(requestNumber==1)
+								{
+									handler.post(new Runnable() {
+										@Override
+										public void run() 
+										{
+											menu.getItem(0).setIcon(getResources().getDrawable(R.drawable.request_1));
+											menu.getItem(0).setVisible(true);
+										}
+									});
+								}
+								else if(requestNumber==2)
+								{
+									handler.post(new Runnable() {
+										@Override
+										public void run() 
+										{
+											menu.getItem(0).setIcon(getResources().getDrawable(R.drawable.request_2));
+											menu.getItem(0).setVisible(true);
+										}
+									});
+								}
+								else if(requestNumber==3)
+								{
+									handler.post(new Runnable() {
+										@Override
+										public void run() 
+										{
+											menu.getItem(0).setIcon(getResources().getDrawable(R.drawable.request_3));
+											menu.getItem(0).setVisible(true);
+										}
+									});
+								}
+								else if(requestNumber>=4)
+								{
+									handler.post(new Runnable() {
+										@Override
+										public void run() 
+										{
+											menu.getItem(0).setIcon(getResources().getDrawable(R.drawable.request_4));
+											menu.getItem(0).setVisible(true);
+										}
+									});
+								}
+							}
+
+							try {
+								Thread.sleep(5000);
+							} catch (InterruptedException e) {
+								e.printStackTrace();
+							}
+						}
+					}
+					else
+					{
+
+						List<Request> list = ParseManager.checkRequests(MainActivity.this, userParseObject);
+
+						if(list == null)
+						{
+							Toast.makeText(MainActivity.this, "Make sure your internet connection is enabled!", Toast.LENGTH_LONG).show();				
+						}
+						else
+						{
+							requestsList.addAll(list);
+							ParseManager.visualizeRquests(MainActivity.this, requestsList);		
+
+							int requestNumber=requestsList.size();
+
+							if(requestNumber>oldRequestNumber)
+							{
+								handler.post(new Runnable() {
+									@Override
+									public void run() 
+									{
+										vibrator.vibrate(200);
+
+										String notificationService = Context.NOTIFICATION_SERVICE;
+										NotificationManager mNotificationManager = (NotificationManager)
+												getSystemService(notificationService);
+
+										Intent resultIntent = new Intent(MainActivity.this,RequestsListActivity.class);
+										resultIntent.putExtra("incomingRequests", requestsList.toArray());
+										resultIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+
+										PendingIntent resultPendingIntent = PendingIntent.getActivity(MainActivity.this, 0, resultIntent, 0);
+
+										//notifica
+										NotificationCompat.Builder mBuilder =
+												new NotificationCompat.Builder(MainActivity.this);
+										mBuilder.setSmallIcon(R.drawable.follow);
+										mBuilder.setContentTitle("Follow Me");
+										mBuilder.setContentText("There's a request for you.");
+										mBuilder.setAutoCancel(true);
+										mBuilder.setContentIntent(resultPendingIntent);								
+
+										// the next two lines initialize the Notification, using the configurations
+										// above
+										Notification notification = mBuilder.build();
+
+										final int HELLO_ID = 1;
+										mNotificationManager.notify(HELLO_ID, notification);
+
+
+
+									}
+								});
+							}
+
+							if(requestNumber==0)
+							{
+								handler.post(new Runnable() {
+									@Override
+									public void run() 
+									{
+										menu.getItem(0).setVisible(false);
+									}
+								});
+
+							}
+							else if(requestNumber==1)
+							{
+								handler.post(new Runnable() {
+									@Override
+									public void run() 
+									{
+										menu.getItem(0).setIcon(getResources().getDrawable(R.drawable.request_1));
+										menu.getItem(0).setVisible(true);
+									}
+								});
+							}
+							else if(requestNumber==2)
+							{
+								handler.post(new Runnable() {
+									@Override
+									public void run() 
+									{
+										menu.getItem(0).setIcon(getResources().getDrawable(R.drawable.request_2));
+										menu.getItem(0).setVisible(true);
+									}
+								});
+							}
+							else if(requestNumber==3)
+							{
+								handler.post(new Runnable() {
+									@Override
+									public void run() 
+									{
+										menu.getItem(0).setIcon(getResources().getDrawable(R.drawable.request_3));
+										menu.getItem(0).setVisible(true);
+									}
+								});
+							}
+							else if(requestNumber>=4)
+							{
+								handler.post(new Runnable() {
+									@Override
+									public void run() 
+									{
+										menu.getItem(0).setIcon(getResources().getDrawable(R.drawable.request_4));
+										menu.getItem(0).setVisible(true);
+									}
+								});
+							}
+						}
+
+						try {
+							Thread.sleep(5000);
+						} catch (InterruptedException e) {
+							e.printStackTrace();
+						}
+					}
+				}					
 			}
 		}
 	}

@@ -7,7 +7,6 @@ import android.view.MenuItem;
 
 import com.followme.manager.MapManager;
 import com.followme.manager.ParseManager;
-import com.followme.manager.Utils;
 import com.followme.object.Contact;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -172,8 +171,24 @@ public class DestinationSettingActivity extends ActionBarActivity {
 			
 			for(int i=0; i<contactsList.length; i++)
 			{
-				destinationIdList[i] = ParseManager.insertDestination(this, radius, destinationPosition);
-				requestIdList[i] = ParseManager.insertRequest(this, "destinazione", userId, contactsList[i].getId(), null, destinationIdList[i], null);
+				String destId =ParseManager.insertDestination(this, radius, destinationPosition);
+				if(destId == null)
+				{
+					Toast.makeText(this, "Make sure your internet connection is enabled!", Toast.LENGTH_LONG).show();
+				}
+				else
+				{
+					destinationIdList[i] = destId;
+					String outcomeId = ParseManager.insertRequest(this, "destinazione", userId, contactsList[i].getId(), null, destinationIdList[i], null);
+					if(outcomeId == null)
+					{
+						Toast.makeText(this, "Make sure your internet connection is enabled!", Toast.LENGTH_LONG).show();
+					}
+					else
+					{
+						requestIdList[i] = outcomeId;
+					}
+				}				
 			}
 
 			Intent intent = new Intent(DestinationSettingActivity.this,DestinationControlActivity.class);

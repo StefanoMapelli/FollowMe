@@ -173,8 +173,24 @@ public class FenceSettingActivity extends ActionBarActivity {
 			String[] requestIdList=new String[contactsList.length];
 			for(int i=0; i<contactsList.length; i++)
 			{
-				fenceIdList[i] = ParseManager.insertFence(this, radius, fencePosition);
-				requestIdList[i]=ParseManager.insertRequest(this, "recinto", userId, contactsList[i].getId(), null, null, fenceIdList[i]);
+				String fenceId =  ParseManager.insertFence(this, radius, fencePosition);
+				if(fenceId == null)
+				{
+					Toast.makeText(this, "Make sure your internet connection is enabled!", Toast.LENGTH_LONG).show();
+				}
+				else
+				{
+					fenceIdList[i] = fenceId;
+					String outcomeId = ParseManager.insertRequest(this, "recinto", userId, contactsList[i].getId(), null, null, fenceIdList[i]);
+					if(outcomeId == null)
+					{
+						Toast.makeText(this, "Make sure your internet connection is enabled!", Toast.LENGTH_LONG).show();
+					}
+					else
+					{
+						requestIdList[i]=outcomeId;
+					}	
+				}			
 			}
 			
 			Intent intent = new Intent(FenceSettingActivity.this,FenceControlActivity.class);

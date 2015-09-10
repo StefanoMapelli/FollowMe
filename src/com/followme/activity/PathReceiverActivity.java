@@ -66,16 +66,24 @@ public class PathReceiverActivity extends ActionBarActivity {
 			if(location != null)
 			{
 				Log.i("GPS", "FIRST LOCATION");
-				ParseManager.insertPosition(PathReceiverActivity.this, path, location.getLatitude(), location.getLongitude(), positionCounter);						 
-				positionCounter++;
-				 
-				CameraPosition cameraPosition = new CameraPosition.Builder()
-				.target(new LatLng(location.getLatitude(),location.getLongitude()))
-				.zoom(18)
-				.bearing(0)           
-				.tilt(0)             
-				.build();
-				map.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+				String posId = ParseManager.insertPosition(PathReceiverActivity.this, path, location.getLatitude(), location.getLongitude(), positionCounter);						 
+				
+				if(posId == null)
+				{
+					Toast.makeText(this, "Make sure your internet connection is enabled!", Toast.LENGTH_LONG).show();
+				}
+				else
+				{
+					positionCounter++;
+					 
+					CameraPosition cameraPosition = new CameraPosition.Builder()
+					.target(new LatLng(location.getLatitude(),location.getLongitude()))
+					.zoom(18)
+					.bearing(0)           
+					.tilt(0)             
+					.build();
+					map.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+				}
 			}
 			else
 			{
@@ -122,17 +130,23 @@ public class PathReceiverActivity extends ActionBarActivity {
 				if(location != null)
 				{
 					Log.i("GPS", "FIRST LOCATION");
-					ParseManager.insertPosition(PathReceiverActivity.this, path, location.getLatitude(), location.getLongitude(), positionCounter);						 
-					positionCounter++;
-					 
-					CameraPosition cameraPosition = new CameraPosition.Builder()
-					.target(new LatLng(location.getLatitude(),location.getLongitude()))
-					.zoom(18)
-					.bearing(0)           
-					.tilt(0)             
-					.build();
-					map.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
-					
+					String id = ParseManager.insertPosition(PathReceiverActivity.this, path, location.getLatitude(), location.getLongitude(), positionCounter);		
+					if(id == null)
+					{
+						Toast.makeText(this, "Make sure your internet connection is enabled!", Toast.LENGTH_LONG).show();
+					}
+					else
+					{
+						positionCounter++;
+						 
+						CameraPosition cameraPosition = new CameraPosition.Builder()
+						.target(new LatLng(location.getLatitude(),location.getLongitude()))
+						.zoom(18)
+						.bearing(0)           
+						.tilt(0)             
+						.build();
+						map.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+					}					
 				}
 				else
 				{
@@ -218,16 +232,23 @@ public class PathReceiverActivity extends ActionBarActivity {
 				{
 					Log.i("GPS", "FIRST LOCATION");
 				 	location = loc;
-					ParseManager.insertPosition(PathReceiverActivity.this, path, loc.getLatitude(), loc.getLongitude(), positionCounter);					 					 
-					positionCounter++;
-					 
-					CameraPosition cameraPosition = new CameraPosition.Builder()
-					.target(new LatLng(loc.getLatitude(),loc.getLongitude()))
-					.zoom(18)
-					.bearing(0)           
-					.tilt(0)             
-					.build();
-					map.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+					String id = ParseManager.insertPosition(PathReceiverActivity.this, path, loc.getLatitude(), loc.getLongitude(), positionCounter);	
+					if(id == null)
+					{
+						Toast.makeText(PathReceiverActivity.this, "Make sure your internet connection is enabled!", Toast.LENGTH_LONG).show();
+					}
+					else
+					{
+						positionCounter++;
+						 
+						CameraPosition cameraPosition = new CameraPosition.Builder()
+						.target(new LatLng(loc.getLatitude(),loc.getLongitude()))
+						.zoom(18)
+						.bearing(0)           
+						.tilt(0)             
+						.build();
+						map.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+					}
 				}
 			 else
 			 if((Math.abs(location.getLongitude() - loc.getLongitude()) > 0.00001 ||
@@ -236,23 +257,30 @@ public class PathReceiverActivity extends ActionBarActivity {
 					Toast.makeText(PathReceiverActivity.this, "speed: "+loc.getSpeed()+" accuracy: "+loc.getAccuracy(), Toast.LENGTH_LONG).show();
 					Log.i("GPS", "LOCATION FOUND");
 					    
-					ParseManager.insertPosition(PathReceiverActivity.this, path, loc.getLatitude(), loc.getLongitude(), positionCounter);					    				    
-					positionCounter++;
+					String id = ParseManager.insertPosition(PathReceiverActivity.this, path, loc.getLatitude(), loc.getLongitude(), positionCounter);	
+					if(id == null)
+					{
+						Toast.makeText(PathReceiverActivity.this, "Make sure your internet connection is enabled!", Toast.LENGTH_LONG).show();
+					}
+					else
+					{
+						positionCounter++;
 					    
-					CameraPosition cameraPosition = new CameraPosition.Builder()
-					.target(new LatLng(loc.getLatitude(),loc.getLongitude()))
-					.zoom(18)
-					.bearing(0)           
-					.tilt(0)             
-					.build();
-					map.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
-						
-					MapManager.drawPrimaryLinePath(
-							new LatLng(location.getLatitude(),location.getLongitude()) ,
-							new LatLng(loc.getLatitude(),loc.getLongitude()),
-							map);
-						
-					location = loc;
+						CameraPosition cameraPosition = new CameraPosition.Builder()
+						.target(new LatLng(loc.getLatitude(),loc.getLongitude()))
+						.zoom(18)
+						.bearing(0)           
+						.tilt(0)             
+						.build();
+						map.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+							
+						MapManager.drawPrimaryLinePath(
+								new LatLng(location.getLatitude(),location.getLongitude()) ,
+								new LatLng(loc.getLatitude(),loc.getLongitude()),
+								map);
+							
+						location = loc;
+					}
 				} 					 
 	     }
 		 

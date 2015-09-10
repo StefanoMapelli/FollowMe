@@ -130,185 +130,207 @@ public class ShareActivity extends ActionBarActivity implements SavePathDialogLi
 		//create a path and insert requests for the users receivers for that path
 		String userId = getIntent().getStringExtra("userId");
 		String pathId = ParseManager.insertPath(this);
-		pathParseObject = ParseManager.getPathbyId(this, pathId);
-		path = new Path(pathParseObject.getObjectId(), "", "");
-		for(int i=0; i<contacts.length; i++)
+		if(pathId == null)
 		{
-			requestIdList.add(ParseManager.insertRequest(this, "condivisione", userId, contacts[i].getId(), pathId, null, null));
+			Toast.makeText(this, "Make sure your internet connection is enabled!", Toast.LENGTH_LONG).show();
 		}
-
-		checkRequestThread=new CheckRequestShare();
-		
-		if (Utils.displayGpsStatus(this)) 
-		{
-			locationListener = new MyLocationListener(); 
-			locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
-			locationManager.requestLocationUpdates(LocationManager  
-					.GPS_PROVIDER, 5000, 10,locationListener); 
-
-			location = MapManager.getLastKnownLocation(this, locationManager);
-
-			if(location != null)
-			{
-				Log.i("GPS", "FIRST LOCATION");
-				String id = ParseManager.insertPosition(ShareActivity.this, pathParseObject, location.getLatitude(), location.getLongitude(), positionCounter);
-
-				lastPosition = new Position(location.getLatitude(),location.getLongitude(), positionCounter);
-				lastPosition.setId(id);
-
-				positionList.add(lastPosition);
-
-				positionCounter++;
-
-				CameraPosition cameraPosition = new CameraPosition.Builder()
-				.target(new LatLng(location.getLatitude(),location.getLongitude()))
-				.zoom(18)
-				.bearing(0)           
-				.tilt(0)             
-				.build();
-				map.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
-			}
-			else
-			{
-				Toast.makeText(ShareActivity.this, "Searching for a valid location...",Toast.LENGTH_LONG).show();
-			}
-
-			map.setMyLocationEnabled(true);
-			
-			checkRequestThread=new CheckRequestShare();
-			checkRequestThread.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-		} 
 		else
 		{
-			new AlertDialog.Builder(this)
-			.setTitle("Attention")
-			.setMessage("Your GPS is not enabled. Please enable it now!")
-			.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-				public void onClick(DialogInterface dialog, int which)
-				{ 
-					pausedForGPS=true;
-					ShareActivity.this.startActivity(new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS));				    
-				}
-			})
-			.setIcon(android.R.drawable.ic_dialog_alert)
-			.show();
-		}
-
-		photoTouchListener = new OnInfoWindowElemTouchListener() 
-		{
-			@Override
-			protected void onClickConfirmed(View v, Marker marker) 
-			{              
-				//intent per l'attività di gallery
-				Intent intent = new Intent(ShareActivity.this,MediaGalleryActivity.class);
-				//passaggio parametri all'intent
-				intent.putExtra("media", markers.toArray());
-
-				int index = markers.indexOf(Utils.getMarkerByTitle(markers, marker.getTitle()));
-
-				intent.putExtra("index", index);
-				startActivity(intent);
-			}
-		};  
-
-		videoTouchListener = new OnInfoWindowElemTouchListener() 
-		{
-			@Override
-			protected void onClickConfirmed(View v, Marker marker) 
-			{             
-				//intent per l'attività di gallery
-				Intent intent = new Intent(ShareActivity.this,MediaGalleryActivity.class);
-				//passaggio parametri all'intent
-				intent.putExtra("media", markers.toArray());
-
-				int index = markers.indexOf(Utils.getMarkerByTitle(markers, marker.getTitle()));
-
-				intent.putExtra("index", index);
-				startActivity(intent);
-			}
-		}; 
-
-		//info window setting
-		map.setInfoWindowAdapter(new InfoWindowAdapter() {
-			@Override
-			public View getInfoWindow(Marker marker) {
-				return null;
-			}
-
-			@Override
-			public View getInfoContents(Marker marker) {
-				if(marker.getTitle().startsWith("photo"))
+			pathParseObject = ParseManager.getPathbyId(this, pathId);
+			path = new Path(pathParseObject.getObjectId(), "", "");
+			for(int i=0; i<contacts.length; i++)
+			{
+				String outcomeId = ParseManager.insertRequest(this, "condivisione", userId, contacts[i].getId(), pathId, null, null);
+				if(outcomeId == null)
 				{
-					// MapWrapperLayout initialization
-					mapWrapperLayout.init(map, Utils.getPixelsFromDp(ShareActivity.this, 59)); 				
-					infoWindow = (ViewGroup)getLayoutInflater().inflate(R.layout.photo_info_window_layout, null);
-					infoSnippet = (TextView)infoWindow.findViewById(R.id.PhotoSnippet);
-					infoImageView = (ImageView)infoWindow.findViewById(R.id.infoImageView);
-					photoTouchListener.setView(infoImageView);
-
-					// Setting up the infoWindow with current's marker info
-					infoSnippet.setText(marker.getSnippet());
-
-					photoTouchListener.setMarker(marker);					        
-					infoImageView.setOnTouchListener(photoTouchListener);		
-
-					//image setting
-					PhotoMarker pm = (PhotoMarker)Utils.getMarkerByTitle(markers, marker.getTitle());
-					Bitmap bitmap = Utils.getSmallBitmap(pm.getPath());
-					infoImageView.setImageBitmap(Bitmap.createScaledBitmap(
-							bitmap, 
-							bitmap.getWidth()/2, 
-							bitmap.getHeight()/2, false));
-					Utils.rotateImageView(infoImageView, pm.getPath());
-
-					// We must call this to set the current marker and infoWindow references
-					// to the MapWrapperLayout
-					mapWrapperLayout.setMarkerWithInfoWindow(marker, infoWindow);
-
-					return infoWindow;
+					Toast.makeText(this, "Make sure your internet connection is enabled!", Toast.LENGTH_LONG).show();
 				}
 				else
 				{
-					// MapWrapperLayout initialization
-					mapWrapperLayout.init(map, Utils.getPixelsFromDp(ShareActivity.this, 59)); 				
-					infoWindow = (ViewGroup)getLayoutInflater().inflate(R.layout.photo_info_window_layout, null);
-					infoSnippet = (TextView)infoWindow.findViewById(R.id.PhotoSnippet);
-					infoImageView = (ImageView)infoWindow.findViewById(R.id.infoImageView);
-					videoTouchListener.setView(infoImageView);
-
-					// Setting up the infoWindow with current's marker info
-					infoSnippet.setText(marker.getSnippet());
-
-					videoTouchListener.setMarker(marker);					        
-					infoImageView.setOnTouchListener(videoTouchListener);		
-
-					//image setting
-					VideoMarker vm = (VideoMarker)Utils.getMarkerByTitle(markers, marker.getTitle());	
-
-					Bitmap thumb = ThumbnailUtils.createVideoThumbnail(
-							vm.getVideoUriString(),
-							MediaStore.Images.Thumbnails.MINI_KIND);
-
-					Bitmap play = BitmapFactory.decodeResource(getResources(), R.drawable.play);
-					Bitmap playIcon = Bitmap.createScaledBitmap(play,
-							play.getWidth()/3, play.getHeight()/3, false);
-					;
-					Bitmap bmOverlay = Bitmap.createBitmap(thumb.getWidth(), thumb.getHeight(), thumb.getConfig());
-					Canvas canvas = new Canvas(bmOverlay);
-					canvas.drawBitmap(thumb, new Matrix(), null);
-					canvas.drawBitmap(playIcon,(thumb.getWidth()/2) - (playIcon.getWidth()/2),
-							(thumb.getHeight()/2) - (playIcon.getHeight()/2), null);
-
-					infoImageView.setImageBitmap(bmOverlay);
-
-					// We must call this to set the current marker and infoWindow references
-					// to the MapWrapperLayout
-					mapWrapperLayout.setMarkerWithInfoWindow(marker, infoWindow);
-
-					return infoWindow;
+					requestIdList.add(outcomeId);
 				}
 			}
-		});	
+
+			checkRequestThread=new CheckRequestShare();
+			
+			if (Utils.displayGpsStatus(this)) 
+			{
+				locationListener = new MyLocationListener(); 
+				locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+				locationManager.requestLocationUpdates(LocationManager  
+						.GPS_PROVIDER, 5000, 10,locationListener); 
+
+				location = MapManager.getLastKnownLocation(this, locationManager);
+
+				if(location != null)
+				{
+					Log.i("GPS", "FIRST LOCATION");
+					String id = ParseManager.insertPosition(ShareActivity.this, pathParseObject, location.getLatitude(), location.getLongitude(), positionCounter);
+					
+					if(id == null)
+					{
+						Toast.makeText(this, "Make sure your internet connection is enabled!", Toast.LENGTH_LONG).show();
+					}
+					else
+					{
+						lastPosition = new Position(location.getLatitude(),location.getLongitude(), positionCounter);
+						lastPosition.setId(id);
+
+						positionList.add(lastPosition);
+
+						positionCounter++;
+
+						CameraPosition cameraPosition = new CameraPosition.Builder()
+						.target(new LatLng(location.getLatitude(),location.getLongitude()))
+						.zoom(18)
+						.bearing(0)           
+						.tilt(0)             
+						.build();
+						map.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+					}
+				}
+				else
+				{
+					Toast.makeText(ShareActivity.this, "Searching for a valid location...",Toast.LENGTH_LONG).show();
+				}
+
+				map.setMyLocationEnabled(true);
+				
+				checkRequestThread=new CheckRequestShare();
+				checkRequestThread.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+			} 
+			else
+			{
+				new AlertDialog.Builder(this)
+				.setTitle("Attention")
+				.setMessage("Your GPS is not enabled. Please enable it now!")
+				.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog, int which)
+					{ 
+						pausedForGPS=true;
+						ShareActivity.this.startActivity(new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS));				    
+					}
+				})
+				.setIcon(android.R.drawable.ic_dialog_alert)
+				.show();
+			}
+
+			photoTouchListener = new OnInfoWindowElemTouchListener() 
+			{
+				@Override
+				protected void onClickConfirmed(View v, Marker marker) 
+				{              
+					//intent per l'attività di gallery
+					Intent intent = new Intent(ShareActivity.this,MediaGalleryActivity.class);
+					//passaggio parametri all'intent
+					intent.putExtra("media", markers.toArray());
+
+					int index = markers.indexOf(Utils.getMarkerByTitle(markers, marker.getTitle()));
+
+					intent.putExtra("index", index);
+					startActivity(intent);
+				}
+			};  
+
+			videoTouchListener = new OnInfoWindowElemTouchListener() 
+			{
+				@Override
+				protected void onClickConfirmed(View v, Marker marker) 
+				{             
+					//intent per l'attività di gallery
+					Intent intent = new Intent(ShareActivity.this,MediaGalleryActivity.class);
+					//passaggio parametri all'intent
+					intent.putExtra("media", markers.toArray());
+
+					int index = markers.indexOf(Utils.getMarkerByTitle(markers, marker.getTitle()));
+
+					intent.putExtra("index", index);
+					startActivity(intent);
+				}
+			}; 
+
+			//info window setting
+			map.setInfoWindowAdapter(new InfoWindowAdapter() {
+				@Override
+				public View getInfoWindow(Marker marker) {
+					return null;
+				}
+
+				@Override
+				public View getInfoContents(Marker marker) {
+					if(marker.getTitle().startsWith("photo"))
+					{
+						// MapWrapperLayout initialization
+						mapWrapperLayout.init(map, Utils.getPixelsFromDp(ShareActivity.this, 59)); 				
+						infoWindow = (ViewGroup)getLayoutInflater().inflate(R.layout.photo_info_window_layout, null);
+						infoSnippet = (TextView)infoWindow.findViewById(R.id.PhotoSnippet);
+						infoImageView = (ImageView)infoWindow.findViewById(R.id.infoImageView);
+						photoTouchListener.setView(infoImageView);
+
+						// Setting up the infoWindow with current's marker info
+						infoSnippet.setText(marker.getSnippet());
+
+						photoTouchListener.setMarker(marker);					        
+						infoImageView.setOnTouchListener(photoTouchListener);		
+
+						//image setting
+						PhotoMarker pm = (PhotoMarker)Utils.getMarkerByTitle(markers, marker.getTitle());
+						Bitmap bitmap = Utils.getSmallBitmap(pm.getPath());
+						infoImageView.setImageBitmap(Bitmap.createScaledBitmap(
+								bitmap, 
+								bitmap.getWidth()/2, 
+								bitmap.getHeight()/2, false));
+						Utils.rotateImageView(infoImageView, pm.getPath());
+
+						// We must call this to set the current marker and infoWindow references
+						// to the MapWrapperLayout
+						mapWrapperLayout.setMarkerWithInfoWindow(marker, infoWindow);
+
+						return infoWindow;
+					}
+					else
+					{
+						// MapWrapperLayout initialization
+						mapWrapperLayout.init(map, Utils.getPixelsFromDp(ShareActivity.this, 59)); 				
+						infoWindow = (ViewGroup)getLayoutInflater().inflate(R.layout.photo_info_window_layout, null);
+						infoSnippet = (TextView)infoWindow.findViewById(R.id.PhotoSnippet);
+						infoImageView = (ImageView)infoWindow.findViewById(R.id.infoImageView);
+						videoTouchListener.setView(infoImageView);
+
+						// Setting up the infoWindow with current's marker info
+						infoSnippet.setText(marker.getSnippet());
+
+						videoTouchListener.setMarker(marker);					        
+						infoImageView.setOnTouchListener(videoTouchListener);		
+
+						//image setting
+						VideoMarker vm = (VideoMarker)Utils.getMarkerByTitle(markers, marker.getTitle());	
+
+						Bitmap thumb = ThumbnailUtils.createVideoThumbnail(
+								vm.getVideoUriString(),
+								MediaStore.Images.Thumbnails.MINI_KIND);
+
+						Bitmap play = BitmapFactory.decodeResource(getResources(), R.drawable.play);
+						Bitmap playIcon = Bitmap.createScaledBitmap(play,
+								play.getWidth()/3, play.getHeight()/3, false);
+						;
+						Bitmap bmOverlay = Bitmap.createBitmap(thumb.getWidth(), thumb.getHeight(), thumb.getConfig());
+						Canvas canvas = new Canvas(bmOverlay);
+						canvas.drawBitmap(thumb, new Matrix(), null);
+						canvas.drawBitmap(playIcon,(thumb.getWidth()/2) - (playIcon.getWidth()/2),
+								(thumb.getHeight()/2) - (playIcon.getHeight()/2), null);
+
+						infoImageView.setImageBitmap(bmOverlay);
+
+						// We must call this to set the current marker and infoWindow references
+						// to the MapWrapperLayout
+						mapWrapperLayout.setMarkerWithInfoWindow(marker, infoWindow);
+
+						return infoWindow;
+					}
+				}
+			});	
+		}		
 	}
 	
 	@Override
@@ -332,23 +354,30 @@ public class ShareActivity extends ActionBarActivity implements SavePathDialogLi
 					Log.i("GPS", "FIRST LOCATION");
 					String id = ParseManager.insertPosition(ShareActivity.this, pathParseObject, location.getLatitude(), location.getLongitude(), positionCounter);
 
-					lastPosition = new Position(location.getLatitude(),location.getLongitude(), positionCounter);
-					lastPosition.setId(id);
+					if(id == null)
+					{
+						Toast.makeText(this, "Make sure your internet connection is enabled!", Toast.LENGTH_LONG).show();
+					}
+					else
+					{
+						lastPosition = new Position(location.getLatitude(),location.getLongitude(), positionCounter);
+						lastPosition.setId(id);
 
-					positionList.add(lastPosition);
+						positionList.add(lastPosition);
 
-					positionCounter++;
+						positionCounter++;
 
-					CameraPosition cameraPosition = new CameraPosition.Builder()
-					.target(new LatLng(location.getLatitude(),location.getLongitude()))
-					.zoom(18)
-					.bearing(0)           
-					.tilt(0)             
-					.build();
-					map.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
-					
-					checkRequestThread=new CheckRequestShare();
-					checkRequestThread.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+						CameraPosition cameraPosition = new CameraPosition.Builder()
+						.target(new LatLng(location.getLatitude(),location.getLongitude()))
+						.zoom(18)
+						.bearing(0)           
+						.tilt(0)             
+						.build();
+						map.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+						
+						checkRequestThread=new CheckRequestShare();
+						checkRequestThread.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+					}	
 				}
 				else
 				{
@@ -585,30 +614,13 @@ public class ShareActivity extends ActionBarActivity implements SavePathDialogLi
 				location = loc;
 				String id = ParseManager.insertPosition(ShareActivity.this, pathParseObject, loc.getLatitude(), loc.getLongitude(), positionCounter);
 
-				lastPosition = new Position(loc.getLatitude(),loc.getLongitude(), positionCounter);
-				lastPosition.setId(id);
-
-				positionList.add(lastPosition);
-
-				positionCounter++;
-
-				CameraPosition cameraPosition = new CameraPosition.Builder()
-				.target(new LatLng(loc.getLatitude(),loc.getLongitude()))
-				.zoom(18)
-				.bearing(0)           
-				.tilt(0)             
-				.build();
-				map.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
-			}
-			else
-				if((Math.abs(location.getLongitude() - loc.getLongitude()) > 0.00001 ||
-						Math.abs(location.getLatitude() - loc.getLatitude()) > 0.00001))
+				if(id==null)
 				{
-					Toast.makeText(ShareActivity.this, "speed: "+loc.getSpeed()+" accuracy: "+loc.getAccuracy(), Toast.LENGTH_LONG).show();
-					Log.i("GPS", "LOCATION FOUND");
-
-					String id = ParseManager.insertPosition(ShareActivity.this, pathParseObject, loc.getLatitude(), loc.getLongitude(), positionCounter);
-
+					Toast.makeText(ShareActivity.this, "Make sure your internet connection is enabled!", Toast.LENGTH_LONG).show();
+				}
+				else
+				{
+					
 					lastPosition = new Position(loc.getLatitude(),loc.getLongitude(), positionCounter);
 					lastPosition.setId(id);
 
@@ -623,13 +635,46 @@ public class ShareActivity extends ActionBarActivity implements SavePathDialogLi
 					.tilt(0)             
 					.build();
 					map.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+				}
+			}
+			else
+				if((Math.abs(location.getLongitude() - loc.getLongitude()) > 0.00001 ||
+						Math.abs(location.getLatitude() - loc.getLatitude()) > 0.00001))
+				{
+					Toast.makeText(ShareActivity.this, "speed: "+loc.getSpeed()+" accuracy: "+loc.getAccuracy(), Toast.LENGTH_LONG).show();
+					Log.i("GPS", "LOCATION FOUND");
 
-					MapManager.drawPrimaryLinePath(
-							new LatLng(location.getLatitude(),location.getLongitude()) ,
-							new LatLng(loc.getLatitude(),loc.getLongitude()),
-							map);
+					String id = ParseManager.insertPosition(ShareActivity.this, pathParseObject, loc.getLatitude(), loc.getLongitude(), positionCounter);
 
-					location = loc;
+					if(id==null)
+					{
+						Toast.makeText(ShareActivity.this, "Make sure your internet connection is enabled!", Toast.LENGTH_LONG).show();
+					}
+					else
+					{
+
+						lastPosition = new Position(loc.getLatitude(),loc.getLongitude(), positionCounter);
+						lastPosition.setId(id);
+
+						positionList.add(lastPosition);
+
+						positionCounter++;
+
+						CameraPosition cameraPosition = new CameraPosition.Builder()
+						.target(new LatLng(loc.getLatitude(),loc.getLongitude()))
+						.zoom(18)
+						.bearing(0)           
+						.tilt(0)             
+						.build();
+						map.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+
+						MapManager.drawPrimaryLinePath(
+								new LatLng(location.getLatitude(),location.getLongitude()) ,
+								new LatLng(loc.getLatitude(),loc.getLongitude()),
+								map);
+
+						location = loc;
+					}
 				} 
 		}
 

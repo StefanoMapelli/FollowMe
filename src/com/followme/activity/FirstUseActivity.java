@@ -17,6 +17,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 public class FirstUseActivity extends Activity {
 	
@@ -82,12 +83,19 @@ public class FirstUseActivity extends Activity {
 					ParseManager.insertPhoneNumber(FirstUseActivity.this, phoneNumber);
 				}
 				String id = ParseManager.getId(FirstUseActivity.this, phoneNumber);
-				PersonalDataManager.insertUser(phoneNumber, id);
-				
-				Intent intent = new Intent();
-				intent.putExtra("id", id);
-				setResult(RESULT_OK, intent);
-            	finish();
+				if(id == null)
+				{
+					Toast.makeText(this, "Make sure your internet connection is enabled!", Toast.LENGTH_LONG).show();
+				}
+				else
+				{
+					PersonalDataManager.insertUser(phoneNumber, id);
+					
+					Intent intent = new Intent();
+					intent.putExtra("id", id);
+					setResult(RESULT_OK, intent);
+	            	finish();
+				}
 			}
 		}
 	}

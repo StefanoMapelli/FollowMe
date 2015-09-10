@@ -1063,8 +1063,6 @@ public class ParseManager {
 				if(e!=null)
 					Toast.makeText(context, "Make sure your internet connection is enabled!", Toast.LENGTH_LONG).show();
 			}
-		});
-		
-	}
-	
+		});	
+	}	
 }

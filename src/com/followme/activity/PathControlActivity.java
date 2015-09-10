@@ -26,6 +26,7 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
+import android.provider.Settings;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
@@ -67,13 +68,28 @@ public class PathControlActivity extends ActionBarActivity {
 		{
 			//creazione dei path
 			String pathId = ParseManager.insertPath(this);
-			ParseObject path = ParseManager.getPathbyId(this, pathId);
-			pathObjects.add(path);
-			//inizializzazione arraylist
-			paths.add(new ArrayList<Position>());
-			counterPositions.add(-1);
-			//invio delle richieste e salvataggio nell'array list
-			requestIdList.add(ParseManager.insertRequest(this, "percorso", userId, contactsList.get(contactsList.indexOf(c)).getId(), pathId, null, null));
+			if(pathId == null)
+			{
+				Toast.makeText(this, "Make sure your internet connection is enabled!", Toast.LENGTH_LONG).show();
+			}
+			else
+			{
+				ParseObject path = ParseManager.getPathbyId(this, pathId);
+				pathObjects.add(path);
+				//inizializzazione arraylist
+				paths.add(new ArrayList<Position>());
+				counterPositions.add(-1);
+				//invio delle richieste e salvataggio nell'array list
+				String outcomeId = ParseManager.insertRequest(this, "percorso", userId, contactsList.get(contactsList.indexOf(c)).getId(), pathId, null, null);
+				if(outcomeId == null)
+				{
+					Toast.makeText(this, "Make sure your internet connection is enabled!", Toast.LENGTH_LONG).show();
+				}
+				else
+				{
+					requestIdList.add(outcomeId);
+				}
+			}
 		}
 		findNewPositionsThread = new FindNewPositions();
 		findNewPositionsThread.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
