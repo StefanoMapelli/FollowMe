@@ -71,6 +71,7 @@ public class ChooseContactsForFollowActivity extends ActionBarActivity {
 		intent.putExtra("selectedContacts", selectedContacts.toArray());
 		intent.putExtra("userId", userId);
 		startActivity(intent);
+		finish();
 	}
 	
 	private class RefreshFollowContactListThread extends AsyncTask<Void, Integer, String>

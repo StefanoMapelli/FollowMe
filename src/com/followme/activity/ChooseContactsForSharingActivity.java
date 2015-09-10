@@ -71,6 +71,7 @@ public class ChooseContactsForSharingActivity extends ActionBarActivity
 		intent.putExtra("selectedContacts", selectedContacts.toArray());
 		intent.putExtra("userId", userId);
 		startActivity(intent);
+		finish();
 	}
 
 	private class RefreshSharingContactListThread extends AsyncTask<Void, Integer, String>
