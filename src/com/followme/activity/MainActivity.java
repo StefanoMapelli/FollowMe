@@ -96,18 +96,60 @@ public class MainActivity extends ActionBarActivity  {
 	
 	public void followOnClickHandler(View v)
 	{
-		//intent per l'attività di follow
-		Intent intent = new Intent(MainActivity.this,ChooseContactsForFollowActivity.class);
-		intent.putExtra("userId", user.getId());
-		startActivity(intent);
+		if(user.getId().compareTo("")==0)
+		{
+			//carico l'id presente su parse
+			String id = ParseManager.getId(this, PersonalDataManager.getPhoneNumber());
+			if(id == null)
+			{
+				Toast.makeText(this, "Make sure your internet connection is enabled!", Toast.LENGTH_LONG).show();
+			}
+			else
+			{
+				user.setId(id);
+					
+				//intent per l'attività di follow					
+				Intent intent = new Intent(MainActivity.this,ChooseContactsForFollowActivity.class);					
+				intent.putExtra("userId", user.getId());					
+				startActivity(intent);
+			}
+		}
+		else
+		{
+			//intent per l'attività di follow					
+			Intent intent = new Intent(MainActivity.this,ChooseContactsForFollowActivity.class);					
+			intent.putExtra("userId", user.getId());					
+			startActivity(intent);
+		}
 	}
 	
 	public void shareOnClickHandler(View v)
 	{
-		//intent per l'attività di share
-		Intent intent = new Intent(MainActivity.this,ChooseContactsForSharingActivity.class);
-		intent.putExtra("userId", user.getId());
-		startActivity(intent);
+		if(user.getId().compareTo("")==0)
+		{
+			//carico l'id presente su parse
+			String id = ParseManager.getId(this, PersonalDataManager.getPhoneNumber());
+			if(id == null)
+			{
+				Toast.makeText(this, "Make sure your internet connection is enabled!", Toast.LENGTH_LONG).show();
+			}
+			else
+			{
+				user.setId(id);
+				
+				//intent per l'attività di share
+				Intent intent = new Intent(MainActivity.this,ChooseContactsForSharingActivity.class);
+				intent.putExtra("userId", user.getId());
+				startActivity(intent);
+			}
+		}
+		else
+		{
+			//intent per l'attività di share
+			Intent intent = new Intent(MainActivity.this,ChooseContactsForSharingActivity.class);
+			intent.putExtra("userId", user.getId());
+			startActivity(intent);
+		}		
 	}
 	
 	public void loadPathsOnClickHandler(View v)
@@ -205,7 +247,27 @@ public class MainActivity extends ActionBarActivity  {
 			while(true)
 			{	
 				if(!(user.getPhoneNumber().compareTo("")==0))
-				{
+				{					
+					if(user.getId().compareTo("")==0)
+					{
+						//carico l'id presente su parse
+						String id = ParseManager.getId(MainActivity.this, PersonalDataManager.getPhoneNumber());
+						if(id == null)
+						{
+							handler.post(new Runnable() {
+								@Override
+								public void run() 
+								{								
+									Toast.makeText(MainActivity.this, "Make sure your internet connection is enabled!", Toast.LENGTH_LONG).show();
+								}
+							});
+						}
+						else
+						{
+							user.setId(id);
+						}
+					}
+					
 					oldRequestNumber=requestsList.size();
 					//roba da fare per chiedere a parse se c'è roba per me
 					if(userParseObject==null)

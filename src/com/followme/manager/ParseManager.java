@@ -15,7 +15,6 @@ import com.followme.object.Position;
 import com.followme.object.Request;
 import com.followme.object.User;
 import com.google.android.gms.maps.model.LatLng;
-import com.parse.DeleteCallback;
 import com.parse.GetCallback;
 import com.parse.Parse;
 import com.parse.ParseException;
@@ -67,7 +66,7 @@ public class ParseManager {
 		try {
 			objects=query.find();
 			senderPo=objects.get(0);
-		} catch (ParseException e) {			
+		} catch (Exception e) {			
 			return null;
 		}
 		
@@ -78,7 +77,7 @@ public class ParseManager {
 		try {
 			objects=query.find();
 			receiverPo=objects.get(0);
-		} catch (ParseException e) {
+		} catch (Exception e) {
 			return null;
 		}
 		
@@ -103,7 +102,7 @@ public class ParseManager {
 			try {
 				objects=query.find();
 				destinationPo=objects.get(0);
-			} catch (ParseException e) {
+			} catch (Exception e) {
 				return null;
 			}	
 			newReq.put("idDestinazione", destinationPo);
@@ -118,7 +117,7 @@ public class ParseManager {
 			try {
 				objects=query.find();
 				fencePo=objects.get(0);
-			} catch (ParseException e) {
+			} catch (Exception e) {
 				return null;
 			}
 			newReq.put("idRecinto", fencePo);
@@ -130,7 +129,7 @@ public class ParseManager {
 		newReq.put("stato", "non visualizzata");
 		try {
 			newReq.save();
-		} catch (ParseException e) {
+		} catch (Exception e) {
 			return null;
 		}
 		return newReq.getObjectId();
@@ -147,7 +146,7 @@ public class ParseManager {
 		ParseObject newPath = new ParseObject("Percorso");
 		try {
 			newPath.save();
-		} catch (ParseException e) {
+		} catch (Exception e) {
 			return null;
 		}
 		return newPath.getObjectId();
@@ -168,7 +167,7 @@ public class ParseManager {
 			newFence.put("raggio", radius);
 			newFence.put("uscito", false);
 			newFence.save();
-		} catch (ParseException e) {
+		} catch (Exception e) {
 			return null;
 		}
 		
@@ -190,7 +189,7 @@ public class ParseManager {
 			newFence.put("raggio", radius);
 			newFence.put("arrivato", false);
 			newFence.save();
-		} catch (ParseException e) {
+		} catch (Exception e) {
 			return null;
 		}
 		
@@ -215,7 +214,7 @@ public class ParseManager {
 		newPos.put("contatore", counter);
 		try {
 			newPos.save();
-		} catch (ParseException e) {
+		} catch (Exception e) {
 			return null;
 		}
 		return newPos.getObjectId();
@@ -360,7 +359,7 @@ public class ParseManager {
 		try {
 			objects = query.find();
 			return objects.get(0).getObjectId();
-		} catch (ParseException e) {
+		} catch (Exception e) {
 			return null;
 		}
 	}
@@ -380,7 +379,7 @@ public class ParseManager {
 		try {
 			objects=query.find();
 			return objects.get(0);
-		} catch (ParseException e) {
+		} catch (Exception e) {
 			return null;
 		}	
 	}
@@ -408,7 +407,7 @@ public class ParseManager {
 			{
 				return false;
 			}
-		} catch (ParseException e) {
+		} catch (Exception e) {
 			return null;
 		}
 	}
@@ -431,7 +430,7 @@ public class ParseManager {
 		
 		try {
 			objects=query.find();
-		} catch (ParseException e) {
+		} catch (Exception e) {
 			return null;
 		}
 		
@@ -513,13 +512,13 @@ public class ParseManager {
 		try {
 			objects=query.find();
 			po=objects.get(0);
-		} catch (ParseException e) {
+		} catch (Exception e) {
 			return false;
 		}
 		
 		try {
 			po.delete();
-		} catch (ParseException e) {
+		} catch (Exception e) {
 			return false;
 		}
 		return true;
@@ -540,7 +539,7 @@ public class ParseManager {
 		try {
 			objects=query.find();
 			pathPo=objects.get(0);
-		} catch (ParseException e) {
+		} catch (Exception e) {
 			return null;
 		}
 		
@@ -562,7 +561,7 @@ public class ParseManager {
 		try {
 			objects=query.find();
 			pathPo=objects.get(0);
-		} catch (ParseException e) {
+		} catch (Exception e) {
 			return null;
 		}
 		
@@ -584,7 +583,7 @@ public class ParseManager {
 		try {
 			objects=query.find();
 			pathPo=objects.get(0);
-		} catch (ParseException e) {
+		} catch (Exception e) {
 			return null;
 		}
 		
@@ -615,7 +614,7 @@ public class ParseManager {
 				path=po.getParseObject("idPercorso");	
 			}
 			
-		} catch (ParseException e) {
+		} catch (Exception e) {
 			return null;
 		}	
 		return path;
@@ -635,7 +634,7 @@ public class ParseManager {
 		
 		try {
 			objects=query.find();
-		} catch (ParseException e) {
+		} catch (Exception e) {
 			return null;
 		}
 		
@@ -670,7 +669,7 @@ public class ParseManager {
 		
 		try {
 			objects=query.find();
-		} catch (ParseException e) {
+		} catch (Exception e) {
 			return null;
 		}
 		
@@ -709,7 +708,7 @@ public class ParseManager {
 		
 		try {
 			objects=query.find();
-		} catch (ParseException e) {
+		} catch (Exception e) {
 			return null;
 		}
 		
@@ -738,7 +737,7 @@ public class ParseManager {
 				mediaItem = new Media(po.getParseFile("file").getData(),
 									  po.getString("didascalia"),
 									  position,null, po.getInt("contatore"));
-			} catch (ParseException e) {
+			} catch (Exception e) {
 				return null;
 			}
 			newPhotos.add(mediaItem);
@@ -765,7 +764,7 @@ public class ParseManager {
 		
 		try {
 			objects=query.find();
-		} catch (ParseException e) {
+		} catch (Exception e) {
 			return null;
 		}
 		
@@ -794,7 +793,7 @@ public class ParseManager {
 				mediaItem = new Media(po.getParseFile("file").getData(),
 						  po.getString("didascalia"),
 						  position,null, po.getInt("contatore"));
-			} catch (ParseException e) {
+			} catch (Exception e) {
 				return null;
 			}
 			newVides.add(mediaItem);
@@ -821,7 +820,7 @@ public class ParseManager {
 			{
 				return false;
 			}
-		} catch (ParseException e) {
+		} catch (Exception e) {
 			return null;
 		}
 	}
@@ -853,7 +852,7 @@ public class ParseManager {
 				fence=po.getParseObject("idRecinto");	
 			}
 			
-		} catch (ParseException e) {
+		} catch (Exception e) {
 			return null;
 		}	
 		
@@ -910,7 +909,7 @@ public class ParseManager {
 			{
 				return true;
 			}
-		} catch (ParseException e) {
+		} catch (Exception e) {
 			return null;
 		}
 	}
@@ -945,7 +944,7 @@ public class ParseManager {
 				destination=po.getParseObject("idDestinazione");	
 			}
 			
-		} catch (ParseException e) {
+		} catch (Exception e) {
 			return null;
 		}	
 		
@@ -971,7 +970,7 @@ public class ParseManager {
 		try {
 			objects=query.find();
 			destPo=objects.get(0);
-		} catch (ParseException e) {
+		} catch (Exception e) {
 			return null;
 		}
 		
@@ -1016,14 +1015,14 @@ public class ParseManager {
 		try {
 			objects=query.find();
 			reqPo=objects.get(0);
-		} catch (ParseException e) {
+		} catch (Exception e) {
 			return false;
 		}
 		
 		reqPo.put("stato", status);
 		try {
 			reqPo.save();
-		} catch (ParseException e) {
+		} catch (Exception e) {
 			return false;
 		}
 		return true;
@@ -1055,7 +1054,7 @@ public class ParseManager {
 			{
 				return false;
 			}
-		} catch (ParseException e) {
+		} catch (Exception e) {
 			return null;
 		}
 	}
@@ -1079,7 +1078,7 @@ public class ParseManager {
 		}
 		try {
 			fenceParseObject.delete();
-		} catch (ParseException e) {
+		} catch (Exception e) {
 			return false;
 		} 	
 		return true;
@@ -1099,7 +1098,7 @@ public class ParseManager {
 		{
 			try {
 				destinationParseObject.delete();
-			} catch (ParseException e) {
+			} catch (Exception e) {
 				return false;
 			}
 		}	
@@ -1118,7 +1117,7 @@ public class ParseManager {
 		}
 		try {
 			pathParseObject.delete();
-		} catch (ParseException e) {
+		} catch (Exception e) {
 			return false;
 		}
 		return true;
