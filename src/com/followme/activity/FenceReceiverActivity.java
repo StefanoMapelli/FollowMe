@@ -57,58 +57,65 @@ public class FenceReceiverActivity extends ActionBarActivity {
 		handler=new Handler();
 		fenceRequest=(Request) getIntent().getSerializableExtra("acceptedRequest");
 		fenceParseObject=ParseManager.getFenceOfRequest(this, fenceRequest);
-		fence=new Fence(
-				(int) fenceParseObject.getDouble("raggio"),
-				null,
-				new LatLng(fenceParseObject.getParseGeoPoint("posizione").getLatitude(),
-						fenceParseObject.getParseGeoPoint("posizione").getLongitude()),
-				fenceParseObject.getObjectId(),
-				true);
-		radius=fence.getRadius();
-		center=fence.getCenter();
-		
-		FragmentManager fm = getSupportFragmentManager();
-		map = ((SupportMapFragment) fm.findFragmentById(R.id.mapFenceReceiver)).getMap();
-		checkFenceThread = new CheckFenceStatus();
-		
-		if (Utils.displayGpsStatus(this)) 
+		if(fenceParseObject==null)
 		{
-			locationListener = new MyLocationListener(); 
-			locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
-			locationManager.requestLocationUpdates(LocationManager  
-		    .GPS_PROVIDER, 5000, 10,locationListener); 
-			map.setMyLocationEnabled(true);
-			
-			//posiziono la camera nel luogo dove mi trovo sulla mappa
-			CameraPosition cameraPosition = new CameraPosition.Builder()
-			.target(center)
-			.zoom(17)
-			.bearing(0)           
-			.tilt(0)             
-			.build();
-			map.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
-
-
-			//disegno il recinto sulla mappa
-			fenceCircle=MapManager.drawFenceCircle(center, radius, map);
-			
-			checkFenceThread = new CheckFenceStatus();
-			checkFenceThread.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-		} 
+			Toast.makeText(this, "Make sure your internet connection is enabled!", Toast.LENGTH_LONG).show();
+		}
 		else
 		{
-			new AlertDialog.Builder(this)
-			.setTitle("Attention")
-			.setMessage("Your GPS is not enabled. Please enable it now!")
-			.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-				public void onClick(DialogInterface dialog, int which)
-				{ 
-					pausedForGPS=true;
-					FenceReceiverActivity.this.startActivity(new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS));				    
-				}
-			})
-			.setIcon(android.R.drawable.ic_dialog_alert)
-			.show();
+			fence=new Fence(
+					(int) fenceParseObject.getDouble("raggio"),
+					null,
+					new LatLng(fenceParseObject.getParseGeoPoint("posizione").getLatitude(),
+							fenceParseObject.getParseGeoPoint("posizione").getLongitude()),
+					fenceParseObject.getObjectId(),
+					true);
+			radius=fence.getRadius();
+			center=fence.getCenter();
+			
+			FragmentManager fm = getSupportFragmentManager();
+			map = ((SupportMapFragment) fm.findFragmentById(R.id.mapFenceReceiver)).getMap();
+			checkFenceThread = new CheckFenceStatus();
+			
+			if (Utils.displayGpsStatus(this)) 
+			{
+				locationListener = new MyLocationListener(); 
+				locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+				locationManager.requestLocationUpdates(LocationManager  
+			    .GPS_PROVIDER, 5000, 10,locationListener); 
+				map.setMyLocationEnabled(true);
+				
+				//posiziono la camera nel luogo dove mi trovo sulla mappa
+				CameraPosition cameraPosition = new CameraPosition.Builder()
+				.target(center)
+				.zoom(17)
+				.bearing(0)           
+				.tilt(0)             
+				.build();
+				map.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+
+
+				//disegno il recinto sulla mappa
+				fenceCircle=MapManager.drawFenceCircle(center, radius, map);
+				
+				checkFenceThread = new CheckFenceStatus();
+				checkFenceThread.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+			} 
+			else
+			{
+				new AlertDialog.Builder(this)
+				.setTitle("Attention")
+				.setMessage("Your GPS is not enabled. Please enable it now!")
+				.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog, int which)
+					{ 
+						pausedForGPS=true;
+						FenceReceiverActivity.this.startActivity(new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS));				    
+					}
+				})
+				.setIcon(android.R.drawable.ic_dialog_alert)
+				.show();
+			}
 		}		
 	}
 	
@@ -188,7 +195,10 @@ public class FenceReceiverActivity extends ActionBarActivity {
 		super.onDestroy();
 		if(finishMode==1)
 		{
-			ParseManager.deleteRequestAndFence(this, fenceRequest.getId(), fenceParseObject);
+			if(!ParseManager.deleteRequestAndFence(this, fenceRequest.getId(), fenceParseObject))
+			{
+				Toast.makeText(this, "Make sure your internet connection is enabled!", Toast.LENGTH_LONG).show();
+			}
 		}
 		else
 		{
@@ -321,26 +331,39 @@ public class FenceReceiverActivity extends ActionBarActivity {
 				}
 				//controllo se la richiesta è stata chiusa dal follower
 
-				boolean isActive=ParseManager.isRequestActive(FenceReceiverActivity.this, fenceRequest.getId());
+				Boolean isActive=ParseManager.isRequestActive(FenceReceiverActivity.this, fenceRequest.getId());
 
-				if(!isActive)
+				if(isActive == null)
 				{
 					handler.post(new Runnable() {
 						@Override
 						public void run() 
 						{
-							//notificare all'utente che l'activity è stata chiusa dal follower
-							Toast.makeText(FenceReceiverActivity.this, "You are free!!! The follower destroy the fence",Toast.LENGTH_LONG).show();
+							Toast.makeText(FenceReceiverActivity.this, "Make sure your internet connection is enabled!",Toast.LENGTH_LONG).show();
 						}
 					});
-					finishMode=1;
-					finish();
 				}
+				else
+				{
+					if(!isActive)
+					{
+						handler.post(new Runnable() {
+							@Override
+							public void run() 
+							{
+								//notificare all'utente che l'activity è stata chiusa dal follower
+								Toast.makeText(FenceReceiverActivity.this, "You are free!!! The follower destroy the fence",Toast.LENGTH_LONG).show();
+							}
+						});
+						finishMode=1;
+						finish();
+					}
 
-				try {
-					Thread.sleep(5000);
-				} catch (InterruptedException e) {
-					e.printStackTrace();
+					try {
+						Thread.sleep(5000);
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
 				}
 			}
 		}

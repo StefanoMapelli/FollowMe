@@ -10,6 +10,7 @@ import com.followme.manager.PersonalDataManager;
 import com.followme.object.Contact;
 import com.followme.object.Destination;
 import com.google.android.gms.maps.model.LatLng;
+import com.parse.ParseObject;
 
 import android.support.v7.app.ActionBarActivity;
 import android.app.AlertDialog;
@@ -112,18 +113,24 @@ public class DestinationControlActivity extends ActionBarActivity {
 		{
 			for(int i=0; i<requestIdList.size();i++)
 			{
-				ParseManager.deleteRequestAndDestination(
+				if(!ParseManager.deleteRequestAndDestination(
 						this,
 						(String) requestIdList.get(i),
 						ParseManager.getDestinationbyId(this,
-								destinationList.get(i).getIdDestination()));
+								destinationList.get(i).getIdDestination())))
+				{
+					Toast.makeText(this, "Make sure your internet connection is enabled!", Toast.LENGTH_LONG).show();
+				}
 			}
 		}
 		else
 		{
 			for(int i=0; i<requestIdList.size();i++)
 			{
-				ParseManager.updateRequestStatusById(this, (String)requestIdList.get(i), "chiusa");
+				if(!ParseManager.updateRequestStatusById(this, (String)requestIdList.get(i), "chiusa"))
+				{
+					Toast.makeText(this, "Make sure your internet connection is enabled!", Toast.LENGTH_LONG).show();
+				}
 			}
 			
 		}
@@ -175,19 +182,28 @@ public class DestinationControlActivity extends ActionBarActivity {
 				for(int i=0; i<destinationList.size();i++)
 				{
 					destinationObject = destinationList.get(i);
-					if(ParseManager.isInTheDestination(DestinationControlActivity.this, destinationObject.getIdDestination()))
+					Boolean isInDestination = ParseManager.isInTheDestination(DestinationControlActivity.this, destinationObject.getIdDestination());
+					
+					if(isInDestination== null)
 					{
-						destinationObject.setInTheDestination(false);
-						adapter = new DestinationCustomAdapter(DestinationControlActivity.this, destinationList);
-
-						handler.post(new Runnable() {
-							@Override
-							public void run() 
-							{
-								listViewDestination.setAdapter(adapter);
-							}
-						});
+						
 					}
+					else
+					{
+						if(isInDestination)
+						{
+							destinationObject.setInTheDestination(false);
+							adapter = new DestinationCustomAdapter(DestinationControlActivity.this, destinationList);
+
+							handler.post(new Runnable() {
+								@Override
+								public void run() 
+								{
+									listViewDestination.setAdapter(adapter);
+								}
+							});
+						}
+					}									
 				}
 				
 				Iterator<String> iterator = requestIdList.iterator();
@@ -195,41 +211,81 @@ public class DestinationControlActivity extends ActionBarActivity {
 				while(iterator.hasNext())
 				{
 					String idReq=iterator.next();
-					boolean isActive=ParseManager.isRequestActive(DestinationControlActivity.this, idReq);
+					Boolean isActive=ParseManager.isRequestActive(DestinationControlActivity.this, idReq);
 					
-					if(!isActive)
+					if(isActive==null)
 					{
-						final int j=requestIdList.indexOf(idReq);
-						//notificare all'utente che l'activity è stata chiusa dallo user
 						handler.post(new Runnable() {
 							@Override
 							public void run() 
 							{
-								Toast.makeText(DestinationControlActivity.this, PersonalDataManager.getNameOfContact(destinationList.get(j).getUser().getPhoneNumber())+" close the destination",Toast.LENGTH_LONG).show();
+								Toast.makeText(DestinationControlActivity.this, "Make sure your internet connection is enabled!",Toast.LENGTH_LONG).show();
 							}
 						});
-						
-						//cancello dalle liste ogni volta che una richiesta viene chiusa
-						ParseManager.deleteRequestAndDestination(DestinationControlActivity.this, idReq, ParseManager.getDestinationbyId(DestinationControlActivity.this,destinationList.get(j).getIdDestination()));
-						destinationList.remove(j);
-						iterator.remove();
-						
-						//aggiorno l'adapter
-						adapter = new DestinationCustomAdapter(DestinationControlActivity.this, destinationList);
-
-						handler.post(new Runnable() {
-							@Override
-							public void run() 
-							{
-								listViewDestination.setAdapter(adapter);
-							}
-						});
-						
-						//se non ci sono più destination chiudo l'activity
-						if(requestIdList.isEmpty())
+					}
+					else
+					{					
+						if(!isActive)
 						{
-							finishMode=1;
-							finish();
+							final int j=requestIdList.indexOf(idReq);
+							//notificare all'utente che l'activity è stata chiusa dallo user
+							handler.post(new Runnable() {
+								@Override
+								public void run() 
+								{
+									Toast.makeText(DestinationControlActivity.this, PersonalDataManager.getNameOfContact(destinationList.get(j).getUser().getPhoneNumber())+" close the destination",Toast.LENGTH_LONG).show();
+								}
+							});
+
+							ParseObject po = ParseManager.getDestinationbyId(DestinationControlActivity.this,destinationList.get(j).getIdDestination());
+
+							if(po == null)
+							{
+								handler.post(new Runnable() {
+									@Override
+									public void run() 
+									{
+										Toast.makeText(DestinationControlActivity.this, "Make sure your internet connection is enabled!",Toast.LENGTH_LONG).show();
+									}
+								});
+							}
+							else
+							{
+								//cancello dalle liste ogni volta che una richiesta viene chiusa
+								if(!ParseManager.deleteRequestAndDestination(DestinationControlActivity.this, idReq, po))
+								{
+									handler.post(new Runnable() {
+										@Override
+										public void run() 
+										{
+											Toast.makeText(DestinationControlActivity.this, "Make sure your internet connection is enabled!",Toast.LENGTH_LONG).show();
+										}
+									});
+								}
+								else
+								{
+									destinationList.remove(j);
+									iterator.remove();
+
+									//aggiorno l'adapter
+									adapter = new DestinationCustomAdapter(DestinationControlActivity.this, destinationList);
+
+									handler.post(new Runnable() {
+										@Override
+										public void run() 
+										{
+											listViewDestination.setAdapter(adapter);
+										}
+									});
+
+									//se non ci sono più destination chiudo l'activity
+									if(requestIdList.isEmpty())
+									{
+										finishMode=1;
+										finish();
+									}
+								}
+							}
 						}
 					}
 				}

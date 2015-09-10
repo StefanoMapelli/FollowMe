@@ -21,6 +21,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Toast;
 
 public class ShowDetailsActivity extends ActionBarActivity {
 	
@@ -52,51 +53,68 @@ public class ShowDetailsActivity extends ActionBarActivity {
 	    case "recinto":
 		//apro activity recinto
 	    	fenceParseObject=ParseManager.getFenceOfRequest(this, request);
-			fence=new Fence(
-					(int) fenceParseObject.getDouble("raggio"),
-					null,
-					new LatLng(fenceParseObject.getParseGeoPoint("posizione").getLatitude(),
-							fenceParseObject.getParseGeoPoint("posizione").getLongitude()),
-					fenceParseObject.getObjectId(),
-					true);
-			radius=fence.getRadius();
-			center=fence.getCenter();
-			
-			//posiziono la camera nel luogo dove mi trovo sulla mappa
-			CameraPosition cameraPosition = new CameraPosition.Builder()
-			.target(center)
-			.zoom(17)
-			.bearing(0)           
-			.tilt(0)             
-			.build();
-			map.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
-			//disegno il recinto sulla mappa
-			MapManager.drawFenceCircle(center, radius, map);
+	    	if(fenceParseObject == null)
+	    	{
+	    		Toast.makeText(this, "Make sure your internet connection is enabled!", Toast.LENGTH_LONG).show();
+	    	}
+	    	else
+	    	{
+				fence=new Fence(
+						(int) fenceParseObject.getDouble("raggio"),
+						null,
+						new LatLng(fenceParseObject.getParseGeoPoint("posizione").getLatitude(),
+								fenceParseObject.getParseGeoPoint("posizione").getLongitude()),
+						fenceParseObject.getObjectId(),
+						true);
+				radius=fence.getRadius();
+				center=fence.getCenter();
+				
+				//posiziono la camera nel luogo dove mi trovo sulla mappa
+				CameraPosition cameraPosition = new CameraPosition.Builder()
+				.target(center)
+				.zoom(17)
+				.bearing(0)           
+				.tilt(0)             
+				.build();
+				map.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+				//disegno il recinto sulla mappa
+				MapManager.drawFenceCircle(center, radius, map);
+	    	}
+
 	    	break;
-		  
+
 	    case "destinazione":
-	    //apro activity destinazione
+	    	//apro activity destinazione
 	    	destinationParseObject=ParseManager.getDestinationOfRequest(this, request);
-			destination=new Destination(
-					(int) destinationParseObject.getDouble("raggio"),
-					null,
-					new LatLng(destinationParseObject.getParseGeoPoint("posizione").getLatitude(),
-							destinationParseObject.getParseGeoPoint("posizione").getLongitude()),
-					destinationParseObject.getObjectId(),
-					true);
-			radius=destination.getRadius();
-			center=destination.getCenter();
-	    	
-	    	//posiziono la camera nel luogo dove si trova la destinazione sulla mappa
-			CameraPosition cameraPosition1 = new CameraPosition.Builder()
-			.target(center)
-			.zoom(17)
-			.bearing(0)           
-			.tilt(0)             
-			.build();
-			map.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition1));
-			//disegno la destinazione sulla mappa
-			MapManager.drawDestinationCircle(center, radius, map);
+
+	    	if(destinationParseObject == null)
+	    	{
+	    		Toast.makeText(this, "Make sure your internet connection is enabled!", Toast.LENGTH_LONG).show();
+	    	}
+	    	else
+	    	{
+
+	    		destination=new Destination(
+	    				(int) destinationParseObject.getDouble("raggio"),
+	    				null,
+	    				new LatLng(destinationParseObject.getParseGeoPoint("posizione").getLatitude(),
+	    						destinationParseObject.getParseGeoPoint("posizione").getLongitude()),
+	    						destinationParseObject.getObjectId(),
+	    						true);
+	    		radius=destination.getRadius();
+	    		center=destination.getCenter();
+
+	    		//posiziono la camera nel luogo dove si trova la destinazione sulla mappa
+	    		CameraPosition cameraPosition1 = new CameraPosition.Builder()
+	    		.target(center)
+	    		.zoom(17)
+	    		.bearing(0)           
+	    		.tilt(0)             
+	    		.build();
+	    		map.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition1));
+	    		//disegno la destinazione sulla mappa
+	    		MapManager.drawDestinationCircle(center, radius, map);
+	    	}
 			break;
 		}	    
 	}
@@ -131,11 +149,17 @@ public class ShowDetailsActivity extends ActionBarActivity {
 	public void declineRequestOnClickHandler(View v) 
 	{				
 		//eliminare la richiesta da parse db
-		ParseManager.deleteRequest(this, request.getId());
-		Intent intent = new Intent();
-		intent.putExtra("requestToRemove", request);
-		setResult(RESULT_OK, intent);
-		finish();
+		if(!ParseManager.deleteRequest(this, request.getId()))
+		{
+			Toast.makeText(this, "Make sure your internet connection is enabled!", Toast.LENGTH_LONG).show();
+		}
+		else
+		{
+			Intent intent = new Intent();
+			intent.putExtra("requestToRemove", request);
+			setResult(RESULT_OK, intent);
+			finish();
+		}
 	}
 	
 	@Override

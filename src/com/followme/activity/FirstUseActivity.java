@@ -77,25 +77,32 @@ public class FirstUseActivity extends Activity {
 			if(resultCode==RESULT_OK)
 			{
 				//scrivo su db parse e db locale il nuovo utente
-				
-				if(!ParseManager.phoneNumberExists(FirstUseActivity.this, phoneNumber))
-				{
-					ParseManager.insertPhoneNumber(FirstUseActivity.this, phoneNumber);
-				}
-				String id = ParseManager.getId(FirstUseActivity.this, phoneNumber);
-				if(id == null)
+				Boolean phoneNumberExists = ParseManager.phoneNumberExists(FirstUseActivity.this, phoneNumber);
+				if(phoneNumberExists==null)
 				{
 					Toast.makeText(this, "Make sure your internet connection is enabled!", Toast.LENGTH_LONG).show();
 				}
 				else
 				{
-					PersonalDataManager.insertUser(phoneNumber, id);
-					
-					Intent intent = new Intent();
-					intent.putExtra("id", id);
-					setResult(RESULT_OK, intent);
-	            	finish();
-				}
+					if(!phoneNumberExists)
+					{
+						ParseManager.insertPhoneNumber(FirstUseActivity.this, phoneNumber);
+					}
+					String id = ParseManager.getId(FirstUseActivity.this, phoneNumber);
+					if(id == null)
+					{
+						Toast.makeText(this, "Make sure your internet connection is enabled!", Toast.LENGTH_LONG).show();
+					}
+					else
+					{
+						PersonalDataManager.insertUser(phoneNumber, id);
+						
+						Intent intent = new Intent();
+						intent.putExtra("id", id);
+						setResult(RESULT_OK, intent);
+		            	finish();
+					}
+				}								
 			}
 		}
 	}

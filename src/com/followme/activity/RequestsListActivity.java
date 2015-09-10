@@ -17,6 +17,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ListView;
+import android.widget.Toast;
 
 public class RequestsListActivity extends ActionBarActivity {
 	
@@ -118,24 +119,30 @@ public class RequestsListActivity extends ActionBarActivity {
 		Request itemToRemove = requestsItems.get(position);
 		
 		//eliminare la richiesta da parse db
-		ParseManager.deleteRequest(this, itemToRemove.getId());
-		//reset the arraylist
-		int i = 0;
-		for (Request r : requestsItems)
+		if(!ParseManager.deleteRequest(this, itemToRemove.getId()))
 		{
-			if(r.getId().compareTo(itemToRemove.getId())==0)
+			Toast.makeText(this, "Make sure your internet connection is enabled!", Toast.LENGTH_LONG).show();
+		}
+		else
+		{
+			//reset the arraylist
+			int i = 0;
+			for (Request r : requestsItems)
 			{
-				requestsItems.remove(i);
-				break;
+				if(r.getId().compareTo(itemToRemove.getId())==0)
+				{
+					requestsItems.remove(i);
+					break;
+				}
+				i++;
 			}
-			i++;
-		}
-		if(requestsItems.isEmpty())
-		{
-			finish();
-		}
-		//rimuovere dalla listview
-		adapter.remove(itemToRemove);		
+			if(requestsItems.isEmpty())
+			{
+				finish();
+			}
+			//rimuovere dalla listview
+			adapter.remove(itemToRemove);
+		}		
 	}
 	
 	@Override

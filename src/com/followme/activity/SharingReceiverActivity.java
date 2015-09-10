@@ -98,6 +98,13 @@ public class SharingReceiverActivity extends ActionBarActivity implements SavePa
 		//recupero l'id del percorso relativo alla richiesta
 		path=ParseManager.getPathOfRequest(this, request);
 		
+		if(path == null)
+		{
+			Toast.makeText(this, "Make sure your internet connection is enabled!", Toast.LENGTH_LONG).show();
+		}
+		else
+		{
+		
 		//verifico che ci siano posizioni relative alla mia request su parse
 		if(path!=null)
 		{
@@ -119,115 +126,116 @@ public class SharingReceiverActivity extends ActionBarActivity implements SavePa
 				Intent intent = new Intent(SharingReceiverActivity.this,MediaGalleryActivity.class);
 				//passaggio parametri all'intent
 				intent.putExtra("media", markers.toArray());
-				
+
 				int index = markers.indexOf(Utils.getMarkerByTitle(markers, marker.getTitle()));
-				
+
 				intent.putExtra("index", index);
 				startActivity(intent);
             }
         };  
-        
+
         videoTouchListener = new OnInfoWindowElemTouchListener() 
         {
-            @Override
-            protected void onClickConfirmed(View v, Marker marker) 
-            {             
-				//intent per l'attività di gallery
-				Intent intent = new Intent(SharingReceiverActivity.this,MediaGalleryActivity.class);
-				//passaggio parametri all'intent
-				intent.putExtra("media", markers.toArray());
-				
-				int index = markers.indexOf(Utils.getMarkerByTitle(markers, marker.getTitle()));
-				
-				intent.putExtra("index", index);
-				startActivity(intent);
-            }
+        	@Override
+        	protected void onClickConfirmed(View v, Marker marker) 
+        	{             
+        		//intent per l'attività di gallery
+        		Intent intent = new Intent(SharingReceiverActivity.this,MediaGalleryActivity.class);
+        		//passaggio parametri all'intent
+        		intent.putExtra("media", markers.toArray());
+
+        		int index = markers.indexOf(Utils.getMarkerByTitle(markers, marker.getTitle()));
+
+        		intent.putExtra("index", index);
+        		startActivity(intent);
+        	}
         }; 
-        
+
         //info window setting
         map.setInfoWindowAdapter(new InfoWindowAdapter() {
-            @Override
-            public View getInfoWindow(Marker marker) {
-                return null;
-            }
+        	@Override
+        	public View getInfoWindow(Marker marker) {
+        		return null;
+        	}
 
-            @Override
-            public View getInfoContents(Marker marker) {
-            	if(marker.getTitle().startsWith("photo"))
-            	{
-            		// MapWrapperLayout initialization
-			        mapWrapperLayout.init(map, Utils.getPixelsFromDp(SharingReceiverActivity.this, 59)); 				
-			        infoWindow = (ViewGroup)getLayoutInflater().inflate(R.layout.photo_info_window_layout, null);
-			        infoSnippet = (TextView)infoWindow.findViewById(R.id.PhotoSnippet);
-			        infoImageView = (ImageView)infoWindow.findViewById(R.id.infoImageView);
-			        photoTouchListener.setView(infoImageView);
-			        
-	                // Setting up the infoWindow with current's marker info
-	                infoSnippet.setText(marker.getSnippet());
-	    
-	                photoTouchListener.setMarker(marker);					        
-			        infoImageView.setOnTouchListener(photoTouchListener);		
-	                			        				        
-			        //image setting
-			        PhotoMarker pm = (PhotoMarker)Utils.getMarkerByTitle(markers, marker.getTitle());
-			        Bitmap bitmap = Utils.getSmallBitmap(pm.getPath());
-			        infoImageView.setImageBitmap(Bitmap.createScaledBitmap(
-			        		bitmap, 
-			        		bitmap.getWidth()/2, 
-			        		bitmap.getHeight()/2, false));
-			        Utils.rotateImageView(infoImageView, pm.getPath());
-	                	                		  
-	                // We must call this to set the current marker and infoWindow references
-	                // to the MapWrapperLayout
-	                mapWrapperLayout.setMarkerWithInfoWindow(marker, infoWindow);
-	                
-	                return infoWindow;
-	            }
-            	else if(marker.getTitle().startsWith("video"))
-            	{
-					// MapWrapperLayout initialization
-			        mapWrapperLayout.init(map, Utils.getPixelsFromDp(SharingReceiverActivity.this, 59)); 				
-			        infoWindow = (ViewGroup)getLayoutInflater().inflate(R.layout.photo_info_window_layout, null);
-			        infoSnippet = (TextView)infoWindow.findViewById(R.id.PhotoSnippet);
-			        infoImageView = (ImageView)infoWindow.findViewById(R.id.infoImageView);
-			        videoTouchListener.setView(infoImageView);
-			        
-	                // Setting up the infoWindow with current's marker info
-	                infoSnippet.setText(marker.getSnippet());
-	    
-	                videoTouchListener.setMarker(marker);					        
-			        infoImageView.setOnTouchListener(videoTouchListener);		
-	                			        				        
-			        //image setting
-			        VideoMarker vm = (VideoMarker)Utils.getMarkerByTitle(markers, marker.getTitle());	
-			        
-			        Bitmap thumb = ThumbnailUtils.createVideoThumbnail(
-							vm.getVideoUriString(),
-			                MediaStore.Images.Thumbnails.MINI_KIND);			        
-			        Bitmap play = BitmapFactory.decodeResource(getResources(), R.drawable.play);
-			        Bitmap playIcon = Bitmap.createScaledBitmap(play,
-			        		play.getWidth()/3, play.getHeight()/3, false);
-			        		;
-					Bitmap bmOverlay = Bitmap.createBitmap(thumb.getWidth(), thumb.getHeight(), thumb.getConfig());
-			        Canvas canvas = new Canvas(bmOverlay);
-			        canvas.drawBitmap(thumb, new Matrix(), null);
-					canvas.drawBitmap(playIcon,(thumb.getWidth()/2) - (playIcon.getWidth()/2),
-												(thumb.getHeight()/2) - (playIcon.getHeight()/2), null);
-			        
-			        infoImageView.setImageBitmap(bmOverlay);
-	                	                		  
-	                // We must call this to set the current marker and infoWindow references
-	                // to the MapWrapperLayout
-	                mapWrapperLayout.setMarkerWithInfoWindow(marker, infoWindow);
-	                
-	                return infoWindow;
-            	}
-            	else
-            	{
-            		return null;
-            	}
-            }
+        	@Override
+        	public View getInfoContents(Marker marker) {
+        		if(marker.getTitle().startsWith("photo"))
+        		{
+        			// MapWrapperLayout initialization
+        			mapWrapperLayout.init(map, Utils.getPixelsFromDp(SharingReceiverActivity.this, 59)); 				
+        			infoWindow = (ViewGroup)getLayoutInflater().inflate(R.layout.photo_info_window_layout, null);
+        			infoSnippet = (TextView)infoWindow.findViewById(R.id.PhotoSnippet);
+        			infoImageView = (ImageView)infoWindow.findViewById(R.id.infoImageView);
+        			photoTouchListener.setView(infoImageView);
+
+        			// Setting up the infoWindow with current's marker info
+        			infoSnippet.setText(marker.getSnippet());
+
+        			photoTouchListener.setMarker(marker);					        
+        			infoImageView.setOnTouchListener(photoTouchListener);		
+
+        			//image setting
+        			PhotoMarker pm = (PhotoMarker)Utils.getMarkerByTitle(markers, marker.getTitle());
+        			Bitmap bitmap = Utils.getSmallBitmap(pm.getPath());
+        			infoImageView.setImageBitmap(Bitmap.createScaledBitmap(
+        					bitmap, 
+        					bitmap.getWidth()/2, 
+        					bitmap.getHeight()/2, false));
+        			Utils.rotateImageView(infoImageView, pm.getPath());
+
+        			// We must call this to set the current marker and infoWindow references
+        			// to the MapWrapperLayout
+        			mapWrapperLayout.setMarkerWithInfoWindow(marker, infoWindow);
+
+        			return infoWindow;
+        		}
+        		else if(marker.getTitle().startsWith("video"))
+        		{
+        			// MapWrapperLayout initialization
+        			mapWrapperLayout.init(map, Utils.getPixelsFromDp(SharingReceiverActivity.this, 59)); 				
+        			infoWindow = (ViewGroup)getLayoutInflater().inflate(R.layout.photo_info_window_layout, null);
+        			infoSnippet = (TextView)infoWindow.findViewById(R.id.PhotoSnippet);
+        			infoImageView = (ImageView)infoWindow.findViewById(R.id.infoImageView);
+        			videoTouchListener.setView(infoImageView);
+
+        			// Setting up the infoWindow with current's marker info
+        			infoSnippet.setText(marker.getSnippet());
+
+        			videoTouchListener.setMarker(marker);					        
+        			infoImageView.setOnTouchListener(videoTouchListener);		
+
+        			//image setting
+        			VideoMarker vm = (VideoMarker)Utils.getMarkerByTitle(markers, marker.getTitle());	
+
+        			Bitmap thumb = ThumbnailUtils.createVideoThumbnail(
+        					vm.getVideoUriString(),
+        					MediaStore.Images.Thumbnails.MINI_KIND);			        
+        			Bitmap play = BitmapFactory.decodeResource(getResources(), R.drawable.play);
+        			Bitmap playIcon = Bitmap.createScaledBitmap(play,
+        					play.getWidth()/3, play.getHeight()/3, false);
+        			;
+        			Bitmap bmOverlay = Bitmap.createBitmap(thumb.getWidth(), thumb.getHeight(), thumb.getConfig());
+        			Canvas canvas = new Canvas(bmOverlay);
+        			canvas.drawBitmap(thumb, new Matrix(), null);
+        			canvas.drawBitmap(playIcon,(thumb.getWidth()/2) - (playIcon.getWidth()/2),
+        					(thumb.getHeight()/2) - (playIcon.getHeight()/2), null);
+
+        			infoImageView.setImageBitmap(bmOverlay);
+
+        			// We must call this to set the current marker and infoWindow references
+        			// to the MapWrapperLayout
+        			mapWrapperLayout.setMarkerWithInfoWindow(marker, infoWindow);
+
+        			return infoWindow;
+        		}
+        		else
+        		{
+        			return null;
+        		}
+        	}
         });	
+		}
 	}
 	
 	
@@ -264,11 +272,17 @@ public class SharingReceiverActivity extends ActionBarActivity implements SavePa
 		super.onDestroy();
 		if(finishMode==1)
 		{
-			ParseManager.deleteRequestAndFollowPath(this, request.getId(), path);
+			if(!ParseManager.deleteRequestAndFollowPath(this, request.getId(), path))
+			{
+				Toast.makeText(this, "Make sure your internet connection is enabled!", Toast.LENGTH_LONG).show();
+			}
 		}
 		else
 		{
-			ParseManager.updateRequestStatusById(this, request.getId(), "chiusa");
+			if(!ParseManager.updateRequestStatusById(this, request.getId(), "chiusa"))
+			{
+				Toast.makeText(this, "Make sure your internet connection is enabled!", Toast.LENGTH_LONG).show();
+			}
 		}
 		
 		Intent intent = new Intent(SharingReceiverActivity.this, MainActivity.class);
@@ -288,149 +302,205 @@ public class SharingReceiverActivity extends ActionBarActivity implements SavePa
 					return null;
 				//ricerco le nuove posizioni
 				List<Position> newPositions = ParseManager.getNewPosition(SharingReceiverActivity.this, path, counterPosition);
-				positionList.addAll(newPositions);
-				if(newPositions.size()>0)
-				{	
+				
+				if(newPositions == null)
+				{
 					handler.post(new Runnable() {
 						@Override
 						public void run() 
 						{
-							CameraPosition cameraPosition = new CameraPosition.Builder()
-							.target(new LatLng(positionList.get(positionList.size()-1).getLatitude(),
-												positionList.get(positionList.size()-1).getLongitude()))
-							.zoom(18)
-							.bearing(0)           
-							.tilt(0)             
-							.build();
-							map.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
-							
-							if(marker != null)
+							Toast.makeText(SharingReceiverActivity.this, "Make sure your internet connection is enabled!", Toast.LENGTH_LONG).show();
+						}
+					});
+				}
+				else
+				{
+					positionList.addAll(newPositions);
+					if(newPositions.size()>0)
+					{	
+						handler.post(new Runnable() {
+							@Override
+							public void run() 
 							{
-								marker.remove();
+								CameraPosition cameraPosition = new CameraPosition.Builder()
+								.target(new LatLng(positionList.get(positionList.size()-1).getLatitude(),
+										positionList.get(positionList.size()-1).getLongitude()))
+										.zoom(18)
+										.bearing(0)           
+										.tilt(0)             
+										.build();
+								map.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+
+								if(marker != null)
+								{
+									marker.remove();
+								}
+								//add position marker
+								Marker m = map.addMarker(new MarkerOptions()
+								.position(new LatLng(positionList.get(positionList.size()-1).getLatitude(),
+										positionList.get(positionList.size()-1).getLongitude()))
+										.snippet(request.getSender().getPhoneNumber())
+										.title(senderName));
+								marker=m;
+
+								MapManager.drawPolygonPath(positionList, map);
 							}
-							//add position marker
-							Marker m = map.addMarker(new MarkerOptions()
-				            .position(new LatLng(positionList.get(positionList.size()-1).getLatitude(),
-				            		positionList.get(positionList.size()-1).getLongitude()))
-				            .snippet(request.getSender().getPhoneNumber())
-				            .title(senderName));
-							marker=m;
-							
-							MapManager.drawPolygonPath(positionList, map);
-						}
-					});
-				
-					
-					counterPosition=positionList.get(positionList.size()-1).getCounter();
-				}
+						});
 
-				List<Media> newPhotos = ParseManager.getNewPhotos(SharingReceiverActivity.this, path, counterPhoto);
-				for (final Media photo : newPhotos)
-				{
-					
-					handler.post(new Runnable() {
-						@Override
-						public void run() 
+
+						counterPosition=positionList.get(positionList.size()-1).getCounter();
+					}
+
+					List<Media> newPhotos = ParseManager.getNewPhotos(SharingReceiverActivity.this, path, counterPhoto);
+
+					if(newPhotos == null)
+					{
+						handler.post(new Runnable() {
+							@Override
+							public void run() 
+							{
+								Toast.makeText(SharingReceiverActivity.this, "Make sure your internet connection is enabled!", Toast.LENGTH_LONG).show();
+							}
+						});
+					}
+					else
+					{
+						for (final Media photo : newPhotos)
 						{
-							//add marker
-							Marker m = map.addMarker(new MarkerOptions()
-							.position(new LatLng(photo.getPosition().getLatitude(),
-												 photo.getPosition().getLongitude()))
-									.snippet(photo.getTitle())
-									.icon(BitmapDescriptorFactory.fromResource(R.drawable.camera_marker))
-									.title("photo"+String.valueOf(markerCounter)));
+
+							handler.post(new Runnable() {
+								@Override
+								public void run() 
+								{
+									//add marker
+									Marker m = map.addMarker(new MarkerOptions()
+									.position(new LatLng(photo.getPosition().getLatitude(),
+											photo.getPosition().getLongitude()))
+											.snippet(photo.getTitle())
+											.icon(BitmapDescriptorFactory.fromResource(R.drawable.camera_marker))
+											.title("photo"+String.valueOf(markerCounter)));
 
 
-							Date dt = new Date();
-							File newFile = new File(Environment.getExternalStorageDirectory(),
-									dt.toString()+".jpg");
-							photo.setFilePath(newFile.getAbsolutePath());
-							//copy bytes to file
+									Date dt = new Date();
+									File newFile = new File(Environment.getExternalStorageDirectory(),
+											dt.toString()+".jpg");
+									photo.setFilePath(newFile.getAbsolutePath());
+									//copy bytes to file
+									try {
+										FileOutputStream outputStream = new FileOutputStream(newFile.getAbsolutePath()); 
+
+										outputStream.write(photo.getMedia());
+										Thread.sleep(1000);
+										outputStream.flush();
+										outputStream.close();							            							            
+
+									} catch (Exception e) {
+										e.printStackTrace();
+									}
+
+									markers.add(new PhotoMarker(m.getTitle(), m.getSnippet(),newFile.getAbsolutePath()));  
+									markerCounter++;
+								}
+							});	
+						}
+						if(!newPhotos.isEmpty())
+							counterPhoto=newPhotos.get(newPhotos.size()-1).getCounter();
+						photos.addAll(newPhotos);
+
+
+						List<Media> newVideos = 
+								ParseManager.getNewVideos(SharingReceiverActivity.this, path, counterVideo);
+
+						if(newVideos == null)
+						{
+							handler.post(new Runnable() {
+								@Override
+								public void run() 
+								{
+									Toast.makeText(SharingReceiverActivity.this, "Make sure your internet connection is enabled!", Toast.LENGTH_LONG).show();
+								}
+							});
+						}
+						else
+						{
+
+							for (final Media video : newVideos)
+							{
+								handler.post(new Runnable() {
+									@Override
+									public void run() 
+									{
+										//add marker
+										Marker m = map.addMarker(new MarkerOptions()
+										.position(new LatLng(video.getPosition().getLatitude(),
+												video.getPosition().getLongitude()))
+												.snippet(video.getTitle())
+												.icon(BitmapDescriptorFactory.fromResource(R.drawable.movie_marker))
+												.title("video"+String.valueOf(markerCounter)));
+										map.getUiSettings().setMapToolbarEnabled(false);
+
+										Date dt = new Date();
+										File newFile = new File(Environment.getExternalStorageDirectory(),
+												dt.toString()+".mp4");
+										video.setFilePath(newFile.getAbsolutePath());
+										//copy bytes to file
+										try {
+											FileOutputStream outputStream = new FileOutputStream(newFile.getAbsolutePath());
+
+											outputStream.write(video.getMedia());
+											Thread.sleep(1000);
+											outputStream.flush();
+											outputStream.close();							            
+										} catch (Exception e) {
+											e.printStackTrace();
+										}
+
+										markers.add(new VideoMarker(m.getTitle(), m.getSnippet(),newFile.getAbsolutePath()));  
+										markerCounter++;
+									}
+								});															
+							}
+							if(!newVideos.isEmpty())
+								counterVideo=newVideos.get(newVideos.size()-1).getCounter();
+							videos.addAll(newVideos);
+
+
+							Boolean isActive=ParseManager.isRequestActive(SharingReceiverActivity.this, request.getId());
+
+							if(isActive == null)
+							{
+								handler.post(new Runnable() {
+									@Override
+									public void run() 
+									{
+										Toast.makeText(SharingReceiverActivity.this, "Make sure your internet connection is enabled!",Toast.LENGTH_LONG).show();
+									}
+								});
+							}
+							else
+							{
+								if(!isActive)
+								{
+									handler.post(new Runnable() {
+										@Override
+										public void run() 
+										{
+											//notificare all'utente che l'activity è stata chiusa dal follower
+											Toast.makeText(SharingReceiverActivity.this, "Sharing terminated by the user",Toast.LENGTH_LONG).show();
+										}
+									});
+									finishMode=1;
+									finish();
+								}
+							}
+
 							try {
-								FileOutputStream outputStream = new FileOutputStream(newFile.getAbsolutePath()); 
-
-								outputStream.write(photo.getMedia());
-								Thread.sleep(1000);
-								outputStream.flush();
-								outputStream.close();							            							            
-
-							} catch (Exception e) {
+								Thread.sleep(5000);
+							} catch (InterruptedException e) {
 								e.printStackTrace();
 							}
-
-							markers.add(new PhotoMarker(m.getTitle(), m.getSnippet(),newFile.getAbsolutePath()));  
-							markerCounter++;
-						}
-					});	
-				}
-				if(!newPhotos.isEmpty())
-					counterPhoto=newPhotos.get(newPhotos.size()-1).getCounter();
-				photos.addAll(newPhotos);
-				
-
-				List<Media> newVideos = 
-						ParseManager.getNewVideos(SharingReceiverActivity.this, path, counterVideo);
-				for (final Media video : newVideos)
-				{
-					handler.post(new Runnable() {
-						@Override
-						public void run() 
-						{
-							//add marker
-							Marker m = map.addMarker(new MarkerOptions()
-							.position(new LatLng(video.getPosition().getLatitude(),
-											     video.getPosition().getLongitude()))
-									.snippet(video.getTitle())
-									.icon(BitmapDescriptorFactory.fromResource(R.drawable.movie_marker))
-									.title("video"+String.valueOf(markerCounter)));
-							map.getUiSettings().setMapToolbarEnabled(false);
-
-							Date dt = new Date();
-							File newFile = new File(Environment.getExternalStorageDirectory(),
-									dt.toString()+".mp4");
-							video.setFilePath(newFile.getAbsolutePath());
-							//copy bytes to file
-							try {
-								FileOutputStream outputStream = new FileOutputStream(newFile.getAbsolutePath());
-
-								outputStream.write(video.getMedia());
-								Thread.sleep(1000);
-								outputStream.flush();
-								outputStream.close();							            
-							} catch (Exception e) {
-								e.printStackTrace();
-							}
-
-							markers.add(new VideoMarker(m.getTitle(), m.getSnippet(),newFile.getAbsolutePath()));  
-							markerCounter++;
-						}
-					});															
-				}
-				if(!newVideos.isEmpty())
-					counterVideo=newVideos.get(newVideos.size()-1).getCounter();
-				videos.addAll(newVideos);
-				
-				
-				boolean isActive=ParseManager.isRequestActive(SharingReceiverActivity.this, request.getId());
-				
-				if(!isActive)
-				{
-					handler.post(new Runnable() {
-						@Override
-						public void run() 
-						{
-							//notificare all'utente che l'activity è stata chiusa dal follower
-							Toast.makeText(SharingReceiverActivity.this, "Sharing terminated by the user",Toast.LENGTH_LONG).show();
-						}
-					});
-		            finishMode=1;
-					finish();
-				}
-
-				try {
-					Thread.sleep(5000);
-				} catch (InterruptedException e) {
-					e.printStackTrace();
+						}					
+					}				
 				}
 			}
 		}
@@ -449,11 +519,11 @@ public class SharingReceiverActivity extends ActionBarActivity implements SavePa
 		// as you specify a parent activity in AndroidManifest.xml.
 		int id = item.getItemId();
 		if (id == R.id.savePathShareReceiving) {
-			
+
 			DialogFragment savePathDialogFragment = new SavePathDialogFragment();
 			savePathDialogFragment.show(getFragmentManager(), "savePath");
 			return true;
-			
+
 		}
 		else if (id == R.id.galleryItemReceiving && !markers.isEmpty())
 		{
@@ -466,14 +536,14 @@ public class SharingReceiverActivity extends ActionBarActivity implements SavePa
 		}
 		return super.onOptionsItemSelected(item);
 	}
-	
+
 	@Override
 	public void onDialogPositiveClick(SavePathDialogFragment dialog) 
 	{
 		String title = dialog.getTitleText().getText().toString();
 		savePathOnLocalDB(title);
 	}
-	
+
 	//salvataggio di path, posizioni, photos e videos	
 	private void savePathOnLocalDB(String title) 
 	{

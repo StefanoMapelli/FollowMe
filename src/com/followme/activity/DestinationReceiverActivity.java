@@ -57,59 +57,68 @@ public class DestinationReceiverActivity extends ActionBarActivity {
 		handler=new Handler();
 		destinationRequest=(Request) getIntent().getSerializableExtra("acceptedRequest");
 		destinationParseObject=ParseManager.getDestinationOfRequest(this, destinationRequest);
-		destination=new Destination(
-				(int) destinationParseObject.getDouble("raggio"),
-				null,
-				new LatLng(destinationParseObject.getParseGeoPoint("posizione").getLatitude(),
-						destinationParseObject.getParseGeoPoint("posizione").getLongitude()),
-				destinationParseObject.getObjectId(),
-				true);
-		radius=destination.getRadius();
-		center=destination.getCenter();
 		
-		FragmentManager fm = getSupportFragmentManager();
-		map = ((SupportMapFragment) fm.findFragmentById(R.id.mapDestinationReceiver)).getMap();
-		checkDestinationThread = new CheckDestinationStatus();
-		
-		if (Utils.displayGpsStatus(this)) 
+		if(destinationParseObject == null)
 		{
-			locationListener = new MyLocationListener(); 
-			locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
-			locationManager.requestLocationUpdates(LocationManager  
-		    .GPS_PROVIDER, 5000, 10,locationListener); 
-			map.setMyLocationEnabled(true);
-			
-			//posiziono la camera nel luogo dove si trova la destinazione sulla mappa
-			CameraPosition cameraPosition = new CameraPosition.Builder()
-			.target(center)
-			.zoom(17)
-			.bearing(0)           
-			.tilt(0)             
-			.build();
-			map.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
-
-
-			//disegno la destinazione sulla mappa
-			destinationCircle=MapManager.drawDestinationCircle(center, radius, map);
-			
-			checkDestinationThread = new CheckDestinationStatus();
-			checkDestinationThread.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-		} 
+			Toast.makeText(this, "Make sure your internet connection is enabled!", Toast.LENGTH_LONG).show();
+		}
 		else
 		{
-			new AlertDialog.Builder(this)
-			.setTitle("Attention")
-			.setMessage("Your GPS is not enabled. Please enable it now!")
-			.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-				public void onClick(DialogInterface dialog, int which)
-				{ 
-					pausedForGPS=true;
-					DestinationReceiverActivity.this.startActivity(new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS));				    
-				}
-			})
-			.setIcon(android.R.drawable.ic_dialog_alert)
-			.show();
-		}		
+			
+			destination=new Destination(
+					(int) destinationParseObject.getDouble("raggio"),
+					null,
+					new LatLng(destinationParseObject.getParseGeoPoint("posizione").getLatitude(),
+							destinationParseObject.getParseGeoPoint("posizione").getLongitude()),
+					destinationParseObject.getObjectId(),
+					true);
+			radius=destination.getRadius();
+			center=destination.getCenter();
+			
+			FragmentManager fm = getSupportFragmentManager();
+			map = ((SupportMapFragment) fm.findFragmentById(R.id.mapDestinationReceiver)).getMap();
+			checkDestinationThread = new CheckDestinationStatus();
+			
+			if (Utils.displayGpsStatus(this)) 
+			{
+				locationListener = new MyLocationListener(); 
+				locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+				locationManager.requestLocationUpdates(LocationManager  
+			    .GPS_PROVIDER, 5000, 10,locationListener); 
+				map.setMyLocationEnabled(true);
+				
+				//posiziono la camera nel luogo dove si trova la destinazione sulla mappa
+				CameraPosition cameraPosition = new CameraPosition.Builder()
+				.target(center)
+				.zoom(17)
+				.bearing(0)           
+				.tilt(0)             
+				.build();
+				map.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+
+
+				//disegno la destinazione sulla mappa
+				destinationCircle=MapManager.drawDestinationCircle(center, radius, map);
+				
+				checkDestinationThread = new CheckDestinationStatus();
+				checkDestinationThread.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+			} 
+			else
+			{
+				new AlertDialog.Builder(this)
+				.setTitle("Attention")
+				.setMessage("Your GPS is not enabled. Please enable it now!")
+				.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog, int which)
+					{ 
+						pausedForGPS=true;
+						DestinationReceiverActivity.this.startActivity(new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS));				    
+					}
+				})
+				.setIcon(android.R.drawable.ic_dialog_alert)
+				.show();
+			}	
+		}	
 	}
 	
 	@Override
@@ -189,11 +198,17 @@ public class DestinationReceiverActivity extends ActionBarActivity {
 		super.onDestroy();
 		if(finishMode==1)
 		{			
-			ParseManager.deleteRequestAndDestination(this, destinationRequest.getId(), destinationParseObject);
+			if(!ParseManager.deleteRequestAndDestination(this, destinationRequest.getId(), destinationParseObject))
+			{
+				Toast.makeText(this, "Make sure your internet connection is enabled!", Toast.LENGTH_LONG).show();
+			}			
 		}
 		else
 		{
-			ParseManager.updateRequestStatusById(this, destinationRequest.getId(), "chiusa");
+			if(!ParseManager.updateRequestStatusById(this, destinationRequest.getId(), "chiusa"))
+			{
+				Toast.makeText(this, "Make sure your internet connection is enabled!", Toast.LENGTH_LONG).show();
+			}
 		}
 		
 		locationManager.removeUpdates(locationListener);
@@ -318,27 +333,41 @@ public class DestinationReceiverActivity extends ActionBarActivity {
 
 				//controllo se la richiesta è stata chiusa dal follower
 
-				boolean isActive=ParseManager.isRequestActive(DestinationReceiverActivity.this, destinationRequest.getId());
+				Boolean isActive=ParseManager.isRequestActive(DestinationReceiverActivity.this, destinationRequest.getId());
 
-				if(!isActive)
+				if(isActive == null)
 				{
 					handler.post(new Runnable() {
 						@Override
 						public void run() 
 						{
-							//notificare all'utente che l'activity è stata chiusa dal follower
-							Toast.makeText(DestinationReceiverActivity.this, "You haven't a destination!!! The follower closes it ",Toast.LENGTH_LONG).show();
+							Toast.makeText(DestinationReceiverActivity.this, "Make sure your internet connection is enabled!",Toast.LENGTH_LONG).show();
 						}
 					});
-
-					finishMode=1;
-					finish();
 				}
+				else
+				{
 
-				try {
-					Thread.sleep(5000);
-				} catch (InterruptedException e) {
-					e.printStackTrace();
+					if(!isActive)
+					{
+						handler.post(new Runnable() {
+							@Override
+							public void run() 
+							{
+								//notificare all'utente che l'activity è stata chiusa dal follower
+								Toast.makeText(DestinationReceiverActivity.this, "You haven't a destination!!! The follower closes it ",Toast.LENGTH_LONG).show();
+							}
+						});
+
+						finishMode=1;
+						finish();
+					}
+
+					try {
+						Thread.sleep(5000);
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
 				}
 			}
 		}

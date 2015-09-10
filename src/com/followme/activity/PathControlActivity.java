@@ -75,19 +75,26 @@ public class PathControlActivity extends ActionBarActivity {
 			else
 			{
 				ParseObject path = ParseManager.getPathbyId(this, pathId);
-				pathObjects.add(path);
-				//inizializzazione arraylist
-				paths.add(new ArrayList<Position>());
-				counterPositions.add(-1);
-				//invio delle richieste e salvataggio nell'array list
-				String outcomeId = ParseManager.insertRequest(this, "percorso", userId, contactsList.get(contactsList.indexOf(c)).getId(), pathId, null, null);
-				if(outcomeId == null)
+				if(path == null)
 				{
 					Toast.makeText(this, "Make sure your internet connection is enabled!", Toast.LENGTH_LONG).show();
 				}
 				else
 				{
-					requestIdList.add(outcomeId);
+					pathObjects.add(path);
+					//inizializzazione arraylist
+					paths.add(new ArrayList<Position>());
+					counterPositions.add(-1);
+					//invio delle richieste e salvataggio nell'array list
+					String outcomeId = ParseManager.insertRequest(this, "percorso", userId, contactsList.get(contactsList.indexOf(c)).getId(), pathId, null, null);
+					if(outcomeId == null)
+					{
+						Toast.makeText(this, "Make sure your internet connection is enabled!", Toast.LENGTH_LONG).show();
+					}
+					else
+					{
+						requestIdList.add(outcomeId);
+					}
 				}
 			}
 		}
@@ -148,9 +155,12 @@ public class PathControlActivity extends ActionBarActivity {
 		{
 			for(int i=0; i<requestIdList.size();i++)
 			{
-				ParseManager.deleteRequestAndFollowPath(
+				if(!ParseManager.deleteRequestAndFollowPath(
 						this,
-						(String) requestIdList.get(i), pathObjects.get(i));
+						(String) requestIdList.get(i), pathObjects.get(i)))
+				{
+					Toast.makeText(this, "Make sure your internet connection is enabled!", Toast.LENGTH_LONG).show();
+				}
 			}
 		}
 		else
@@ -241,23 +251,18 @@ public class PathControlActivity extends ActionBarActivity {
 						{
 						//ricerco le nuove posizioni
 						List<Position> newPositions = ParseManager.getNewPosition(PathControlActivity.this, path, counterPositions.get(i));
-						paths.get(i).addAll(newPositions);		
-							if(newPositions.size()>0)
-							{
-								if(autofocus)
+						
+						if(newPositions == null)
+						{
+							Toast.makeText(PathControlActivity.this, "Make sure your internet connection is enabled!", Toast.LENGTH_LONG).show();
+						}
+						else
+						{
+
+							paths.get(i).addAll(newPositions);		
+								if(newPositions.size()>0)
 								{
-									CameraPosition cameraPosition = new CameraPosition.Builder()
-									.target(new LatLng(paths.get(i).get(paths.get(i).size()-1).getLatitude(),
-											paths.get(i).get(paths.get(i).size()-1).getLongitude()))
-									.zoom(18)
-									.bearing(0)           
-									.tilt(0)             
-									.build();
-									map.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
-								}
-								else
-								{
-									if(i == focus)
+									if(autofocus)
 									{
 										CameraPosition cameraPosition = new CameraPosition.Builder()
 										.target(new LatLng(paths.get(i).get(paths.get(i).size()-1).getLatitude(),
@@ -268,37 +273,51 @@ public class PathControlActivity extends ActionBarActivity {
 										.build();
 										map.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
 									}
+									else
+									{
+										if(i == focus)
+										{
+											CameraPosition cameraPosition = new CameraPosition.Builder()
+											.target(new LatLng(paths.get(i).get(paths.get(i).size()-1).getLatitude(),
+													paths.get(i).get(paths.get(i).size()-1).getLongitude()))
+											.zoom(18)
+											.bearing(0)           
+											.tilt(0)             
+											.build();
+											map.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+										}
+									}
+									
+									int color = Utils.generateColor(i);
+									MapManager.drawPolygonPath(color,paths.get(i), map);
+									
+									counterPositions.set(i, paths.get(i).get(paths.get(i).size()-1).getCounter());
+									
+									//add marker
+									if(markers.size() > i)
+									{
+										markers.get(i).remove();
+									}
+						        	Marker m = map.addMarker(new MarkerOptions()
+						            .position(new LatLng(paths.get(i).get(paths.get(i).size()-1).getLatitude(),
+						            		paths.get(i).get(paths.get(i).size()-1).getLongitude()))
+						            .snippet(contactsList.get(i).getPhoneNumber())
+						            .icon(BitmapDescriptorFactory.defaultMarker(Utils.convertColor(color)))
+						            .title(contactsList.get(i).getName()));
+							        map.getUiSettings().setMapToolbarEnabled(false);
+							        
+							        if(markers.size() > i)
+									{
+							        	markers.set(i, m);
+									}
+							        else
+							        {
+							        	markers.add(m);
+							        }
 								}
-								
-								int color = Utils.generateColor(i);
-								MapManager.drawPolygonPath(color,paths.get(i), map);
-								
-								counterPositions.set(i, paths.get(i).get(paths.get(i).size()-1).getCounter());
-								
-								//add marker
-								if(markers.size() > i)
-								{
-									markers.get(i).remove();
-								}
-					        	Marker m = map.addMarker(new MarkerOptions()
-					            .position(new LatLng(paths.get(i).get(paths.get(i).size()-1).getLatitude(),
-					            		paths.get(i).get(paths.get(i).size()-1).getLongitude()))
-					            .snippet(contactsList.get(i).getPhoneNumber())
-					            .icon(BitmapDescriptorFactory.defaultMarker(Utils.convertColor(color)))
-					            .title(contactsList.get(i).getName()));
-						        map.getUiSettings().setMapToolbarEnabled(false);
-						        
-						        if(markers.size() > i)
-								{
-						        	markers.set(i, m);
-								}
-						        else
-						        {
-						        	markers.add(m);
-						        }
+								i++;
 							}
-							i++;
-						}
+						}						
 					}
 				});	
 				
@@ -307,30 +326,55 @@ public class PathControlActivity extends ActionBarActivity {
 				while(iterator.hasNext())
 				{
 					String idReq=iterator.next();
-					boolean isActive=ParseManager.isRequestActive(PathControlActivity.this, idReq);
-					
-					if(!isActive)
+					Boolean isActive=ParseManager.isRequestActive(PathControlActivity.this, idReq);
+
+					if(isActive == null)					
 					{
-						final int j=requestIdList.indexOf(idReq);
-						//notificare all'utente che l'activity è stata chiusa dallo user
 						handler.post(new Runnable() {
 							@Override
 							public void run() 
 							{
-								Toast.makeText(PathControlActivity.this, contactsList.get(j).getName() +" stops the follow activity",Toast.LENGTH_LONG).show();
+								Toast.makeText(PathControlActivity.this, "Make sure your internet connection is enabled!", Toast.LENGTH_LONG).show();
 							}
 						});
-						
-						//cancello dalle liste ogni volta che una richiesta viene chiusa
-						ParseManager.deleteRequestAndFollowPath(PathControlActivity.this, idReq, pathObjects.get(j));
-						pathObjects.remove(j);
-						iterator.remove();
-						
-						//se non ci sono più follow chiudo l'activity
-						if(requestIdList.isEmpty())
+					}
+					else
+					{
+						if(!isActive)
 						{
-							finishMode=1;
-							finish();
+							final int j=requestIdList.indexOf(idReq);
+							//notificare all'utente che l'activity è stata chiusa dallo user
+							handler.post(new Runnable() {
+								@Override
+								public void run() 
+								{
+									Toast.makeText(PathControlActivity.this, contactsList.get(j).getName() +" stops the follow activity",Toast.LENGTH_LONG).show();
+								}
+							});
+
+							//cancello dalle liste ogni volta che una richiesta viene chiusa
+							if(!ParseManager.deleteRequestAndFollowPath(PathControlActivity.this, idReq, pathObjects.get(j)))
+							{
+								handler.post(new Runnable() {
+									@Override
+									public void run() 
+									{
+										Toast.makeText(PathControlActivity.this, "Make sure your internet connection is enabled!", Toast.LENGTH_LONG).show();
+									}
+								});
+							}
+							else
+							{
+								pathObjects.remove(j);
+								iterator.remove();
+
+								//se non ci sono più follow chiudo l'activity
+								if(requestIdList.isEmpty())
+								{
+									finishMode=1;
+									finish();
+								}
+							}
 						}
 					}
 				}

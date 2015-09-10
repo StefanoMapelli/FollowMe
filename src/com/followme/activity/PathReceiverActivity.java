@@ -52,63 +52,72 @@ public class PathReceiverActivity extends ActionBarActivity {
 		map = ((SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.followPathReveiverMap)).getMap();
 		pathRequest=(Request) getIntent().getSerializableExtra("acceptedRequest");
 		path = ParseManager.getPathOfRequest(this, pathRequest);
-		checkRequestThread=new CheckRequestPathStatus();
 		
-		if (Utils.displayGpsStatus(this)) 
+		if(path == null)
 		{
-			locationListener = new MyLocationListener(); 
-			locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
-			locationManager.requestLocationUpdates(LocationManager  
-		    .GPS_PROVIDER, 5000, 10,locationListener); 
+			Toast.makeText(this, "Make sure your internet connection is enabled!", Toast.LENGTH_LONG).show();
+		}
+		else
+		{
+
+			checkRequestThread=new CheckRequestPathStatus();
 			
-			location = MapManager.getLastKnownLocation(this, locationManager);
-			
-			if(location != null)
+			if (Utils.displayGpsStatus(this)) 
 			{
-				Log.i("GPS", "FIRST LOCATION");
-				String posId = ParseManager.insertPosition(PathReceiverActivity.this, path, location.getLatitude(), location.getLongitude(), positionCounter);						 
+				locationListener = new MyLocationListener(); 
+				locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+				locationManager.requestLocationUpdates(LocationManager  
+			    .GPS_PROVIDER, 5000, 10,locationListener); 
 				
-				if(posId == null)
+				location = MapManager.getLastKnownLocation(this, locationManager);
+				
+				if(location != null)
 				{
-					Toast.makeText(this, "Make sure your internet connection is enabled!", Toast.LENGTH_LONG).show();
+					Log.i("GPS", "FIRST LOCATION");
+					String posId = ParseManager.insertPosition(PathReceiverActivity.this, path, location.getLatitude(), location.getLongitude(), positionCounter);						 
+					
+					if(posId == null)
+					{
+						Toast.makeText(this, "Make sure your internet connection is enabled!", Toast.LENGTH_LONG).show();
+					}
+					else
+					{
+						positionCounter++;
+						 
+						CameraPosition cameraPosition = new CameraPosition.Builder()
+						.target(new LatLng(location.getLatitude(),location.getLongitude()))
+						.zoom(18)
+						.bearing(0)           
+						.tilt(0)             
+						.build();
+						map.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+					}
 				}
 				else
 				{
-					positionCounter++;
-					 
-					CameraPosition cameraPosition = new CameraPosition.Builder()
-					.target(new LatLng(location.getLatitude(),location.getLongitude()))
-					.zoom(18)
-					.bearing(0)           
-					.tilt(0)             
-					.build();
-					map.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+					Toast.makeText(PathReceiverActivity.this, "Searching for a valid location...",Toast.LENGTH_LONG).show();
 				}
-			}
+				
+				map.setMyLocationEnabled(true);
+				checkRequestThread=new CheckRequestPathStatus();
+				checkRequestThread.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+			} 
 			else
 			{
-				Toast.makeText(PathReceiverActivity.this, "Searching for a valid location...",Toast.LENGTH_LONG).show();
-			}
-			
-			map.setMyLocationEnabled(true);
-			checkRequestThread=new CheckRequestPathStatus();
-			checkRequestThread.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-		} 
-		else
-		{
-			new AlertDialog.Builder(this)
-			.setTitle("Attention")
-			.setMessage("Your GPS is not enabled. Please enable it now!")
-			.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-				public void onClick(DialogInterface dialog, int which)
-				{ 
-					pausedForGPS=true;
-					PathReceiverActivity.this.startActivity(new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS));			    
-				}
-			})
-			.setIcon(android.R.drawable.ic_dialog_alert)
-			.show();
-		}		
+				new AlertDialog.Builder(this)
+				.setTitle("Attention")
+				.setMessage("Your GPS is not enabled. Please enable it now!")
+				.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog, int which)
+					{ 
+						pausedForGPS=true;
+						PathReceiverActivity.this.startActivity(new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS));			    
+					}
+				})
+				.setIcon(android.R.drawable.ic_dialog_alert)
+				.show();
+			}	
+		}			
 	}
 	
 	@Override
@@ -203,7 +212,10 @@ public class PathReceiverActivity extends ActionBarActivity {
 		super.onDestroy();
 		if(finishMode==1)
 		{
-			ParseManager.deleteRequestAndFollowPath(this, pathRequest.getId(), path);
+			if(!ParseManager.deleteRequestAndFollowPath(this, pathRequest.getId(), path))
+			{
+				Toast.makeText(this, "Make sure your internet connection is enabled!", Toast.LENGTH_LONG).show();
+			}
 		}
 		else
 		{
@@ -361,26 +373,40 @@ public class PathReceiverActivity extends ActionBarActivity {
 					});
 				}
 				
-				boolean isActive=ParseManager.isRequestActive(PathReceiverActivity.this, pathRequest.getId());
+				Boolean isActive=ParseManager.isRequestActive(PathReceiverActivity.this, pathRequest.getId());
 				
-				if(!isActive)
+				if(isActive==null)
 				{
 					handler.post(new Runnable() {
 						@Override
 						public void run() 
 						{
-							//notificare all'utente che l'activity è stata chiusa dal follower
-							Toast.makeText(PathReceiverActivity.this, "You are free!!! No one follows you",Toast.LENGTH_LONG).show();
+							Toast.makeText(PathReceiverActivity.this, "Make sure your internet connection is enabled!",Toast.LENGTH_LONG).show();
 						}
 					});
-		            finishMode=1;
-					finish();
 				}
+				else
+				{
 				
-				try {
-					Thread.sleep(5000);
-				} catch (InterruptedException e) {
-					e.printStackTrace();
+					if(!isActive)
+					{
+						handler.post(new Runnable() {
+							@Override
+							public void run() 
+							{
+								//notificare all'utente che l'activity è stata chiusa dal follower
+								Toast.makeText(PathReceiverActivity.this, "You are free!!! No one follows you",Toast.LENGTH_LONG).show();
+							}
+						});
+						finishMode=1;
+						finish();
+					}
+
+					try {
+						Thread.sleep(5000);
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
 				}
 			}
 		}

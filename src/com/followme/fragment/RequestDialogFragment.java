@@ -13,6 +13,7 @@ import android.app.DialogFragment;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.widget.Toast;
 
 public class RequestDialogFragment extends DialogFragment
 {
@@ -46,7 +47,10 @@ public class RequestDialogFragment extends DialogFragment
 					{
 						for(Request r : requests)
 						{
-							ParseManager.deleteRequest(getActivity(), r.getId());
+							if(!ParseManager.deleteRequest(getActivity(), r.getId()))
+							{
+								Toast.makeText(getActivity(), "Make sure your internet connection is enabled!", Toast.LENGTH_LONG).show();
+							}
 						}
 					}
 				});

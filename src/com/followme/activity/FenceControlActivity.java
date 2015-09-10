@@ -8,10 +8,9 @@ import com.followme.adapter.FenceCustomAdapter;
 import com.followme.manager.ParseManager;
 import com.followme.manager.PersonalDataManager;
 import com.followme.object.Contact;
-import com.followme.object.Destination;
 import com.followme.object.Fence;
-import com.followme.object.Path;
 import com.google.android.gms.maps.model.LatLng;
+import com.parse.ParseObject;
 
 import android.support.v7.app.ActionBarActivity;
 import android.app.AlertDialog;
@@ -22,7 +21,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -126,18 +124,24 @@ public class FenceControlActivity extends ActionBarActivity {
 		{
 			for(int i=0; i<requestIdList.size();i++)
 			{
-				ParseManager.deleteRequestAndFence(
+				if(!ParseManager.deleteRequestAndFence(
 						this,
 						(String) requestIdList.get(i),
 						ParseManager.getFencebyId(this,
-								fenceList.get(i).getIdFence()));
+								fenceList.get(i).getIdFence())))
+				{
+					Toast.makeText(this, "Make sure your internet connection is enabled!", Toast.LENGTH_LONG).show();
+				}
 			}
 		}
 		else
 		{
 			for(int i=0; i<requestIdList.size();i++)
 			{
-				ParseManager.updateRequestStatusById(this, (String)requestIdList.get(i), "chiusa");
+				if(!ParseManager.updateRequestStatusById(this, (String)requestIdList.get(i), "chiusa"))
+				{
+					Toast.makeText(this, "Make sure your internet connection is enabled!", Toast.LENGTH_LONG).show();
+				}
 			}
 			
 		}
@@ -179,20 +183,35 @@ public class FenceControlActivity extends ActionBarActivity {
 				for(int i=0; i<fenceList.size();i++)
 				{
 					fenceObject = fenceList.get(i);
-					if(!ParseManager.isInTheFence(FenceControlActivity.this, fenceObject.getIdFence()))
+					Boolean isInTheFence = ParseManager.isInTheFence(FenceControlActivity.this, fenceObject.getIdFence());
+					
+					if(isInTheFence== null)
 					{
-						fenceObject.setInTheFence(false);
-						adapter = new FenceCustomAdapter(FenceControlActivity.this, fenceList);
-						
 						handler.post(new Runnable() {
 							@Override
 							public void run() 
 							{
-								listViewFence.setAdapter(adapter);
+								Toast.makeText(FenceControlActivity.this, "Make sure your internet connection is enabled!", Toast.LENGTH_LONG).show();
 							}
 						});
-						
 					}
+					else
+					{
+						if(!isInTheFence)
+						{
+							fenceObject.setInTheFence(false);
+							adapter = new FenceCustomAdapter(FenceControlActivity.this, fenceList);
+							
+							handler.post(new Runnable() {
+								@Override
+								public void run() 
+								{
+									listViewFence.setAdapter(adapter);
+								}
+							});
+							
+						}
+					}				
 				}
 				
 				Iterator<String> iterator = requestIdList.iterator();
@@ -200,50 +219,89 @@ public class FenceControlActivity extends ActionBarActivity {
 				while(iterator.hasNext())
 				{
 					String idReq=iterator.next();
-					boolean isActive=ParseManager.isRequestActive(FenceControlActivity.this, idReq);
+					Boolean isActive=ParseManager.isRequestActive(FenceControlActivity.this, idReq);
 					
-					if(!isActive)
+					if(isActive==null)
 					{
-						final int j=requestIdList.indexOf(idReq);
-						//notificare all'utente che l'activity è stata chiusa dallo user
 						handler.post(new Runnable() {
 							@Override
 							public void run() 
 							{
-								Toast.makeText(FenceControlActivity.this, "The user "+PersonalDataManager.getNameOfContact(fenceList.get(j).getUser().getPhoneNumber())+" destroys the fence",Toast.LENGTH_LONG).show();
+								Toast.makeText(FenceControlActivity.this, "Make sure your internet connection is enabled!",Toast.LENGTH_LONG).show();
 							}
 						});
-						
-						//cancello dalle liste ogni volta che una richiesta viene chiusa
-						ParseManager.deleteRequestAndFence(FenceControlActivity.this, idReq, ParseManager.getFencebyId(FenceControlActivity.this,fenceList.get(j).getIdFence()));
-						fenceList.remove(j);
-						iterator.remove();
-						
-						//aggiorno l'adapter
-						adapter = new FenceCustomAdapter(FenceControlActivity.this, fenceList);
+					}
+					else
+					{
 
-						handler.post(new Runnable() {
-							@Override
-							public void run() 
-							{
-								listViewFence.setAdapter(adapter);
-							}
-						});
-						
-						//se non ci sono più fence chiudo l'activity
-						if(requestIdList.isEmpty())
+						if(!isActive)
 						{
-							finishMode=1;
-							finish();
+							final int j=requestIdList.indexOf(idReq);
+							//notificare all'utente che l'activity è stata chiusa dallo user
+							handler.post(new Runnable() {
+								@Override
+								public void run() 
+								{
+									Toast.makeText(FenceControlActivity.this, "The user "+PersonalDataManager.getNameOfContact(fenceList.get(j).getUser().getPhoneNumber())+" destroys the fence",Toast.LENGTH_LONG).show();
+								}
+							});
+
+							ParseObject fence = ParseManager.getFencebyId(FenceControlActivity.this,fenceList.get(j).getIdFence());
+							if(fence == null)
+							{
+								handler.post(new Runnable() {
+									@Override
+									public void run() 
+									{
+										Toast.makeText(FenceControlActivity.this, "Make sure your internet connection is enabled!",Toast.LENGTH_LONG).show();
+									}
+								});
+							}
+							else
+							{
+								//cancello dalle liste ogni volta che una richiesta viene chiusa
+								if(!ParseManager.deleteRequestAndFence(FenceControlActivity.this, idReq, fence))
+								{
+									handler.post(new Runnable() {
+										@Override
+										public void run() 
+										{
+											Toast.makeText(FenceControlActivity.this, "Make sure your internet connection is enabled!",Toast.LENGTH_LONG).show();
+										}
+									});
+								}
+								else
+								{
+									fenceList.remove(j);
+									iterator.remove();
+
+									//aggiorno l'adapter
+									adapter = new FenceCustomAdapter(FenceControlActivity.this, fenceList);
+
+									handler.post(new Runnable() {
+										@Override
+										public void run() 
+										{
+											listViewFence.setAdapter(adapter);
+										}
+									});
+
+									//se non ci sono più fence chiudo l'activity
+									if(requestIdList.isEmpty())
+									{
+										finishMode=1;
+										finish();
+									}
+								}	
+							}																
 						}
 					}
+					try {
+						Thread.sleep(10000);
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
 				}
-				try {
-					Thread.sleep(10000);
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				}
-				
 			}
 		}
     }

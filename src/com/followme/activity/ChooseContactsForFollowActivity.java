@@ -19,6 +19,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ListView;
+import android.widget.Toast;
 
 public class ChooseContactsForFollowActivity extends ActionBarActivity {
 		
@@ -95,7 +96,11 @@ public class ChooseContactsForFollowActivity extends ActionBarActivity {
 			{
 				ContactCustomAdapter adapter = new ContactCustomAdapter(ChooseContactsForFollowActivity.this, contactsItems);
 				lv.setAdapter(adapter);
-				progressBar.dismiss();
+				progressBar.dismiss();				
+			} 
+			else if(progress[0] == 3)
+			{
+				Toast.makeText(ChooseContactsForFollowActivity.this, "Make sure your internet connection is enabled!", Toast.LENGTH_LONG).show();
 			}
 		}
 		
@@ -115,32 +120,42 @@ public class ChooseContactsForFollowActivity extends ActionBarActivity {
 		@Override
 		protected String doInBackground(Void... params) 
 		{
-			contacts = Utils.phoneContactsOnParse(
-					DeviceDataManager.allContacts(ChooseContactsForFollowActivity.this), 
-					ParseManager.allContactsOnParse(ChooseContactsForFollowActivity.this));
+			List<Contact> list = ParseManager.allContactsOnParse(ChooseContactsForFollowActivity.this);
 			
-			publishProgress(1);
-			
-			PersonalDataManager.deleteAllContacts();
-			for (Contact c : contacts)
+			if(list == null)
 			{
-				PersonalDataManager.insertContact(c);
+				publishProgress(3);
+				return null;
 			}
-			Iterator<Contact> i = contacts.iterator();
-			Contact c;
-			int j=0;
-			contactsItems = new Contact[contacts.size()];
-			
-			while(i.hasNext())
+			else
 			{
-				c = i.next();
+				contacts = Utils.phoneContactsOnParse(
+						DeviceDataManager.allContacts(ChooseContactsForFollowActivity.this), 
+						list);
 				
-				contactsItems[j] = c;
-				j++;
+				publishProgress(1);
+				
+				PersonalDataManager.deleteAllContacts();
+				for (Contact c : contacts)
+				{
+					PersonalDataManager.insertContact(c);
+				}
+				Iterator<Contact> i = contacts.iterator();
+				Contact c;
+				int j=0;
+				contactsItems = new Contact[contacts.size()];
+				
+				while(i.hasNext())
+				{
+					c = i.next();
+					
+					contactsItems[j] = c;
+					j++;
+				}
+				return null;
 			}
-			return null;
-		}
-		
+			
+			}		
 	}
 	
 	

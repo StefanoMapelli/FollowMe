@@ -18,6 +18,7 @@ import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.view.View;
 import android.widget.ListView;
+import android.widget.Toast;
 
 public class ChooseContactsForSharingActivity extends ActionBarActivity
 {
@@ -95,6 +96,10 @@ public class ChooseContactsForSharingActivity extends ActionBarActivity
 				lv.setAdapter(adapter);
 				progressBar.dismiss();
 			}
+			else if(progress[0]==3)
+			{
+				Toast.makeText(ChooseContactsForSharingActivity.this, "Make sure your internet connection is enabled!", Toast.LENGTH_LONG).show();
+			}
 		}
 
 		@Override
@@ -112,30 +117,41 @@ public class ChooseContactsForSharingActivity extends ActionBarActivity
 		@Override
 		protected String doInBackground(Void... params) 
 		{
-			contacts = Utils.phoneContactsOnParse(
-					DeviceDataManager.allContacts(ChooseContactsForSharingActivity.this), 
-					ParseManager.allContactsOnParse(ChooseContactsForSharingActivity.this));
+			List<Contact> list= ParseManager.allContactsOnParse(ChooseContactsForSharingActivity.this);
 
-			publishProgress(1);
-
-			PersonalDataManager.deleteAllContacts();
-			for (Contact c : contacts)
+			if(list == null)
 			{
-				PersonalDataManager.insertContact(c);
+				publishProgress(3);
+				return null;
 			}
-			Iterator<Contact> i = contacts.iterator();
-			Contact c;
-			int j=0;
-			contactsItems = new Contact[contacts.size()];
-
-			while(i.hasNext())
+			else
 			{
-				c = i.next();
 
-				contactsItems[j] = c;
-				j++;
+				contacts = Utils.phoneContactsOnParse(
+						DeviceDataManager.allContacts(ChooseContactsForSharingActivity.this), 
+						list);
+
+				publishProgress(1);
+
+				PersonalDataManager.deleteAllContacts();
+				for (Contact c : contacts)
+				{
+					PersonalDataManager.insertContact(c);
+				}
+				Iterator<Contact> i = contacts.iterator();
+				Contact c;
+				int j=0;
+				contactsItems = new Contact[contacts.size()];
+
+				while(i.hasNext())
+				{
+					c = i.next();
+
+					contactsItems[j] = c;
+					j++;
+				}
+				return null;
 			}
-			return null;
 		}
 
 	}
