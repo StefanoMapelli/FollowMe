@@ -181,6 +181,13 @@ public class MainActivity extends ActionBarActivity  {
 		int id = item.getItemId();
 		if (id == R.id.openRequestNotificationList) 
 		{
+			//cancello le notifiche
+			String notificationService = Context.NOTIFICATION_SERVICE;
+			NotificationManager mNotificationManager = (NotificationManager)
+					getSystemService(notificationService);
+			mNotificationManager.cancel(1);
+			
+			//apro la lista delle richieste
 			Intent intent = new Intent(this,RequestsListActivity.class);
 			intent.putExtra("incomingRequests", requestsList.toArray());
 			startActivity(intent);
@@ -207,7 +214,14 @@ public class MainActivity extends ActionBarActivity  {
 
 						if(userParseObject==null)
 						{
-							Toast.makeText(MainActivity.this, "Make sure your internet connection is enabled!", Toast.LENGTH_LONG).show();				
+							handler.post(new Runnable() {
+								@Override
+								public void run() 
+								{
+									Toast.makeText(MainActivity.this, "Make sure your internet connection is enabled!", Toast.LENGTH_LONG).show();				
+						
+								}
+							});
 						}
 						else
 						{
@@ -215,7 +229,14 @@ public class MainActivity extends ActionBarActivity  {
 
 							if(list == null)
 							{
-								Toast.makeText(MainActivity.this, "Make sure your internet connection is enabled!", Toast.LENGTH_LONG).show();				
+								handler.post(new Runnable() {
+									@Override
+									public void run() 
+									{
+										Toast.makeText(MainActivity.this, "Make sure your internet connection is enabled!", Toast.LENGTH_LONG).show();				
+							
+									}
+								});
 							}
 							else
 							{
@@ -236,9 +257,8 @@ public class MainActivity extends ActionBarActivity  {
 											NotificationManager mNotificationManager = (NotificationManager)
 													getSystemService(notificationService);
 
-											Intent resultIntent = new Intent(MainActivity.this,RequestsListActivity.class);
-											resultIntent.putExtra("incomingRequests", requestsList.toArray());
-											resultIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+											Intent resultIntent = new Intent(MainActivity.this,MainActivity.class);
+											resultIntent.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
 
 											PendingIntent resultPendingIntent = PendingIntent.getActivity(MainActivity.this, 0, resultIntent, 0);
 
@@ -335,7 +355,14 @@ public class MainActivity extends ActionBarActivity  {
 
 						if(list == null)
 						{
-							Toast.makeText(MainActivity.this, "Make sure your internet connection is enabled!", Toast.LENGTH_LONG).show();				
+							handler.post(new Runnable() {
+								@Override
+								public void run() 
+								{
+									Toast.makeText(MainActivity.this, "Make sure your internet connection is enabled!", Toast.LENGTH_LONG).show();				
+						
+								}
+							});
 						}
 						else
 						{
@@ -356,9 +383,8 @@ public class MainActivity extends ActionBarActivity  {
 										NotificationManager mNotificationManager = (NotificationManager)
 												getSystemService(notificationService);
 
-										Intent resultIntent = new Intent(MainActivity.this,RequestsListActivity.class);
-										resultIntent.putExtra("incomingRequests", requestsList.toArray());
-										resultIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+										Intent resultIntent = new Intent(MainActivity.this,MainActivity.class);
+										resultIntent.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
 
 										PendingIntent resultPendingIntent = PendingIntent.getActivity(MainActivity.this, 0, resultIntent, 0);
 

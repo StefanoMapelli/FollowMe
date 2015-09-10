@@ -12,6 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 public class RequestCustomAdapter extends ArrayAdapter<Request>{
@@ -42,6 +43,12 @@ public class RequestCustomAdapter extends ArrayAdapter<Request>{
 		senderRequest.setText("Sender: "+ 
 				PersonalDataManager.getNameOfContact(
 				requests.get(position).getSender().getPhoneNumber()));
+		
+		if(requests.get(position).getType().compareTo("condivisione")==0 || requests.get(position).getType().compareTo("percorso")==0)
+		{
+			ImageButton buttonShowDetails = (ImageButton) convertView.findViewById(R.id.acceptRequestButton);
+			buttonShowDetails.setVisibility(View.INVISIBLE);
+		}
 				
 		return convertView;	
 	}

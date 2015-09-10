@@ -26,8 +26,7 @@
 	        android:layout_centerVertical="true"
 	        android:layout_marginLeft="100dp"
 	        android:background="@drawable/done_selector"
-        	android:onClick="selectContactForSharingOnClickHandler"
-        	android:text="Share" />
+        	android:onClick="selectContactForSharingOnClickHandler" />
     	
     	<ImageButton
         	android:id="@+id/refreshButton"
@@ -37,8 +36,7 @@
 	        android:layout_centerVertical="true"
 	        android:layout_marginRight="100dp"
 	        android:background="@drawable/refresh_selector"
-        	android:onClick="refreshContactsForSharingOnClickHandler"
-        	android:text="Refresh" />
+        	android:onClick="refreshContactsForSharingOnClickHandler" />
     </RelativeLayout>
 
 </LinearLayout>

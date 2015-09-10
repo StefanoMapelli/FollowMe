@@ -10,31 +10,34 @@
         android:name="com.google.android.gms.maps.SupportMapFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_weight="0.2"/>
+        android:layout_weight="0.1"/>
 	
-	<LinearLayout
+	 <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:weightSum="1"
-        android:layout_weight="0.8"
-        android:orientation="horizontal" >
-
-        <Button
-            android:id="@+id/acceptButton"
-            android:layout_width="fill_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="0.5"
-            android:onClick="acceptRequestOnClickHandler"
-            android:text="Accept" />
+        android:background="#000000"
+        android:layout_weight="0.9" >
         
-        <Button
-            android:id="@+id/declineButton"
-            android:layout_width="fill_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="0.5"
-            android:onClick="declineRequestOnClickHandler"
-            android:text="Decline" />
+        <ImageButton
+        	android:id="@+id/acceptButton"
+        	android:layout_width="wrap_content"
+        	android:layout_height="wrap_content"
+        	android:layout_alignParentLeft="true"
+	        android:layout_centerVertical="true"
+	        android:layout_marginLeft="100dp"
+	        android:background="@drawable/done_selector"
+        	android:onClick="acceptRequestOnClickHandler" />
         
-     </LinearLayout>
+        <ImageButton
+        	android:id="@+id/declineButton"
+        	android:layout_width="wrap_content"
+        	android:layout_height="wrap_content"
+        	android:layout_alignParentRight="true"
+	        android:layout_centerVertical="true"
+	        android:layout_marginRight="100dp"
+	        android:background="@drawable/no_selector"
+        	android:onClick="declineRequestOnClickHandler" />
+        
+     </RelativeLayout>
     
 </LinearLayout>
