@@ -237,7 +237,7 @@ public class ParseManager {
 			po = getPositionbyId(context, photo.getPosition().getId());
 			if(po == null)
 			{
-				Toast.makeText(context, "Make sure your internet connection is enabled!", Toast.LENGTH_LONG).show();
+				Toast.makeText(context, "Upload Failed! Make sure your internet connection is enabled!", Toast.LENGTH_LONG).show();
 				return;
 			}
 			newPhoto.put("idPosizione", po);
@@ -249,7 +249,7 @@ public class ParseManager {
 			po = getPathbyId(context, photo.getPath().getId());
 			if(po == null)
 			{
-				Toast.makeText(context, "Make sure your internet connection is enabled!", Toast.LENGTH_LONG).show();
+				Toast.makeText(context, "Upload Failed! Make sure your internet connection is enabled!", Toast.LENGTH_LONG).show();
 				return;
 			}
 			newPhoto.put("idPercorso", po);
@@ -267,7 +267,7 @@ public class ParseManager {
 						{
 							if(e != null)
 							{
-								Toast.makeText(context, "Make sure your internet connection is enabled!", Toast.LENGTH_LONG).show();
+								Toast.makeText(context, "Upload Failed! Make sure your internet connection is enabled!", Toast.LENGTH_LONG).show();
 							}
 							else
 							{
@@ -296,7 +296,7 @@ public class ParseManager {
 			po = getPositionbyId(context, video.getPosition().getId());
 			if(po == null)
 			{
-				Toast.makeText(context, "Make sure your internet connection is enabled!", Toast.LENGTH_LONG).show();
+				Toast.makeText(context, "Upload Failed! Make sure your internet connection is enabled!", Toast.LENGTH_LONG).show();
 				return;
 			}
 			newPhoto.put("idPosizione", po);
@@ -308,7 +308,7 @@ public class ParseManager {
 			po = getPathbyId(context, video.getPath().getId());
 			if(po == null)
 			{
-				Toast.makeText(context, "Make sure your internet connection is enabled!", Toast.LENGTH_LONG).show();
+				Toast.makeText(context, "Upload Failed! Make sure your internet connection is enabled!", Toast.LENGTH_LONG).show();
 				return;
 			}
 			newPhoto.put("idPercorso", po);
@@ -327,7 +327,7 @@ public class ParseManager {
 						{
 							if(e != null)
 							{
-								Toast.makeText(context, "Make sure your internet connection is enabled!", Toast.LENGTH_LONG).show();
+								Toast.makeText(context, "Upload Failed! Make sure your internet connection is enabled!", Toast.LENGTH_LONG).show();
 							}
 							else
 							{

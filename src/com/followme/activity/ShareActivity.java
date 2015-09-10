@@ -219,6 +219,7 @@ public class ShareActivity extends ActionBarActivity implements SavePathDialogLi
 					})
 					.setIcon(android.R.drawable.ic_dialog_alert)
 					.show();
+					dialogShow=true;
 				}
 
 				photoTouchListener = new OnInfoWindowElemTouchListener() 
