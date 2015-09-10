@@ -772,6 +772,8 @@ public class ShareActivity extends ActionBarActivity implements SavePathDialogLi
 				}
 			}
 		}
+		
+		 locationManager.removeUpdates(locationListener);
 
 		Intent intent = new Intent(ShareActivity.this, MainActivity.class);
 		intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);

@@ -195,6 +195,8 @@ public class FenceReceiverActivity extends ActionBarActivity {
 			ParseManager.updateRequestStatusById(this, fenceRequest.getId(), "chiusa");
 		}
 		
+		locationManager.removeUpdates(locationListener);
+		
 		Intent intent = new Intent(FenceReceiverActivity.this, MainActivity.class);
 		intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 		startActivity(intent);

@@ -196,6 +196,8 @@ public class PathReceiverActivity extends ActionBarActivity {
 			ParseManager.updateRequestStatusById(this, pathRequest.getId(), "chiusa");
 		}
 		
+		locationManager.removeUpdates(locationListener);
+		
 		Intent intent = new Intent(PathReceiverActivity.this, MainActivity.class);
 		intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 		startActivity(intent);

@@ -10,7 +10,11 @@ import com.followme.object.Request;
 import com.followme.object.User;
 import com.parse.ParseObject;
 
+import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -18,6 +22,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Vibrator;
+import android.support.v4.app.NotificationCompat;
 import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -195,6 +200,28 @@ public class MainActivity extends ActionBarActivity  {
 							public void run() 
 							{
 								vibrator.vibrate(200);
+								
+								String notificationService = Context.NOTIFICATION_SERVICE;
+							    NotificationManager mNotificationManager = (NotificationManager)
+							                                                getSystemService(notificationService);
+							    
+							    //notifica
+							    NotificationCompat.Builder mBuilder =
+										new NotificationCompat.Builder(MainActivity.this);
+								mBuilder.setSmallIcon(R.drawable.follow);
+								mBuilder.setContentTitle("Follow Me");
+								mBuilder.setContentText("There's a request for you.");
+								mBuilder.setAutoCancel(true);
+								
+							    // the next two lines initialize the Notification, using the configurations
+							    // above
+							    Notification notification = mBuilder.build();
+							    
+							    final int HELLO_ID = 1;
+							    mNotificationManager.notify(HELLO_ID, notification);
+								
+								
+								
 							}
 						});
 					}

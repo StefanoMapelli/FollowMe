@@ -196,6 +196,8 @@ public class DestinationReceiverActivity extends ActionBarActivity {
 			ParseManager.updateRequestStatusById(this, destinationRequest.getId(), "chiusa");
 		}
 		
+		locationManager.removeUpdates(locationListener);
+		
 		Intent intent = new Intent(DestinationReceiverActivity.this, MainActivity.class);
 		intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 		startActivity(intent);
