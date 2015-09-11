@@ -450,7 +450,7 @@ public class ParseManager {
 			else
 			{
 				requests.add(new Request(po.getObjectId(),
-						po.getString("tipoRichiesta"),
+						Utils.traslateTypeOfRequest(po.getString("tipoRichiesta")),
 						po.getString("stato"),
 						new User(sender),
 						new User(user)));

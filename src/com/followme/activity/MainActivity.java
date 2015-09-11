@@ -17,6 +17,7 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
@@ -314,7 +315,7 @@ public class MainActivity extends ActionBarActivity  {
 										@Override
 										public void run() 
 										{
-											vibrator.vibrate(200);
+											vibrator.vibrate(250);
 
 											String notificationService = Context.NOTIFICATION_SERVICE;
 											NotificationManager mNotificationManager = (NotificationManager)
@@ -332,17 +333,14 @@ public class MainActivity extends ActionBarActivity  {
 											mBuilder.setContentTitle("Follow Me");
 											mBuilder.setContentText("There's a request for you.");
 											mBuilder.setAutoCancel(true);
-											mBuilder.setContentIntent(resultPendingIntent);								
+											mBuilder.setContentIntent(resultPendingIntent);	
 
 											// the next two lines initialize the Notification, using the configurations
 											// above
-											Notification notification = mBuilder.build();
+											Notification notification = mBuilder.build();										
 
 											final int HELLO_ID = 1;
 											mNotificationManager.notify(HELLO_ID, notification);
-
-
-
 										}
 									});
 								}

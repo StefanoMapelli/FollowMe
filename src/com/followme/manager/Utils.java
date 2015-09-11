@@ -366,4 +366,28 @@ public class Utils {
 		}
 		return -1;
 	}
+	
+	public static String traslateTypeOfRequest(String type)
+	{
+		switch (type)
+		{
+		case "condivisione":
+		{
+			return "Share";
+		}
+		case "recinto":
+		{
+			return "Fence";
+		}
+		case "percorso":
+		{
+			return "Path";
+		}
+		case "destinazione":
+		{
+			return "Destination";
+		}
+		}
+		return null;
+	}
 }
