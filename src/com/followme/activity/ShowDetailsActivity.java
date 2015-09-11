@@ -124,24 +124,34 @@ public class ShowDetailsActivity extends ActionBarActivity {
 	{
 		String typeOfRequest = request.getType();
 		Intent intent;
-		//valutiamo il tipo di richiesta
-		switch(typeOfRequest) 
-		{	      	      
-		case "Fence":
-		//apro activity recinto
-		    Log.i("typeOfRequest","recinto");
-		    intent = new Intent(ShowDetailsActivity.this,FenceReceiverActivity.class);
-			intent.putExtra("acceptedRequest", request);
-			startActivity(intent);
-		    break;
-			  
-		case "Destination":
-		//apro activity destinazione
-		    Log.i("typeOfRequest","destinazione");
-		    intent = new Intent(ShowDetailsActivity.this,DestinationReceiverActivity.class);
-			intent.putExtra("acceptedRequest", request);
-			startActivity(intent);
-		    break;
+		
+		//cambio stato in accettata
+		if(!ParseManager.updateRequestStatusById(this, request.getId(), "accettata"))
+		{
+			Toast.makeText(this, "Make sure your internet connection is enabled!", Toast.LENGTH_LONG).show();				
+		}
+		else
+		{
+			//valutiamo il tipo di richiesta
+			switch(typeOfRequest) 
+			{	      	      
+			case "Fence":
+				//apro activity recinto
+				Log.i("typeOfRequest","recinto");
+				intent = new Intent(ShowDetailsActivity.this,FenceReceiverActivity.class);
+				intent.putExtra("acceptedRequest", request);
+				startActivity(intent);
+				break;
+
+			case "Destination":
+				//apro activity destinazione
+				Log.i("typeOfRequest","destinazione");
+				intent = new Intent(ShowDetailsActivity.this,DestinationReceiverActivity.class);
+				intent.putExtra("acceptedRequest", request);
+				startActivity(intent);
+				break;
+			}
+			finish();
 		}
 	}
 		
@@ -149,7 +159,7 @@ public class ShowDetailsActivity extends ActionBarActivity {
 	public void declineRequestOnClickHandler(View v) 
 	{				
 		//eliminare la richiesta da parse db
-		if(!ParseManager.deleteRequest(this, request.getId()))
+		if(!ParseManager.updateRequestStatusById(this, request.getId(), "rifiutata"))
 		{
 			Toast.makeText(this, "Make sure your internet connection is enabled!", Toast.LENGTH_LONG).show();
 		}

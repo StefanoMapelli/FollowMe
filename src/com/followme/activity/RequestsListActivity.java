@@ -62,51 +62,59 @@ public class RequestsListActivity extends ActionBarActivity {
 		Request itemToAccept = requestsItems.get(position);
 		
 		String typeOfRequest = itemToAccept.getType();
-		
-		//rimuovere dalla listview
-				adapter.remove(itemToAccept);		
-		
-		//valutiamo il tipo di richiesta
-		//-condivisione
-		//-percorso
-		//-recinto
-		//-destinazione
-		switch(typeOfRequest) 
+						
+		//cambio stato in accettata
+		if(!ParseManager.updateRequestStatusById(this, itemToAccept.getId(), "accettata"))
 		{
-		
-	    case "Share":
-	    //apro sharingReceiverActivity
-	    	Log.i("typeOfRequest","condivisione");
-	    	intent = new Intent(RequestsListActivity.this,SharingReceiverActivity.class);
-			intent.putExtra("acceptedRequest", itemToAccept);
-			startActivity(intent);
-	    	break;
-	      
-	    case "Path":
-	    //apro activity percorso
-	    	Log.i("typeOfRequest","percorso");
-	    	intent = new Intent(RequestsListActivity.this,PathReceiverActivity.class);
-			intent.putExtra("acceptedRequest", itemToAccept);
-			startActivity(intent);
-	    	break;
-	      
-	    case "Fence":
-		//apro activity recinto
-	    	Log.i("typeOfRequest","recinto");
-	    	intent = new Intent(RequestsListActivity.this,FenceReceiverActivity.class);
-			intent.putExtra("acceptedRequest", itemToAccept);
-			startActivity(intent);
-	    	break;
-		  
-	    case "Destination":
-	    //apro activity destinazione
-	    	Log.i("typeOfRequest","destinazione");
-	    	intent = new Intent(RequestsListActivity.this,DestinationReceiverActivity.class);
-			intent.putExtra("acceptedRequest", itemToAccept);
-			startActivity(intent);
-	    	break;
+			Toast.makeText(this, "Make sure your internet connection is enabled!", Toast.LENGTH_LONG).show();				
 		}
-	    
+		else
+		{
+			//rimuovere dalla listview
+			adapter.remove(itemToAccept);
+			
+			//valutiamo il tipo di richiesta
+			//-condivisione
+			//-percorso
+			//-recinto
+			//-destinazione
+			switch(typeOfRequest) 
+			{
+			
+		    case "Share":
+		    //apro sharingReceiverActivity
+		    	Log.i("typeOfRequest","condivisione");
+		    	intent = new Intent(RequestsListActivity.this,SharingReceiverActivity.class);
+				intent.putExtra("acceptedRequest", itemToAccept);
+				startActivity(intent);
+		    	break;
+		      
+		    case "Path":
+		    //apro activity percorso
+		    	Log.i("typeOfRequest","percorso");
+		    	intent = new Intent(RequestsListActivity.this,PathReceiverActivity.class);
+				intent.putExtra("acceptedRequest", itemToAccept);
+				startActivity(intent);
+		    	break;
+		      
+		    case "Fence":
+			//apro activity recinto
+		    	Log.i("typeOfRequest","recinto");
+		    	intent = new Intent(RequestsListActivity.this,FenceReceiverActivity.class);
+				intent.putExtra("acceptedRequest", itemToAccept);
+				startActivity(intent);
+		    	break;
+			  
+		    case "Destination":
+		    //apro activity destinazione
+		    	Log.i("typeOfRequest","destinazione");
+		    	intent = new Intent(RequestsListActivity.this,DestinationReceiverActivity.class);
+				intent.putExtra("acceptedRequest", itemToAccept);
+				startActivity(intent);
+		    	break;
+			}
+			finish();
+		}    
 	  }
 	
 	//onClickHandler quando viene rifiutata una richiesta
@@ -119,7 +127,7 @@ public class RequestsListActivity extends ActionBarActivity {
 		Request itemToRemove = requestsItems.get(position);
 		
 		//eliminare la richiesta da parse db
-		if(!ParseManager.deleteRequest(this, itemToRemove.getId()))
+		if(!ParseManager.updateRequestStatusById(this, itemToRemove.getId(), "rifiutata"))
 		{
 			Toast.makeText(this, "Make sure your internet connection is enabled!", Toast.LENGTH_LONG).show();
 		}

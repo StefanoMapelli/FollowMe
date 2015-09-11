@@ -418,7 +418,7 @@ public class ParseManager {
 	 * @param id : id of the user receiver of the requests 
 	 * @return a list of requests for the user with id id
 	 */
-	public static List<Request> checkRequests(Context context, ParseObject user)
+	public static List<Request> checkRequests(Context context, ParseObject user, String status)
 	{
 		List<ParseObject> objects = null;
 		List<Request> requests = new ArrayList<Request>();
@@ -426,7 +426,7 @@ public class ParseManager {
 	
 		ParseQuery<ParseObject> query = ParseQuery.getQuery("Richiesta");
 		query.whereEqualTo("idDestinatario", user);
-		query.whereEqualTo("stato", "non visualizzata");
+		query.whereEqualTo("stato", status);
 		
 		try {
 			objects=query.find();

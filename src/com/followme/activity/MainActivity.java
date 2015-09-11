@@ -17,7 +17,6 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
@@ -234,7 +233,6 @@ public class MainActivity extends ActionBarActivity  {
 			Intent intent = new Intent(this,RequestsListActivity.class);
 			intent.putExtra("incomingRequests", requestsList.toArray());
 			startActivity(intent);
-			requestsList.clear();
 		}
 		return super.onOptionsItemSelected(item);
 	}
@@ -282,31 +280,47 @@ public class MainActivity extends ActionBarActivity  {
 								@Override
 								public void run() 
 								{
-									Toast.makeText(MainActivity.this, "Make sure your internet connection is enabled!", Toast.LENGTH_LONG).show();				
-						
+									Toast.makeText(MainActivity.this, "Make sure your internet connection is enabled!", Toast.LENGTH_LONG).show();										
 								}
 							});
 						}
 						else
 						{
-							List<Request> list = ParseManager.checkRequests(MainActivity.this, userParseObject);
-
-							if(list == null)
+							List<Request> notVisualizedList = ParseManager.checkRequests(MainActivity.this, userParseObject, "non visualizzata");
+							List<Request> acceptedList = ParseManager.checkRequests(MainActivity.this, userParseObject, "accettata");
+							List<Request> declinedList = ParseManager.checkRequests(MainActivity.this, userParseObject, "rifiutata");
+							
+							if(notVisualizedList == null || acceptedList == null || declinedList==null)
 							{
 								handler.post(new Runnable() {
 									@Override
 									public void run() 
 									{
-										Toast.makeText(MainActivity.this, "Make sure your internet connection is enabled!", Toast.LENGTH_LONG).show();				
-							
+										Toast.makeText(MainActivity.this, "Make sure your internet connection is enabled!", Toast.LENGTH_LONG).show();											
 									}
 								});
 							}
 							else
 							{
-								requestsList.addAll(list);
-								ParseManager.visualizeRquests(MainActivity.this, requestsList);		
+								requestsList.addAll(notVisualizedList);
+								requestsList.removeAll(acceptedList);
+								requestsList.removeAll(declinedList);
+								ParseManager.visualizeRquests(MainActivity.this, notVisualizedList);		
 
+								for(Request r : declinedList)
+								{	
+									if(!ParseManager.deleteRequest(MainActivity.this, r.getId()))
+									{
+										handler.post(new Runnable() {
+											@Override
+											public void run() 
+											{
+												Toast.makeText(MainActivity.this, "Make sure your internet connection is enabled!", Toast.LENGTH_LONG).show();									
+											}
+										});
+									}
+								}
+								
 								int requestNumber=requestsList.size();
 
 								if(requestNumber>oldRequestNumber)
@@ -399,22 +413,22 @@ public class MainActivity extends ActionBarActivity  {
 											menu.getItem(0).setVisible(true);
 										}
 									});
-								}
-							}
-
+								}																
+							}												
 							try {
 								Thread.sleep(5000);
 							} catch (InterruptedException e) {
 								e.printStackTrace();
 							}
-						}
+						}						
 					}
 					else
 					{
-
-						List<Request> list = ParseManager.checkRequests(MainActivity.this, userParseObject);
-
-						if(list == null)
+						List<Request> notVisualizedList = ParseManager.checkRequests(MainActivity.this, userParseObject, "non visualizzata");
+						List<Request> acceptedList = ParseManager.checkRequests(MainActivity.this, userParseObject, "accettata");
+						List<Request> declinedList = ParseManager.checkRequests(MainActivity.this, userParseObject, "rifiutata");
+						
+						if(notVisualizedList == null || acceptedList == null || declinedList==null)
 						{
 							handler.post(new Runnable() {
 								@Override
@@ -427,9 +441,25 @@ public class MainActivity extends ActionBarActivity  {
 						}
 						else
 						{
-							requestsList.addAll(list);
-							ParseManager.visualizeRquests(MainActivity.this, requestsList);		
+							requestsList.addAll(notVisualizedList);
+							requestsList.removeAll(acceptedList);
+							requestsList.removeAll(declinedList);
+							ParseManager.visualizeRquests(MainActivity.this, notVisualizedList);		
 
+							for(Request r : declinedList)
+							{	
+								if(!ParseManager.deleteRequest(MainActivity.this, r.getId()))
+								{
+									handler.post(new Runnable() {
+										@Override
+										public void run() 
+										{
+											Toast.makeText(MainActivity.this, "Make sure your internet connection is enabled!", Toast.LENGTH_LONG).show();									
+										}
+									});
+								}
+							}
+							
 							int requestNumber=requestsList.size();
 
 							if(requestNumber>oldRequestNumber)
@@ -464,9 +494,6 @@ public class MainActivity extends ActionBarActivity  {
 
 										final int HELLO_ID = 1;
 										mNotificationManager.notify(HELLO_ID, notification);
-
-
-
 									}
 								});
 							}
