@@ -12,8 +12,13 @@ import com.followme.object.Fence;
 import com.google.android.gms.maps.model.LatLng;
 import com.parse.ParseObject;
 
+import android.support.v4.app.NotificationCompat;
 import android.support.v7.app.ActionBarActivity;
 import android.app.AlertDialog;
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
@@ -173,6 +178,7 @@ public class FenceControlActivity extends ActionBarActivity {
 		@Override
 		protected String doInBackground(Void... params) 
 		{			
+			Boolean isNotificationShown=false;
 			while(true)
 			{	
 				if(isCancelled())
@@ -201,7 +207,55 @@ public class FenceControlActivity extends ActionBarActivity {
 						{
 							fenceObject.setInTheFence(false);
 							adapter = new FenceCustomAdapter(FenceControlActivity.this, fenceList);
-							
+							final String userName=fenceObject.getUser().getName();
+							if(!isNotificationShown)
+							{
+								isNotificationShown=true;
+								handler.post(new Runnable() {
+									@Override
+									public void run() 
+									{
+
+										String notificationService = Context.NOTIFICATION_SERVICE;
+										NotificationManager mNotificationManager = (NotificationManager)
+												getSystemService(notificationService);
+
+										Intent resultIntent = new Intent(FenceControlActivity.this,FenceControlActivity.class);
+										resultIntent.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+
+										PendingIntent resultPendingIntent = PendingIntent.getActivity(FenceControlActivity.this, 0, resultIntent, 0);
+
+										//notifica
+										NotificationCompat.Builder mBuilder =
+												new NotificationCompat.Builder(FenceControlActivity.this);
+										mBuilder.setSmallIcon(R.drawable.follow);
+										mBuilder.setContentTitle("Follow Me");
+										mBuilder.setContentText(userName+" runs away!");
+										mBuilder.setAutoCancel(true);
+										mBuilder.setContentIntent(resultPendingIntent);								
+
+										// the next two lines initialize the Notification, using the configurations
+										// above
+										Notification notification = mBuilder.build();
+
+										final int notification_id = 2;
+										mNotificationManager.notify(notification_id, notification);
+									}
+								});
+								handler.post(new Runnable() {
+									@Override
+									public void run() 
+									{
+										listViewFence.setAdapter(adapter);
+									}
+								});
+							}	
+						}
+						else
+						{
+							isNotificationShown=false;
+							fenceObject.setInTheFence(true);
+							adapter = new FenceCustomAdapter(FenceControlActivity.this, fenceList);
 							handler.post(new Runnable() {
 								@Override
 								public void run() 
@@ -209,7 +263,6 @@ public class FenceControlActivity extends ActionBarActivity {
 									listViewFence.setAdapter(adapter);
 								}
 							});
-							
 						}
 					}				
 				}

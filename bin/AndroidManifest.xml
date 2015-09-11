@@ -80,7 +80,8 @@
         <activity
             android:name=".ShareActivity"
             android:label="@string/title_activity_share"
-            android:screenOrientation="portrait" >
+            android:screenOrientation="portrait"
+            android:launchMode="singleInstance" >
         </activity>
         <activity
             android:name=".RequestsListActivity"
@@ -137,7 +138,8 @@
         <activity
             android:name=".FenceControlActivity"
             android:label="@string/title_activity_fence_control"
-            android:screenOrientation="portrait" >
+            android:screenOrientation="portrait"
+            android:launchMode="singleInstance" >
         </activity>
         <activity
             android:name=".FullScreenVideoActivity"
@@ -148,7 +150,8 @@
         <activity
             android:name=".DestinationControlActivity"
             android:label="@string/title_activity_destination_control"
-            android:screenOrientation="portrait" >
+            android:screenOrientation="portrait"
+            android:launchMode="singleInstance" >
         </activity>
         <activity
             android:name=".DestinationReceiverActivity"
@@ -158,7 +161,8 @@
         <activity
             android:name=".PathControlActivity"
             android:label="@string/title_activity_path_control"
-            android:screenOrientation="portrait" >
+            android:screenOrientation="portrait"
+            android:launchMode="singleInstance" >
         </activity>
         <activity
             android:name=".PathReceiverActivity"
