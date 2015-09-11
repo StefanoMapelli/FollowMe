@@ -23,6 +23,7 @@ public class FollowActivity extends ActionBarActivity{
 		intent.putExtra("selectedContacts", getIntent().getSerializableExtra("selectedContacts"));
 		intent.putExtra("userId", getIntent().getStringExtra("userId"));
 		startActivity(intent);
+		finish();
 	}
 
 
@@ -33,6 +34,7 @@ public class FollowActivity extends ActionBarActivity{
 		intent.putExtra("selectedContacts", getIntent().getSerializableExtra("selectedContacts"));
 		intent.putExtra("userId", getIntent().getStringExtra("userId"));
 		startActivity(intent);
+		finish();
 	}
 
 
@@ -44,6 +46,7 @@ public class FollowActivity extends ActionBarActivity{
 		intent.putExtra("selectedContacts", getIntent().getSerializableExtra("selectedContacts"));
 		intent.putExtra("userId", getIntent().getStringExtra("userId"));
 		startActivity(intent);
+		finish();
 	}
 
 

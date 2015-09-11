@@ -13,45 +13,60 @@
         android:layout_height="match_parent"
         android:layout_weight="1"/>
     
-    <LinearLayout
+    <RelativeLayout
     android:id="@+id/LinearLayoutRadiusDestinationButton"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_weight="4.5"
-    android:orientation="horizontal" >
+    android:orientation="horizontal" 
+    android:background="#000000" >
     
-        <Button
+        <ImageButton
         android:id="@+id/decrementRadiusDestinationButton"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="20dp"
+        android:background="@drawable/minus_selector"
         android:onClick="decRadiusDestinationOnClickHandler"
-        android:layout_weight="0.33"
         android:text="- Radius" />
         
         <EditText 
 		android:id="@+id/radiusDestinationLabel"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_weight="0.33"
-        android:inputType="number">
+        android:layout_width="100dp"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:inputType="number"
+        android:background="#ffffff" >
 		</EditText>
         
-        <Button
+        <ImageButton
         android:id="@+id/incrementRadiusDestinationButton"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:onClick="incRadiusDestinationOnClickHandler"
-        android:layout_weight="0.33"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:layout_marginRight="20dp"
+        android:background="@drawable/plus_selector"
         android:text="+ Radius" />
         
-    </LinearLayout>
+    </RelativeLayout>
     
-    <Button
+    <RelativeLayout 
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_weight="4.5"
+    android:background="#000000" >
+            <ImageButton
         android:id="@+id/sendDestinationRequestButton"
-        android:layout_width="fill_parent"
-        android:layout_height="match_parent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:background="@drawable/done_selector"
         android:onClick="sendDestinationRequestOnClickHandler"
-        android:layout_weight="4.5"
         android:text="Send Destination Request" />
+    </RelativeLayout>
+
 
 </LinearLayout>

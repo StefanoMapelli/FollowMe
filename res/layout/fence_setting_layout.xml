@@ -13,45 +13,62 @@
         android:layout_height="match_parent"
         android:layout_weight="1"/>
     
-    <LinearLayout
+    <RelativeLayout
     android:id="@+id/LinearLayoutRadiusFenceButton"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_weight="4.5"
-    android:orientation="horizontal" >
+    android:orientation="horizontal"
+    android:background="#000000" >
     
-        <Button
-        android:id="@+id/decrementRadiusFenceButton"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:onClick="decRadiusFenceOnClickHandler"
-        android:layout_weight="0.33"
-        android:text="- Radius" />
+        <ImageButton
+            android:id="@+id/decrementRadiusFenceButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="20dp"
+            android:background="@drawable/minus_selector"
+            android:onClick="decRadiusFenceOnClickHandler"
+            android:text="- Radius" />
         
-        <EditText 
-		android:id="@+id/radiusLabel"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_weight="0.33"
-        android:inputType="number">
+        <EditText
+            android:id="@+id/radiusLabel"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:inputType="number"
+            android:background="#ffffff" >
+
 		</EditText>
+
+        <ImageButton
+            android:id="@+id/incrementRadiusFenceButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="20dp"
+            android:background="@drawable/plus_selector"
+            android:onClick="incRadiusFenceOnClickHandler"
+            android:text="+ Radius" />
         
-        <Button
-        android:id="@+id/incrementRadiusFenceButton"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:onClick="incRadiusFenceOnClickHandler"
-        android:layout_weight="0.33"
-        android:text="+ Radius" />
-        
-    </LinearLayout>
+    </RelativeLayout>
     
-    <Button
+    <RelativeLayout 
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_weight="4.5"
+    android:background="#000000">
+
+    <ImageButton
         android:id="@+id/sendFenceRequestButton"
-        android:layout_width="fill_parent"
-        android:layout_height="match_parent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:background="@drawable/done_selector"
         android:onClick="sendFenceRequestOnClickHandler"
-        android:layout_weight="4.5"
         android:text="Send Fence Request" />
+
+    </RelativeLayout>
 
 </LinearLayout>

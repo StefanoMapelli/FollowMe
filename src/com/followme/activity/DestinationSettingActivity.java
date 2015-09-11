@@ -199,6 +199,7 @@ public class DestinationSettingActivity extends ActionBarActivity {
 			intent.putExtra("destinationIdList", destinationIdList);
 			intent.putExtra("requestIdList", requestIdList);
 			startActivity(intent);
+			finish();
 		}
 	}
 
