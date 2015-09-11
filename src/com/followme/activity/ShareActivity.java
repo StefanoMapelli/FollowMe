@@ -785,7 +785,6 @@ public class ShareActivity extends ActionBarActivity implements SavePathDialogLi
 								if(requestIdList.isEmpty())
 								{
 									finishMode=1;
-									finish();
 								}
 							}
 						}
