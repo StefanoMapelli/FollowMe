@@ -44,7 +44,7 @@ public class RequestCustomAdapter extends ArrayAdapter<Request>{
 				PersonalDataManager.getNameOfContact(
 				requests.get(position).getSender().getPhoneNumber()));
 		
-		if(requests.get(position).getType().compareTo("condivisione")==0 || requests.get(position).getType().compareTo("percorso")==0)
+		if(requests.get(position).getType().compareTo("Share")==0 || requests.get(position).getType().compareTo("Path")==0)
 		{
 			ImageButton buttonShowDetails = (ImageButton) convertView.findViewById(R.id.showDetailsRequestButton);
 			buttonShowDetails.setVisibility(View.INVISIBLE);

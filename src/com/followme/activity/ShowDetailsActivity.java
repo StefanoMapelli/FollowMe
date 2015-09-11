@@ -50,7 +50,7 @@ public class ShowDetailsActivity extends ActionBarActivity {
 		//-destinazione
 		switch(typeOfRequest) 
 		{	      	      
-	    case "recinto":
+	    case "Fence":
 		//apro activity recinto
 	    	fenceParseObject=ParseManager.getFenceOfRequest(this, request);
 	    	if(fenceParseObject == null)
@@ -83,7 +83,7 @@ public class ShowDetailsActivity extends ActionBarActivity {
 
 	    	break;
 
-	    case "destinazione":
+	    case "Destination":
 	    	//apro activity destinazione
 	    	destinationParseObject=ParseManager.getDestinationOfRequest(this, request);
 
@@ -127,7 +127,7 @@ public class ShowDetailsActivity extends ActionBarActivity {
 		//valutiamo il tipo di richiesta
 		switch(typeOfRequest) 
 		{	      	      
-		case "recinto":
+		case "Fence":
 		//apro activity recinto
 		    Log.i("typeOfRequest","recinto");
 		    intent = new Intent(ShowDetailsActivity.this,FenceReceiverActivity.class);
@@ -135,7 +135,7 @@ public class ShowDetailsActivity extends ActionBarActivity {
 			startActivity(intent);
 		    break;
 			  
-		case "destinazione":
+		case "Destination":
 		//apro activity destinazione
 		    Log.i("typeOfRequest","destinazione");
 		    intent = new Intent(ShowDetailsActivity.this,DestinationReceiverActivity.class);

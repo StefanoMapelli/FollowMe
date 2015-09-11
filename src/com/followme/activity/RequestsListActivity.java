@@ -74,7 +74,7 @@ public class RequestsListActivity extends ActionBarActivity {
 		switch(typeOfRequest) 
 		{
 		
-	    case "condivisione":
+	    case "Share":
 	    //apro sharingReceiverActivity
 	    	Log.i("typeOfRequest","condivisione");
 	    	intent = new Intent(RequestsListActivity.this,SharingReceiverActivity.class);
@@ -82,7 +82,7 @@ public class RequestsListActivity extends ActionBarActivity {
 			startActivity(intent);
 	    	break;
 	      
-	    case "percorso":
+	    case "Path":
 	    //apro activity percorso
 	    	Log.i("typeOfRequest","percorso");
 	    	intent = new Intent(RequestsListActivity.this,PathReceiverActivity.class);
@@ -90,7 +90,7 @@ public class RequestsListActivity extends ActionBarActivity {
 			startActivity(intent);
 	    	break;
 	      
-	    case "recinto":
+	    case "Fence":
 		//apro activity recinto
 	    	Log.i("typeOfRequest","recinto");
 	    	intent = new Intent(RequestsListActivity.this,FenceReceiverActivity.class);
@@ -98,7 +98,7 @@ public class RequestsListActivity extends ActionBarActivity {
 			startActivity(intent);
 	    	break;
 		  
-	    case "destinazione":
+	    case "Destination":
 	    //apro activity destinazione
 	    	Log.i("typeOfRequest","destinazione");
 	    	intent = new Intent(RequestsListActivity.this,DestinationReceiverActivity.class);
