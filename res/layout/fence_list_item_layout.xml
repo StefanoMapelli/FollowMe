@@ -2,36 +2,48 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#494949"
     android:orientation="vertical"
-    android:weightSum="1"
-    android:background="#494949" >
-    
+    android:weightSum="1" >
+
     <TextView
         android:id="@+id/userInTheFence"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_weight="0.25"
-        android:clickable="true"/>
-    
+        android:clickable="true"
+        android:paddingLeft="6sp"
+        android:textColor="#FFFFFF"
+        android:textSize="20sp" />
+
     <TextView
         android:id="@+id/radiusOfTheFence"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_weight="0.25"
-        android:clickable="true"/>
-    
+        android:clickable="true"
+        android:paddingLeft="6sp"
+        android:textColor="#FFFFFF"
+        android:textSize="20sp" />
+
     <TextView
         android:id="@+id/centerOfTheFence"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_weight="0.25"
-        android:clickable="true"/>
+        android:clickable="true"
+        android:paddingLeft="6sp"
+        android:textColor="#FFFFFF"
+        android:textSize="20sp" />
 
     <TextView
-        android:layout_weight="0.25"
         android:id="@+id/statusOfTheFence"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:clickable="true" />
-    
+        android:layout_weight="0.25"
+        android:clickable="true"
+        android:paddingLeft="6sp"
+        android:textColor="#FFFFFF"
+        android:textSize="20sp" />
+
 </LinearLayout>

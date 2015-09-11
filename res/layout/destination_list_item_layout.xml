@@ -11,21 +11,30 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_weight="0.25"
-        android:clickable="true" />
+        android:clickable="true" 
+        android:paddingLeft="6sp"
+        android:textColor="#FFFFFF"
+        android:textSize="20sp"/>
     
     <TextView
         android:id="@+id/radiusOfTheDestination"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_weight="0.25"
-        android:clickable="true"/>
+        android:clickable="true"
+        android:paddingLeft="6sp"
+        android:textColor="#FFFFFF"
+        android:textSize="20sp"/>
     
     <TextView
         android:id="@+id/centerOfTheDestination"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_weight="0.25"
-        android:clickable="true" 
+        android:clickable="true"
+        android:paddingLeft="6sp"
+        android:textColor="#FFFFFF"
+        android:textSize="20sp" 
         />
  
 
@@ -34,6 +43,9 @@
         android:id="@+id/statusOfTheDestination"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:clickable="true" />
+        android:clickable="true" 
+        android:paddingLeft="6sp"
+        android:textColor="#FFFFFF"
+        android:textSize="20sp"/>
     
 </LinearLayout>

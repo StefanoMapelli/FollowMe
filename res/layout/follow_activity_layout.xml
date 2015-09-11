@@ -4,28 +4,47 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:weightSum="1"
-    android:orientation="vertical" >
+    android:orientation="vertical" 
+    android:background="#494949">
         <Button
             android:id="@+id/fenceButton"
-            android:layout_width="fill_parent"
+            android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="0.33"
             android:onClick="startFenceOnClickHandler"
-            android:text="Fence ###" />
+            android:drawableTop="@drawable/fence"
+            android:paddingTop="20sp"
+            android:layout_margin="20sp"
+            android:textSize="20sp"
+            android:text="Fence"
+            android:textColor="#ffffff"
+            android:background="@drawable/button_selector"/>
         
         <Button
             android:id="@+id/destinationButton"
-            android:layout_width="fill_parent"
+            android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="0.33"
             android:onClick="startDestinationOnClickHandler"
-            android:text="Destination  --> O" />
+            android:drawableTop="@drawable/destination"
+            android:paddingTop="20sp"
+            android:layout_margin="20sp"
+            android:textSize="20sp"
+            android:text="Destination"
+            android:textColor="#ffffff"
+            android:background="@drawable/button_selector"/>
 
         <Button
             android:id="@+id/pathButton"
-            android:layout_width="fill_parent"
+            android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="0.33"
             android:onClick="startPathOnClickHandler"
-            android:text="Path" />
+            android:drawableTop="@drawable/follow"
+            android:paddingTop="20sp"
+            android:layout_margin="20sp"
+            android:textSize="20sp"
+            android:text="Path"
+            android:textColor="#ffffff"
+            android:background="@drawable/button_selector"/>
 </LinearLayout>

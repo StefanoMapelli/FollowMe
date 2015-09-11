@@ -39,8 +39,8 @@ public class DestinationCustomAdapter extends ArrayAdapter<Destination>{
 		TextView statusText = (TextView) convertView.findViewById(R.id.statusOfTheDestination);
 
 		userText.setText("User: "+ destination.get(position).getUser().getName());
-		centerText.setText("Center: "+ destination.get(position).getCenter().latitude+ " - " +destination.get(position).getCenter().longitude);
-		radiusText.setText("Radius: "+ destination.get(position).getRadius());
+		centerText.setText("Center: "+ Double.toString(destination.get(position).getCenter().latitude).substring(0, 9)+ " - " +Double.toString(destination.get(position).getCenter().longitude).substring(0, 9));
+		radiusText.setText("Radius: "+ destination.get(position).getRadius()+"m");
 		if(destination.get(position).isInTheDestination())
 		{
 			statusText.setText("Status: User Is In The Destination Zone");
@@ -48,7 +48,7 @@ public class DestinationCustomAdapter extends ArrayAdapter<Destination>{
 		}
 		else
 		{
-			statusText.setText("Status: User Not Arrived");
+			statusText.setText("Status: User Is Not Arrived");
 			statusText.setTextColor(Color.RED);
 		}
 		

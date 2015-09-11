@@ -40,16 +40,16 @@ public class FenceCustomAdapter extends ArrayAdapter<Fence>{
 		TextView statusText = (TextView) convertView.findViewById(R.id.statusOfTheFence);
 
 		userText.setText("User: "+ fence.get(position).getUser().getName());
-		centerText.setText("Center: "+ fence.get(position).getCenter().latitude+ " - " +fence.get(position).getCenter().longitude);
-		radiusText.setText("Radius: "+ fence.get(position).getRadius());
+		centerText.setText("Center: "+ Double.toString(fence.get(position).getCenter().latitude).substring(0, 9)+ " - " +Double.toString(fence.get(position).getCenter().longitude).substring(0, 9));
+		radiusText.setText("Radius: "+ fence.get(position).getRadius()+"m");
 		if(fence.get(position).isInTheFence())
 		{
-			statusText.setText("Status: User in the fence");
+			statusText.setText("Status: User is in the fence");
 			statusText.setTextColor(Color.GREEN);
 		}
 		else
 		{
-			statusText.setText("Status: User run away");
+			statusText.setText("Status: User runs away");
 			statusText.setTextColor(Color.RED);
 		}
 		

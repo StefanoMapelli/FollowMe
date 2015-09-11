@@ -23,6 +23,7 @@
     <string name="title_activity_video_insert">Insert Video</string>
     <string name="title_activity_fence_control">Follow Me</string>
     <string name="title_activity_media_gallery">Gallery</string>
+    <string name="title_activity_follow">Follow</string>
     <string name="dummy_button">Dummy Button</string>
     <string name="dummy_content">DUMMY\nCONTENT</string>
     <string name="title_activity_fence_receiver">Fence</string>
