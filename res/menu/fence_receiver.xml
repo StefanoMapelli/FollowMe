@@ -3,4 +3,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="com.followme.activity.FenceReceiverActivity" >
 
+        <item android:id="@+id/fenceZoomButton"
+          android:title="Fence Zoom"
+          app:showAsAction="always"
+          android:icon="@drawable/circle"  />
+    
 </menu>

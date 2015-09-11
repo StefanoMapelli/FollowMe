@@ -223,6 +223,17 @@ public class FenceReceiverActivity extends ActionBarActivity {
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 
+		if(item.getItemId() == R.id.fenceZoomButton)
+		{
+			CameraPosition cameraPosition = new CameraPosition.Builder()
+			.target(center)
+			.zoom(17)
+			.bearing(0)           
+			.tilt(0)             
+			.build();
+			map.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+		}
+		
 		return super.onOptionsItemSelected(item);
 	}
 	
