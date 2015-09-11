@@ -3,12 +3,12 @@ package com.followme.activity;
 import java.util.ArrayList;
 
 import com.followme.adapter.PathCustomAdapter;
-import com.followme.manager.ParseManager;
 import com.followme.manager.PersonalDataManager;
 import com.followme.object.Path;
-import com.followme.object.Request;
 
 import android.support.v7.app.ActionBarActivity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
@@ -47,6 +47,20 @@ public class SavedPathListActivity extends ActionBarActivity {
    				startActivity(intent);
 			}
         });
+		
+		if(pathList.isEmpty())
+		{
+			new AlertDialog.Builder(this)
+		    .setTitle("Attention")
+		    .setMessage("There no saved paths on this device!")
+		    .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+		        public void onClick(DialogInterface dialog, int which) { 
+		        	finish();
+		        }
+		     })
+		    .setIcon(android.R.drawable.ic_dialog_alert)
+		    .show();
+		}
 	}
 	
 	
