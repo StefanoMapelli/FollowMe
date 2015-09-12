@@ -17,7 +17,7 @@
     <string name="title_activity_show_details">Details of the Request</string>
     <string name="title_activity_sharing_receiver">Sharing</string>
     <string name="title_activity_photo_insert">Insert Photo</string>
-    <string name="title_activity_choose_contacts_for_follow">Contacts</string>
+    <string name="title_activity_choose_contacts_for_follow">Select Contacts</string>
     <string name="title_activity_fence_setting">Fence Setting</string>
     <string name="title_activity_destination_setting">Destination Setting</string>
     <string name="title_activity_video_insert">Insert Video</string>
