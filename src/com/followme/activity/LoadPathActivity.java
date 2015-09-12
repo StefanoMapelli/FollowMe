@@ -13,6 +13,7 @@ import com.followme.manager.PersonalDataManager;
 import com.followme.manager.Utils;
 import com.followme.object.CustomMarker;
 import com.followme.object.Media;
+import com.followme.object.Path;
 import com.followme.object.PhotoMarker;
 import com.followme.object.Position;
 import com.followme.object.VideoMarker;
@@ -60,6 +61,7 @@ public class LoadPathActivity extends ActionBarActivity {
 	private int markerCounter = 0;
 	private ProgressDialog progressBar;
 	private Handler handler;
+	private Path path;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -173,7 +175,7 @@ public class LoadPathActivity extends ActionBarActivity {
 
 							return infoWindow;
 						}
-						else
+						else if(marker.getTitle().startsWith("video"))
 						{
 							// MapWrapperLayout initialization
 							mapWrapperLayout.init(map, Utils.getPixelsFromDp(LoadPathActivity.this, 59)); 				
@@ -203,6 +205,10 @@ public class LoadPathActivity extends ActionBarActivity {
 
 							return infoWindow;
 						}
+						else
+						{
+							return null;
+						}
 					}
 				});
 				
@@ -220,6 +226,29 @@ public class LoadPathActivity extends ActionBarActivity {
 				.tilt(0)             
 				.build();
 				map.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+				
+				//inserisco marker inzio e fine
+				handler.post(new Runnable() {
+					@Override
+					public void run() 
+					{
+						//add marker inizio
+						map.addMarker(new MarkerOptions()
+						.position(new LatLng(positionList.get(0).getLatitude(),
+								positionList.get(0).getLongitude()))
+								.snippet("Start")
+								.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE))
+								.title(path.getOwner()));
+						
+						//add marker fine
+						map.addMarker(new MarkerOptions()
+						.position(new LatLng(positionList.get(positionList.size()-1).getLatitude(),
+								positionList.get(positionList.size()-1).getLongitude()))
+								.snippet("End")
+								.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE))
+								.title(path.getOwner()));
+					}
+				});
 				
 				progressBar.setProgress(50);
 				
@@ -325,13 +354,13 @@ public class LoadPathActivity extends ActionBarActivity {
 			map = ((SupportMapFragment) fm.findFragmentById(R.id.mapLoad)).getMap();
 			mapWrapperLayout = (MapWrapperLayout)findViewById(R.id.mapLoadLinearLayout);
 
-			String idPath=getIntent().getStringExtra("pathLocalId");
+			path=(Path)getIntent().getSerializableExtra("path");
 
 
 			//recupero tutti i dati del percorso
-			positionList=PersonalDataManager.getAllPositionsOfPath(idPath);
-			photos=PersonalDataManager.getAllPhotosOfPath(idPath);
-			videos=PersonalDataManager.getAllVideosOfPath(idPath);
+			positionList=PersonalDataManager.getAllPositionsOfPath(path.getId());
+			photos=PersonalDataManager.getAllPhotosOfPath(path.getId());
+			videos=PersonalDataManager.getAllVideosOfPath(path.getId());
 
 			//listener photo video path sulla mappa
 			publishProgress(3,0);	

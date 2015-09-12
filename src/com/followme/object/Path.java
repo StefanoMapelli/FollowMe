@@ -1,7 +1,13 @@
 package com.followme.object;
 
-public class Path {
+import java.io.Serializable;
+
+public class Path implements Serializable{
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -3881754330246868018L;
 	private String id;
 	private String title;
 	private String owner;

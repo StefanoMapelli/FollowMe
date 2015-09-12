@@ -43,7 +43,7 @@ public class SavedPathListActivity extends ActionBarActivity {
 					int position, long id) {
 				
    				Intent intent = new Intent(SavedPathListActivity.this, LoadPathActivity.class);
-   				intent.putExtra("pathLocalId", pathList.get((int)id).getId());
+   				intent.putExtra("path", pathList.get((int)id));
    				startActivity(intent);
 			}
         });
