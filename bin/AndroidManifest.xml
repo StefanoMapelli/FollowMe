@@ -80,8 +80,7 @@
         <activity
             android:name=".ShareActivity"
             android:label="@string/title_activity_share"
-            android:screenOrientation="portrait"
-            android:launchMode="singleInstance" >
+            android:screenOrientation="portrait">
         </activity>
         <activity
             android:name=".RequestsListActivity"
