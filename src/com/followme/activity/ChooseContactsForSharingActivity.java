@@ -118,7 +118,7 @@ public class ChooseContactsForSharingActivity extends ActionBarActivity
 		@Override
 		protected String doInBackground(Void... params) 
 		{
-			List<Contact> list= ParseManager.allContactsOnParse(ChooseContactsForSharingActivity.this);
+			List<Contact> list= ParseManager.allUsers(ChooseContactsForSharingActivity.this);
 
 			if(list == null)
 			{
@@ -139,6 +139,7 @@ public class ChooseContactsForSharingActivity extends ActionBarActivity
 				{
 					PersonalDataManager.insertContact(c);
 				}
+				contacts = PersonalDataManager.getAllContacts();
 				Iterator<Contact> i = contacts.iterator();
 				Contact c;
 				int j=0;
