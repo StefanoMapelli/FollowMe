@@ -142,7 +142,7 @@ public class PersonalDataManager {
 		  allColumnContact[1]=DatabaseCreationManager.COLUMN_NUMBER;
 		  allColumnContact[2]=DatabaseCreationManager.COLUMN_NAME;
 
-		  Cursor cursor =database.query(DatabaseCreationManager.TABLE_CONTACT, allColumnContact, null, null, null, null, null);
+		  Cursor cursor =database.query(DatabaseCreationManager.TABLE_CONTACT, allColumnContact, null, null, null, null, DatabaseCreationManager.COLUMN_NAME +" asc");
 
 		  if(cursor.moveToFirst())
 		  {
