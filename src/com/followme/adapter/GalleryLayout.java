@@ -96,7 +96,9 @@ public class GalleryLayout extends HorizontalScrollView {
 		                MediaStore.Images.Thumbnails.FULL_SCREEN_KIND);		        
 				title.setText(vm.getSnippet());
 				
-				Bitmap playIcon = BitmapFactory.decodeResource(getResources(), R.drawable.play);
+				Bitmap play = BitmapFactory.decodeResource(getResources(), R.drawable.play);
+				Bitmap playIcon = Bitmap.createScaledBitmap(play,
+						play.getWidth()/2, play.getHeight()/2, false);
 				Bitmap bmOverlay = Bitmap.createBitmap(thumb.getWidth(), thumb.getHeight(), thumb.getConfig());
 		        Canvas canvas = new Canvas(bmOverlay);
 		        canvas.drawBitmap(thumb, new Matrix(), null);
