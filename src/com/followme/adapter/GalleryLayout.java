@@ -84,7 +84,6 @@ public class GalleryLayout extends HorizontalScrollView {
 				title.setText(pm.getSnippet());
 				image.setImageBitmap(bitmap);
 				Utils.rotateImageView(image, pm.getPath());
-				final String path = pm.getPath();
 				PhotoViewAttacher attacher = new PhotoViewAttacher(image);
 		        attacher.update();
 			}
