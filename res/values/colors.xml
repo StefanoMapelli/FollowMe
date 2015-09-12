@@ -3,7 +3,8 @@
     <color name="black_overlay">#66000000</color>
     <color name="black">#000000</color>
     <color name="dark_green">#001909</color>
-    <color name="background">#009688</color>
-    <color name="item_list_background">#004D40</color>
+    <color name="background">#78909C</color>
+    <color name="item_list_background">#263238</color>
+    <color name="item_list_text">#FFFFFF</color>
 
 </resources>
