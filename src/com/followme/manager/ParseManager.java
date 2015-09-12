@@ -625,7 +625,7 @@ public class ParseManager {
 	 * Method that return the phone numbers of all the users present on parse db
 	 * @return a list of contacts
 	 */
-	public static List<Contact> allContactsOnParse(Context context)
+	public static List<Contact> allUsers(Context context)
 	{
 		List<Contact> allNumbers = new ArrayList<Contact>();
 		List<ParseObject> objects = null;

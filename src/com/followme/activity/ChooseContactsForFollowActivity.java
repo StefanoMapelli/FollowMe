@@ -121,9 +121,9 @@ public class ChooseContactsForFollowActivity extends ActionBarActivity {
 		@Override
 		protected String doInBackground(Void... params) 
 		{
-			List<Contact> list = ParseManager.allContactsOnParse(ChooseContactsForFollowActivity.this);
+			List<Contact> allUsers = ParseManager.allUsers(ChooseContactsForFollowActivity.this);
 			
-			if(list == null)
+			if(allUsers == null)
 			{
 				publishProgress(3);
 				return null;
@@ -132,7 +132,7 @@ public class ChooseContactsForFollowActivity extends ActionBarActivity {
 			{
 				contacts = Utils.phoneContactsOnParse(
 						DeviceDataManager.allContacts(ChooseContactsForFollowActivity.this), 
-						list);
+						allUsers);
 				
 				publishProgress(1);
 				
@@ -141,6 +141,7 @@ public class ChooseContactsForFollowActivity extends ActionBarActivity {
 				{
 					PersonalDataManager.insertContact(c);
 				}
+				contacts = PersonalDataManager.getAllContacts();
 				Iterator<Contact> i = contacts.iterator();
 				Contact c;
 				int j=0;
