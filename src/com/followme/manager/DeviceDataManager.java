@@ -37,6 +37,7 @@ public class DeviceDataManager {
 				 allContacts.add(new Contact(null, name, phone_number));
 		    }
 		}
+		cursor.close();
 		return allContacts;
 	}
 	
@@ -54,10 +55,12 @@ public class DeviceDataManager {
 		        {
 		           String pn = phones.getString(phones.getColumnIndex(Phone.NUMBER));
 		           pn = pn.replace("+39", "");
+		           cursor.close();
 		           return pn.replace(" ", "");
 		           
 		        }
 		}
+		cursor.close();
 		return null;
 	}
 
