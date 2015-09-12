@@ -6,7 +6,7 @@
     android:weightSum="1"
     android:background="#494949" >
     
-    <TextView
+    <com.followme.adapter.CustomTextView
         android:id="@+id/requestType"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -16,7 +16,7 @@
         android:paddingLeft="6sp"
         android:clickable="true" />
     
-    <TextView
+    <com.followme.adapter.CustomTextView
         android:id="@+id/requestSender"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

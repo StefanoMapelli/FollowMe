@@ -6,7 +6,7 @@
     android:orientation="vertical"
     android:weightSum="1" >
 
-    <TextView
+    <com.followme.adapter.CustomTextView
         android:id="@+id/userInTheFence"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -16,7 +16,7 @@
         android:textColor="#FFFFFF"
         android:textSize="20sp" />
 
-    <TextView
+    <com.followme.adapter.CustomTextView
         android:id="@+id/radiusOfTheFence"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -26,7 +26,7 @@
         android:textColor="#FFFFFF"
         android:textSize="20sp" />
 
-    <TextView
+    <com.followme.adapter.CustomTextView
         android:id="@+id/centerOfTheFence"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -36,7 +36,7 @@
         android:textColor="#FFFFFF"
         android:textSize="20sp" />
 
-    <TextView
+    <com.followme.adapter.CustomTextView
         android:id="@+id/statusOfTheFence"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

@@ -20,7 +20,7 @@
         	
         </FrameLayout> 
                                            
-         <TextView
+         <com.followme.adapter.CustomTextView
             android:id="@+id/titlePhotoPage"
             android:layout_width="match_parent"
             android:layout_height="match_parent"

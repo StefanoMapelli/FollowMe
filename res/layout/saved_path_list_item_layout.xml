@@ -18,7 +18,7 @@
         android:background="#494949"
         android:padding="10sp">
 
-        <TextView
+        <com.followme.adapter.CustomTextView
             android:id="@+id/savedPathTitle"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -27,7 +27,7 @@
         	android:textColor="#FFFFFF"
             />
         
-        <TextView
+        <com.followme.adapter.CustomTextView
             android:id="@+id/savedPathDate"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -36,7 +36,7 @@
         	android:textColor="#FFFFFF"
             />
 
-        <TextView
+        <com.followme.adapter.CustomTextView
             android:id="@+id/savedPathOwner"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
