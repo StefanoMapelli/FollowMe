@@ -71,7 +71,7 @@ public class PersonalDataManager {
 		  ContentValues values = new ContentValues();
 		  values.put(DatabaseCreationManager.COLUMN_TITLE, title);
 		  values.put(DatabaseCreationManager.COLUMN_OWNER, ownerUser);
-		  values.put(DatabaseCreationManager.COLUMN_DATE, date.toGMTString().replace(" GMT", ""));
+		  values.put(DatabaseCreationManager.COLUMN_DATE, date.toGMTString().replace(" GMT", "").substring(0, 17));
 		  long pathId=database.insert(DatabaseCreationManager.TABLE_PATH, null,values);
 		  return (int) pathId;
 	  }
