@@ -319,8 +319,8 @@ public class ShareActivity extends ActionBarActivity implements SavePathDialogLi
 
 							Bitmap play = BitmapFactory.decodeResource(getResources(), R.drawable.play);
 							Bitmap playIcon = Bitmap.createScaledBitmap(play,
-									play.getWidth()/3, play.getHeight()/3, false);
-							;
+									play.getWidth()/4, play.getHeight()/4, false);
+							
 							Bitmap bmOverlay = Bitmap.createBitmap(thumb.getWidth(), thumb.getHeight(), thumb.getConfig());
 							Canvas canvas = new Canvas(bmOverlay);
 							canvas.drawBitmap(thumb, new Matrix(), null);
