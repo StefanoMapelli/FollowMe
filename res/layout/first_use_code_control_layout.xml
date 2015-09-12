@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical" >
 
-    <EditText
+    <com.followme.adapter.CustomEditText 
         android:id="@+id/codeText"
         style="@style/AppBaseTheme"
         android:layout_width="wrap_content"
@@ -16,7 +16,7 @@
         android:ems="10" >
 
         <requestFocus />
-    </EditText>
+    </com.followme.adapter.CustomEditText >
 
     <com.followme.adapter.CustomTextView
         android:id="@+id/codeLabel"

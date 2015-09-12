@@ -31,7 +31,7 @@
             android:onClick="decRadiusFenceOnClickHandler"
             android:text="- Radius" />
         
-        <EditText
+        <com.followme.adapter.CustomEditText 
             android:id="@+id/radiusLabel"
             android:layout_width="100dp"
             android:layout_height="wrap_content"
@@ -39,7 +39,7 @@
             android:inputType="number"
             android:background="#ffffff" >
 
-		</EditText>
+		</com.followme.adapter.CustomEditText >
 
         <ImageButton
             android:id="@+id/incrementRadiusFenceButton"

@@ -4,7 +4,7 @@
     android:layout_height="wrap_content"
     android:orientation="vertical" >
     
-    <EditText
+    <com.followme.adapter.CustomEditText 
         android:id="@+id/savePathTitle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

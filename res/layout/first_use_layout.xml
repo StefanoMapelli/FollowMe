@@ -14,7 +14,7 @@
         android:text="Inserisci numero di telefono"
         android:textAppearance="?android:attr/textAppearanceLarge" />
 
-    <EditText
+    <com.followme.adapter.CustomEditText 
         android:id="@+id/phoneNumberText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

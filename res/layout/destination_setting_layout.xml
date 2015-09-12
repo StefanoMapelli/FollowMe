@@ -31,14 +31,14 @@
         android:onClick="decRadiusDestinationOnClickHandler"
         android:text="- Radius" />
         
-        <EditText 
+        <com.followme.adapter.CustomEditText 
 		android:id="@+id/radiusDestinationLabel"
         android:layout_width="100dp"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
         android:inputType="number"
         android:background="#ffffff" >
-		</EditText>
+		</com.followme.adapter.CustomEditText >
         
         <ImageButton
         android:id="@+id/incrementRadiusDestinationButton"

@@ -237,7 +237,6 @@ public class LoadPathActivity extends ActionBarActivity {
 						.position(new LatLng(positionList.get(0).getLatitude(),
 								positionList.get(0).getLongitude()))
 								.snippet("Start")
-								.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE))
 								.title(path.getOwner()));
 						
 						//add marker fine
@@ -245,7 +244,6 @@ public class LoadPathActivity extends ActionBarActivity {
 						.position(new LatLng(positionList.get(positionList.size()-1).getLatitude(),
 								positionList.get(positionList.size()-1).getLongitude()))
 								.snippet("End")
-								.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE))
 								.title(path.getOwner()));
 					}
 				});
