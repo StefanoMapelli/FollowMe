@@ -17,6 +17,8 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
@@ -43,6 +45,8 @@ public class MainActivity extends ActionBarActivity  {
 	{
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.main_activity_layout);
+		
+		
 		
 		handler=new Handler();
 		vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
