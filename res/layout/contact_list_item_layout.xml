@@ -6,7 +6,7 @@
     android:orientation="horizontal"
     android:weightSum="1" 
     android:padding="10sp"
-    android:background="#494949">
+    android:background="@color/item_list_background">
 
      <CheckBox
          android:id="@+id/chk"
@@ -23,6 +23,6 @@
         android:clickable="true"
         android:gravity="center_vertical"
         android:textSize="30sp" 
-        android:textColor="#FFFFFF"/>
+        android:textColor="@color/item_list_text"/>
 
 </LinearLayout>

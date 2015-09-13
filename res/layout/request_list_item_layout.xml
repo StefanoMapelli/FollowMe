@@ -4,7 +4,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:weightSum="1"
-    android:background="#494949" >
+    android:background="@color/item_list_background" >
     
     <com.followme.adapter.CustomTextView
         android:id="@+id/requestType"
@@ -12,8 +12,8 @@
         android:layout_height="match_parent"
         android:layout_weight="0.33"
         android:textSize="20sp"
-        android:textColor="#FFFFFF"
-        android:paddingLeft="6sp"
+        android:textColor="@color/item_list_text"
+        android:padding="10sp"
         android:clickable="true" />
     
     <com.followme.adapter.CustomTextView
@@ -22,8 +22,8 @@
         android:layout_height="match_parent"
         android:layout_weight="0.33"
         android:textSize="20sp"
-        android:textColor="#FFFFFF"
-        android:paddingLeft="6sp"
+        android:textColor="@color/item_list_text"
+        android:padding="10sp"
         android:clickable="true" />
     
     
@@ -34,7 +34,8 @@
         android:weightSum="1"
         android:layout_weight="0.33"
         android:orientation="horizontal"
-        android:background="#494949" >
+        android:background="@color/item_list_background" 
+        android:padding="6sp">
     
     	<ImageButton
             android:id="@+id/acceptRequestButton"
@@ -43,8 +44,7 @@
             android:layout_weight="0.33"
             android:onClick="acceptRequestOnClickHandler"
             android:src="@drawable/done_selector"
-            android:background="#494949"
-            android:paddingBottom="6sp"/>
+          	/>
     	
         
     	<ImageButton
@@ -54,8 +54,7 @@
             android:layout_weight="0.33"
             android:onClick="declineRequestOnClickHandler"
             android:src="@drawable/no_selector"
-            android:background="#494949"
-            android:paddingBottom="6sp"/>
+            />
     	
     	<ImageButton
             android:id="@+id/showDetailsRequestButton"
@@ -64,8 +63,7 @@
             android:layout_weight="0.33"
             android:onClick="showDetailsRequestOnClickHandler"
             android:src="@drawable/eye_selector"
-            android:background="#494949"
-            android:paddingBottom="6sp"/>
+            />
     	
     </LinearLayout>
     

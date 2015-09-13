@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     android:weightSum="1"
     android:orientation="vertical" 
-    android:background="#494949">
+    android:background="@color/background">
         <Button
             android:id="@+id/fenceButton"
             android:layout_width="match_parent"
@@ -17,9 +17,9 @@
             android:layout_margin="20sp"
             android:textSize="20sp"
             android:text="Fence"
-            android:textColor="#ffffff"
+            android:textColor="@color/item_list_text"
             android:background="@drawable/button_selector"/>
-        
+        	
         <Button
             android:id="@+id/destinationButton"
             android:layout_width="match_parent"
@@ -31,7 +31,7 @@
             android:layout_margin="20sp"
             android:textSize="20sp"
             android:text="Destination"
-            android:textColor="#ffffff"
+            android:textColor="@color/item_list_text"
             android:background="@drawable/button_selector"/>
 
         <Button
@@ -45,6 +45,6 @@
             android:layout_margin="20sp"
             android:textSize="20sp"
             android:text="Path"
-            android:textColor="#ffffff"
+            android:textColor="@color/item_list_text"
             android:background="@drawable/button_selector"/>
 </LinearLayout>

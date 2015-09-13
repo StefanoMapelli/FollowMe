@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:weightSum="1"
-    android:background="@color/dark_green" >
+    android:background="@color/background" >
 
     <ListView
         android:id="@+id/contactListFollow"
@@ -17,8 +17,8 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_weight="0.9" 
-         android:background="#000000">
+        android:layout_weight="0.9"
+        android:background="@color/black">
         
     	<ImageButton
         	android:id="@+id/contactSelectFollowButton"

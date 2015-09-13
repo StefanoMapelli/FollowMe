@@ -2,9 +2,10 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#494949"
+    android:background="@color/item_list_background"
     android:orientation="vertical"
-    android:weightSum="1" >
+    android:weightSum="1"
+    android:padding="10sp" >
 
     <com.followme.adapter.CustomTextView
         android:id="@+id/userInTheFence"
@@ -12,9 +13,8 @@
         android:layout_height="match_parent"
         android:layout_weight="0.25"
         android:clickable="true"
-        android:paddingLeft="6sp"
-        android:textColor="#FFFFFF"
-        android:textSize="20sp" />
+        android:textColor="@color/item_list_text"
+        android:textSize="22sp" />
 
     <com.followme.adapter.CustomTextView
         android:id="@+id/radiusOfTheFence"
@@ -22,9 +22,8 @@
         android:layout_height="match_parent"
         android:layout_weight="0.25"
         android:clickable="true"
-        android:paddingLeft="6sp"
-        android:textColor="#FFFFFF"
-        android:textSize="20sp" />
+        android:textColor="@color/item_list_text"
+        android:textSize="22sp" />
 
     <com.followme.adapter.CustomTextView
         android:id="@+id/centerOfTheFence"
@@ -32,9 +31,8 @@
         android:layout_height="match_parent"
         android:layout_weight="0.25"
         android:clickable="true"
-        android:paddingLeft="6sp"
-        android:textColor="#FFFFFF"
-        android:textSize="20sp" />
+        android:textColor="@color/item_list_text"
+        android:textSize="22sp" />
 
     <com.followme.adapter.CustomTextView
         android:id="@+id/statusOfTheFence"
@@ -42,8 +40,6 @@
         android:layout_height="match_parent"
         android:layout_weight="0.25"
         android:clickable="true"
-        android:paddingLeft="6sp"
-        android:textColor="#FFFFFF"
-        android:textSize="20sp" />
+        android:textSize="22sp" />
 
 </LinearLayout>

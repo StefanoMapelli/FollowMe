@@ -19,7 +19,7 @@
     android:layout_height="match_parent"
     android:layout_weight="4.5"
     android:orientation="horizontal" 
-    android:background="#000000" >
+    android:background="@color/background" >
     
         <ImageButton
         android:id="@+id/decrementRadiusDestinationButton"
@@ -37,7 +37,7 @@
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
         android:inputType="number"
-        android:background="#ffffff" >
+        android:background="@color/item_list_text" >
 		</com.followme.adapter.CustomEditText >
         
         <ImageButton
@@ -51,22 +51,20 @@
         android:background="@drawable/plus_selector"
         android:text="+ Radius" />
         
-    </RelativeLayout>
-    
-    <RelativeLayout 
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:layout_weight="4.5"
-    android:background="#000000" >
-            <ImageButton
-        android:id="@+id/sendDestinationRequestButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:background="@drawable/done_selector"
-        android:onClick="sendDestinationRequestOnClickHandler"
-        android:text="Send Destination Request" />
-    </RelativeLayout>
+    </RelativeLayout><RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="4.5"
+        android:background="@color/black" >
 
+        <ImageButton
+            android:id="@+id/sendDestinationRequestButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:background="@drawable/done_selector"
+            android:onClick="sendDestinationRequestOnClickHandler"
+            android:text="Send Destination Request" />
+    </RelativeLayout>
 
 </LinearLayout>

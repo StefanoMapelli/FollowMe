@@ -4,7 +4,8 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:weightSum="1" 
-    android:background="#494949" >
+    android:background="@color/item_list_background" 
+    android:padding="10sp">
     
     <com.followme.adapter.CustomTextView
         android:id="@+id/userToDestination"
@@ -12,9 +13,8 @@
         android:layout_height="match_parent"
         android:layout_weight="0.25"
         android:clickable="true" 
-        android:paddingLeft="6sp"
-        android:textColor="#FFFFFF"
-        android:textSize="20sp"/>
+        android:textColor="@color/item_list_text"
+        android:textSize="22sp"/>
     
     <com.followme.adapter.CustomTextView
         android:id="@+id/radiusOfTheDestination"
@@ -22,9 +22,8 @@
         android:layout_height="match_parent"
         android:layout_weight="0.25"
         android:clickable="true"
-        android:paddingLeft="6sp"
-        android:textColor="#FFFFFF"
-        android:textSize="20sp"/>
+        android:textColor="@color/item_list_text"
+        android:textSize="22sp"/>
     
     <com.followme.adapter.CustomTextView
         android:id="@+id/centerOfTheDestination"
@@ -32,9 +31,8 @@
         android:layout_height="match_parent"
         android:layout_weight="0.25"
         android:clickable="true"
-        android:paddingLeft="6sp"
-        android:textColor="#FFFFFF"
-        android:textSize="20sp" 
+        android:textColor="@color/item_list_text"
+        android:textSize="22sp" 
         />
  
 
@@ -43,9 +41,8 @@
         android:id="@+id/statusOfTheDestination"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:clickable="true" 
-        android:paddingLeft="6sp"
-        android:textColor="#FFFFFF"
-        android:textSize="20sp"/>
+        android:clickable="true"
+        android:textColor="@color/item_list_text"
+        android:textSize="22sp"/>
     
 </LinearLayout>
