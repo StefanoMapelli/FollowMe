@@ -1,16 +1,10 @@
 package com.followme.activity;
 
-
-import java.util.Random;
-
 import com.followme.activity.R;
 import com.followme.manager.ParseManager;
 import com.followme.manager.PersonalDataManager;
-
 import android.app.Activity;
-import android.content.ContentValues;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.telephony.SmsManager;
 import android.view.View;
@@ -24,9 +18,7 @@ public class FirstUseActivity extends Activity {
 	private EditText phoneNumberText;
 	private Button okButton;
 	private String phoneNumber;
-	
-	private static final String _CHAR = "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
-	
+		
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
 	{
@@ -43,132 +35,40 @@ public class FirstUseActivity extends Activity {
 				phoneNumber = phoneNumberText.getText().toString();
 				
 				if(phoneNumber.length()==10)
-				{
-				
-					//scrivo sms di conferma con codice random
-					SmsManager smsManager = SmsManager.getDefault();
-					String rdmCode = getRandomString(); 
-					smsManager.sendTextMessage(phoneNumber, null, rdmCode, null, null);
-					
-					try {
-						Thread.sleep(2000);
-					} catch (InterruptedException e) {
-						e.printStackTrace();
+				{				
+					//scrivo su db parse e db locale il nuovo utente
+					Boolean phoneNumberExists = ParseManager.phoneNumberExists(FirstUseActivity.this, phoneNumber);
+					if(phoneNumberExists==null)
+					{
+						Toast.makeText(FirstUseActivity.this, "Make sure your internet connection is enabled!", Toast.LENGTH_LONG).show();
 					}
-					
-					//cancella il messaggio inviato dalla cronologia
-					deleteLastSMS(rdmCode);
-					
-					//controllo del code inviato con SMS
-					Intent intentControlCode = new Intent(FirstUseActivity.this, FirstUseCodeControlActivity.class);
-					intentControlCode.putExtra("rdmCode", rdmCode);
-					startActivityForResult(intentControlCode, 0);
+					else
+					{
+						if(!phoneNumberExists)
+						{
+							ParseManager.insertPhoneNumber(FirstUseActivity.this, phoneNumber);
+						}
+						String id = ParseManager.getId(FirstUseActivity.this, phoneNumber);
+						if(id == null)
+						{
+							Toast.makeText(FirstUseActivity.this, "Make sure your internet connection is enabled!", Toast.LENGTH_LONG).show();
+						}
+						else
+						{
+							PersonalDataManager.insertUser(phoneNumber, id);
+							
+							//scrivo sms di conferma
+							SmsManager smsManager = SmsManager.getDefault();
+							smsManager.sendTextMessage(phoneNumber, null, "A new account for the Follow Me Android app has been created with this id: "+id+". Please send an email to followmeappinfo@gmail.com with this id if you are not the user who asks for this request.", null, null);
+							
+							Intent intent = new Intent();
+							intent.putExtra("id", id);
+							setResult(RESULT_OK, intent);
+			            	finish();
+						}
+					}													
 				}
 			} 
 		});
 	}
-	
-	@Override
-	protected void onActivityResult(int requestCode, int resultCode, Intent data) 
-	{
-		//sta ritornando l'attività first use
-		if(requestCode==0)
-		{
-			if(resultCode==RESULT_OK)
-			{
-				//scrivo su db parse e db locale il nuovo utente
-				Boolean phoneNumberExists = ParseManager.phoneNumberExists(FirstUseActivity.this, phoneNumber);
-				if(phoneNumberExists==null)
-				{
-					Toast.makeText(this, "Make sure your internet connection is enabled!", Toast.LENGTH_LONG).show();
-				}
-				else
-				{
-					if(!phoneNumberExists)
-					{
-						ParseManager.insertPhoneNumber(FirstUseActivity.this, phoneNumber);
-					}
-					String id = ParseManager.getId(FirstUseActivity.this, phoneNumber);
-					if(id == null)
-					{
-						Toast.makeText(this, "Make sure your internet connection is enabled!", Toast.LENGTH_LONG).show();
-					}
-					else
-					{
-						PersonalDataManager.insertUser(phoneNumber, id);
-						
-						Intent intent = new Intent();
-						intent.putExtra("id", id);
-						setResult(RESULT_OK, intent);
-		            	finish();
-					}
-				}								
-			}
-		}
-	}
-	
-	//numero casuale
-	private int getRandomNumber() {
-        int randomInt = 0;
-        Random random=new Random();
-        randomInt = random.nextInt(_CHAR.length());
-        if (randomInt - 1 == -1) {
-              return randomInt;
-        } else {
-              return randomInt - 1;
-        }
-  }
-
-	//stringa casuale
-	public String getRandomString()
-	{
-
-        StringBuffer randStr = new StringBuffer();
-
-        for (int i = 0; i < 5; i++) {
-
-              int number = getRandomNumber();
-              char ch = _CHAR.charAt(number);
-              randStr.append(ch);
-        }
-        return randStr.toString();
-	}
-	
-	public void deleteLastSMS(String code)
-	{
-		/*Uri deleteUri = Uri.parse("content://sms/sent");
-		Cursor m_cCursor=this.getContentResolver().query(deleteUri, null, null,null, null);
-		m_cCursor.moveToFirst();
-		String body;*/
-		ContentValues cv = new ContentValues();
-	    cv.put("body", "Code Request");
-		int n1= getContentResolver().update(Uri.parse("content://sms"), cv, "body = ?", new String[] {code});
-		/*do
-		{
-			body=m_cCursor.getString(12);
-			if(body.compareTo(code)==0)
-			{
-				int id=m_cCursor.getInt(0);
-				deleteSMS(String.valueOf(id));
-				break;
-			}
-		}
-		while(m_cCursor.moveToNext());*/
-		
-	}
-	
-	public boolean deleteSMS(String smsId) {
-	    boolean isSmsDeleted = false;
-	    ContentValues cv = new ContentValues();
-	    cv.put("body", "Code Request");
-	    try {
-	        int n=this.getContentResolver().update(Uri.parse("content://sms/sent"), cv ,  null, null);
-	        isSmsDeleted = true;
-
-	    } catch (Exception ex) {
-	        isSmsDeleted = false;
-	    }
-	    return isSmsDeleted;
-	}
-	
 }
