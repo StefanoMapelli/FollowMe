@@ -24,7 +24,7 @@ public class CustomTextView extends TextView {
 
     private void init() {
         Typeface tf = Typeface.createFromAsset(getContext().getAssets(),
-                                               "fonts/FORTE.TTF");
+                                               "fonts/sneakerhead.ttf");
         setTypeface(tf);
     }
 
