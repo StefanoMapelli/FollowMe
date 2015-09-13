@@ -32,7 +32,6 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.parse.ParseObject;
 
 import android.support.v4.app.FragmentManager;
-import android.support.v7.app.ActionBarActivity;
 import android.app.AlertDialog;
 import android.app.DialogFragment;
 import android.content.DialogInterface;
@@ -55,7 +54,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class SharingReceiverActivity extends ActionBarActivity implements SavePathDialogListener {
+public class SharingReceiverActivity extends ActionBarSuperClassActivity implements SavePathDialogListener {
 	
 	private Request request;
 	private ParseObject path;

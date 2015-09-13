@@ -6,7 +6,6 @@ import com.followme.adapter.PathCustomAdapter;
 import com.followme.manager.PersonalDataManager;
 import com.followme.object.Path;
 
-import android.support.v7.app.ActionBarActivity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -18,7 +17,7 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 
-public class SavedPathListActivity extends ActionBarActivity {
+public class SavedPathListActivity extends ActionBarSuperClassActivity {
 	
 	private ArrayList<Path> pathList;
 	private PathCustomAdapter adapter;

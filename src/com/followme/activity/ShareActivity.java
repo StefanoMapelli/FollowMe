@@ -37,7 +37,6 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.parse.ParseObject;
 
-import android.support.v7.app.ActionBarActivity;
 import android.app.AlertDialog;
 import android.app.DialogFragment;
 import android.content.DialogInterface;
@@ -66,7 +65,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class ShareActivity extends ActionBarActivity implements SavePathDialogListener {
+public class ShareActivity extends ActionBarSuperClassActivity implements SavePathDialogListener {
 
 	private Contact[] contacts = null;
 	private LocationManager locationManager=null;  

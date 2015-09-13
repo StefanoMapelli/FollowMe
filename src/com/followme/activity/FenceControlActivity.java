@@ -13,7 +13,6 @@ import com.google.android.gms.maps.model.LatLng;
 import com.parse.ParseObject;
 
 import android.support.v4.app.NotificationCompat;
-import android.support.v7.app.ActionBarActivity;
 import android.app.AlertDialog;
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -29,7 +28,7 @@ import android.view.MenuItem;
 import android.widget.ListView;
 import android.widget.Toast;
 
-public class FenceControlActivity extends ActionBarActivity {
+public class FenceControlActivity extends ActionBarSuperClassActivity {
 	
 	private ListView listViewFence;
 	private List<Fence> fenceList=new ArrayList<Fence>();

@@ -28,7 +28,6 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import android.support.v4.app.FragmentManager;
-import android.support.v7.app.ActionBarActivity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -45,7 +44,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-public class LoadPathActivity extends ActionBarActivity {
+public class LoadPathActivity extends ActionBarSuperClassActivity {
 
 	private GoogleMap map;
 	private MapWrapperLayout mapWrapperLayout;

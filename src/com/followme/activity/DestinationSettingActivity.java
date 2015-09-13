@@ -1,6 +1,5 @@
 package com.followme.activity;
 
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -26,7 +25,7 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
-public class DestinationSettingActivity extends ActionBarActivity {
+public class DestinationSettingActivity extends ActionBarSuperClassActivity {
 	
 	private GoogleMap map;
 	private LocationManager locationManager=null;  

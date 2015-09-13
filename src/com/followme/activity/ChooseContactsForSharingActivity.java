@@ -15,12 +15,11 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.v7.app.ActionBarActivity;
 import android.view.View;
 import android.widget.ListView;
 import android.widget.Toast;
 
-public class ChooseContactsForSharingActivity extends ActionBarActivity
+public class ChooseContactsForSharingActivity extends ActionBarSuperClassActivity
 {
 	private ListView lv;
 	private List<Contact> contacts;

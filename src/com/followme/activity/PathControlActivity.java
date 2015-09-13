@@ -19,19 +19,17 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.parse.ParseObject;
 
-import android.support.v7.app.ActionBarActivity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
-import android.provider.Settings;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
-public class PathControlActivity extends ActionBarActivity {
+public class PathControlActivity extends ActionBarSuperClassActivity {
 
 	private GoogleMap map;
 	private List<ParseObject> pathObjects = new ArrayList<ParseObject>();

@@ -36,5 +36,8 @@
     <string name="title_activity_saved_path_list">Saved Paths</string>
     <string name="title_activity_load_path">Load Path</string>
     <string name="title_activity_show_fence_or_destination">Details</string>
+    <string name="title_activity_action_bar">ActionBarActivity</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="title_activity_action_bar_superclass">ActionBarSuperclassActivity</string>
 
 </resources>

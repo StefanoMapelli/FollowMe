@@ -11,7 +11,6 @@ import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.parse.ParseObject;
 
-import android.support.v7.app.ActionBarActivity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -27,7 +26,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
-public class PathReceiverActivity extends ActionBarActivity {
+public class PathReceiverActivity extends ActionBarSuperClassActivity {
 
 	private ParseObject path;
 	private Request pathRequest;

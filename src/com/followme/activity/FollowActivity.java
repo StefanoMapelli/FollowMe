@@ -3,10 +3,9 @@ package com.followme.activity;
 import com.followme.activity.R;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.app.ActionBarActivity;
 import android.view.View;
 
-public class FollowActivity extends ActionBarActivity{
+public class FollowActivity extends ActionBarSuperClassActivity{
 
 
 	@Override

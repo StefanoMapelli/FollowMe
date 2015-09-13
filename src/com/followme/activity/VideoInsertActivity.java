@@ -1,6 +1,5 @@
 package com.followme.activity;
 
-import android.support.v7.app.ActionBarActivity;
 import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
@@ -13,7 +12,7 @@ import android.widget.EditText;
 import android.widget.MediaController;
 import android.widget.VideoView;
 
-public class VideoInsertActivity extends ActionBarActivity {
+public class VideoInsertActivity extends ActionBarSuperClassActivity {
 
 	private VideoView videoView;
 	private EditText titleEditText;

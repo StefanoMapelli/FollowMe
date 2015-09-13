@@ -2,7 +2,6 @@ package com.followme.activity;
 
 import com.followme.manager.Utils;
 
-import android.support.v7.app.ActionBarActivity;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -13,7 +12,7 @@ import android.view.ViewTreeObserver;
 import android.widget.EditText;
 import android.widget.ImageView;
 
-public class PhotoInsertActivity extends ActionBarActivity {
+public class PhotoInsertActivity extends ActionBarSuperClassActivity {
 
 	private ImageView imageView;
 	private EditText titleEditText;

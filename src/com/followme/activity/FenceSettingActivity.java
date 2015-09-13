@@ -12,7 +12,6 @@ import com.google.android.gms.maps.model.Circle;
 import com.google.android.gms.maps.model.LatLng;
 
 import android.support.v4.app.FragmentManager;
-import android.support.v7.app.ActionBarActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.content.Intent;
@@ -26,7 +25,7 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
-public class FenceSettingActivity extends ActionBarActivity {
+public class FenceSettingActivity extends ActionBarSuperClassActivity {
 	
 	private GoogleMap map;
 	private LocationManager locationManager=null;  

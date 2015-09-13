@@ -14,7 +14,6 @@ import com.google.android.gms.maps.model.LatLng;
 import com.parse.ParseObject;
 
 import android.support.v4.app.FragmentManager;
-import android.support.v7.app.ActionBarActivity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -23,7 +22,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
-public class ShowDetailsActivity extends ActionBarActivity {
+public class ShowDetailsActivity extends ActionBarSuperClassActivity {
 	
 	private Request request;
 	private ParseObject fenceParseObject;

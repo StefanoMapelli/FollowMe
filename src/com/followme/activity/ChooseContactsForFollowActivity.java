@@ -10,7 +10,6 @@ import com.followme.manager.PersonalDataManager;
 import com.followme.manager.Utils;
 import com.followme.object.Contact;
 
-import android.support.v7.app.ActionBarActivity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.AsyncTask;
@@ -21,7 +20,7 @@ import android.view.View;
 import android.widget.ListView;
 import android.widget.Toast;
 
-public class ChooseContactsForFollowActivity extends ActionBarActivity {
+public class ChooseContactsForFollowActivity extends ActionBarSuperClassActivity {
 		
 	private ListView lv;
 	private Contact[] contactsItems;

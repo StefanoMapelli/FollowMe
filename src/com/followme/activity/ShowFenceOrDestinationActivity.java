@@ -9,12 +9,11 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.CameraPosition;
 
 import android.support.v4.app.FragmentManager;
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 
-public class ShowFenceOrDestinationActivity extends ActionBarActivity {
+public class ShowFenceOrDestinationActivity extends ActionBarSuperClassActivity {
 
 	private Destination destination;
 	private Fence fence;
