@@ -33,9 +33,10 @@
             android:layout_weight="0.8"
             android:ems="10"
             android:background="@color/item_list_text"
-            android:hint="Title for the video"
+            android:hint=" Title for the video"
             android:inputType="textMultiLine" 
-            android:padding="10sp">
+            android:padding="10sp"
+            android:layout_margin="10sp">
 
             <requestFocus />
         </com.followme.adapter.CustomEditText>

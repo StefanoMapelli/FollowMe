@@ -28,10 +28,11 @@
         		android:layout_height="match_parent"
         		android:layout_weight="0.8"
         		android:ems="10"
-        		android:hint="Title for the image"
+        		android:hint=" Title for the image"
         		android:inputType="textMultiLine" 
         		android:background="@color/item_list_text"
-        		android:padding="10sp">
+        		android:padding="10sp"
+        		android:layout_margin="10sp">
 
         		<requestFocus />
    			</com.followme.adapter.CustomEditText>
