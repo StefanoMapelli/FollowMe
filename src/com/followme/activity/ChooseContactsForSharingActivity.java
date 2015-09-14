@@ -67,10 +67,17 @@ public class ChooseContactsForSharingActivity extends ActionBarSuperClassActivit
 		Intent intent = new Intent(ChooseContactsForSharingActivity.this,ShareActivity.class);
 		//passaggio parametri all'intent
 		List<Contact> selectedContacts = Utils.selectedContacts(contactsItems);
-		intent.putExtra("selectedContacts", selectedContacts.toArray());
-		intent.putExtra("userId", userId);
-		startActivity(intent);
-		finish();
+		if(!selectedContacts.isEmpty())
+		{
+			intent.putExtra("selectedContacts", selectedContacts.toArray());
+			intent.putExtra("userId", userId);
+			startActivity(intent);
+			finish();
+		}
+		else
+		{
+			Toast.makeText(this, "Select one contact or more...", Toast.LENGTH_SHORT).show();
+		}
 	}
 
 	private class RefreshSharingContactListThread extends AsyncTask<Void, Integer, String>

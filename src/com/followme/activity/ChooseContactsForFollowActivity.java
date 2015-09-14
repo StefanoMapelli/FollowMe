@@ -67,10 +67,17 @@ public class ChooseContactsForFollowActivity extends ActionBarSuperClassActivity
 		Intent intent = new Intent(ChooseContactsForFollowActivity.this,FollowActivity.class);
 		//passaggio parametri all'intent
 		List<Contact> selectedContacts = Utils.selectedContacts(contactsItems);
-		intent.putExtra("selectedContacts", selectedContacts.toArray());
-		intent.putExtra("userId", userId);
-		startActivity(intent);
-		finish();
+		if(!selectedContacts.isEmpty())
+		{
+			intent.putExtra("selectedContacts", selectedContacts.toArray());
+			intent.putExtra("userId", userId);
+			startActivity(intent);
+			finish();
+		}
+		else
+		{
+			Toast.makeText(this, "Select one contact or more...", Toast.LENGTH_SHORT).show();
+		}
 	}
 	
 	private class RefreshFollowContactListThread extends AsyncTask<Void, Integer, String>

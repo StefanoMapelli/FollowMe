@@ -10,10 +10,15 @@ import com.followme.object.Request;
 import com.followme.object.User;
 import com.parse.ParseObject;
 
+import android.app.ActivityManager;
+import android.app.ActivityManager.AppTask;
+import android.app.ActivityManager.RecentTaskInfo;
+import android.app.ActivityManager.RunningAppProcessInfo;
 import android.app.AlertDialog;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -22,6 +27,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Vibrator;
 import android.support.v4.app.NotificationCompat;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -178,6 +184,11 @@ public class MainActivity extends ActionBarSuperClassActivity  {
 					Toast.makeText(this, "Make sure your internet connection is enabled!", Toast.LENGTH_LONG).show();
 				}
 			}
+			else
+			{
+	        	finish();
+	        	System.exit(0);
+			}
 		}
 	}
 	
@@ -190,8 +201,8 @@ public class MainActivity extends ActionBarSuperClassActivity  {
 	    .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
 	        public void onClick(DialogInterface dialog, int which) { 
 	            // continue
-	        	System.exit(0);
 	        	finish();
+	        	System.exit(0);
 	        }
 	     })
 	    .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
@@ -336,11 +347,22 @@ public class MainActivity extends ActionBarSuperClassActivity  {
 											NotificationManager mNotificationManager = (NotificationManager)
 													getSystemService(notificationService);
 
-											Intent resultIntent = new Intent(MainActivity.this,MainActivity.class);
-											resultIntent.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
-
+											//ottenere activity in top
+											Intent resultIntent = null;
+											ActivityManager am = (ActivityManager) MainActivity.this.getSystemService(ACTIVITY_SERVICE);
+											if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) 
+											{
+												AppTask taskInfo = am.getAppTasks().get(am.getAppTasks().size()-1);
+												RecentTaskInfo rti = taskInfo.getTaskInfo();		    
+											    resultIntent = rti.baseIntent;
+											}
+											else
+											{
+												resultIntent= new Intent(MainActivity.this, MainActivity.class);
+											}
+										   
 											PendingIntent resultPendingIntent = PendingIntent.getActivity(MainActivity.this, 0, resultIntent, 0);
-
+												
 											//notifica
 											NotificationCompat.Builder mBuilder =
 													new NotificationCompat.Builder(MainActivity.this);
@@ -475,9 +497,20 @@ public class MainActivity extends ActionBarSuperClassActivity  {
 										NotificationManager mNotificationManager = (NotificationManager)
 												getSystemService(notificationService);
 
-										Intent resultIntent = new Intent(MainActivity.this,MainActivity.class);
-										resultIntent.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
-
+										//ottenere activity in top
+										Intent resultIntent = null;
+										ActivityManager am = (ActivityManager) MainActivity.this.getSystemService(ACTIVITY_SERVICE);
+										if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) 
+										{
+											AppTask taskInfo = am.getAppTasks().get(0);
+											RecentTaskInfo rti = taskInfo.getTaskInfo();		    
+										    resultIntent = rti.baseIntent;
+										}
+										else
+										{
+											resultIntent= new Intent(MainActivity.this, MainActivity.class);
+										}
+									    			    
 										PendingIntent resultPendingIntent = PendingIntent.getActivity(MainActivity.this, 0, resultIntent, 0);
 
 										//notifica

@@ -3,6 +3,7 @@ package com.followme.activity;
 import com.followme.activity.R;
 import com.followme.manager.ParseManager;
 import com.followme.manager.PersonalDataManager;
+
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -56,10 +57,10 @@ public class FirstUseActivity extends Activity {
 						else
 						{
 							PersonalDataManager.insertUser(phoneNumber, id);
-							
+
 							//scrivo sms di conferma
 							SmsManager smsManager = SmsManager.getDefault();
-							smsManager.sendTextMessage(phoneNumber, null, "A new account for the Follow Me Android app has been created with this id: "+id+". Please send an email to followmeappinfo@gmail.com with this id if you are not the user who asks for this request.", null, null);
+							smsManager.sendTextMessage(phoneNumber, null, "A new account has been created with this id: "+id+". Please send an email to followmeappinfo@gmail.com for more info.", null, null);
 							
 							Intent intent = new Intent();
 							intent.putExtra("id", id);
@@ -70,5 +71,13 @@ public class FirstUseActivity extends Activity {
 				}
 			} 
 		});
+	}
+	
+	@Override
+	public void onBackPressed()
+	{
+		Intent intent = new Intent();
+		setResult(RESULT_CANCELED, intent);
+    	finish();
 	}
 }
