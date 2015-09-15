@@ -6,11 +6,29 @@
     android:weightSum="1"
     android:orientation="vertical" 
     android:background="@color/background">
+    
+<com.followme.adapter.MapWrapperLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/mapFollowLinearLayout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_weight="0.1"
+    android:orientation="vertical"
+    android:weightSum="1" >
+
+    <fragment
+        android:id="@+id/mapFollowActivity"
+        android:name="com.google.android.gms.maps.SupportMapFragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1" />
+</com.followme.adapter.MapWrapperLayout>
+    
         <Button
             android:id="@+id/fenceButton"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_weight="0.33"
+            android:layout_weight="0.3"
             android:onClick="startFenceOnClickHandler"
             android:drawableTop="@drawable/fence"
             android:paddingTop="20sp"
@@ -24,7 +42,7 @@
             android:id="@+id/destinationButton"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_weight="0.33"
+            android:layout_weight="0.3"
             android:onClick="startDestinationOnClickHandler"
             android:drawableTop="@drawable/destination"
             android:paddingTop="20sp"
@@ -38,7 +56,7 @@
             android:id="@+id/pathButton"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_weight="0.33"
+            android:layout_weight="0.3"
             android:onClick="startPathOnClickHandler"
             android:drawableTop="@drawable/follow"
             android:paddingTop="20sp"
