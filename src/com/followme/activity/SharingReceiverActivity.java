@@ -83,6 +83,9 @@ public class SharingReceiverActivity extends ActionBarSuperClassActivity impleme
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.sharing_receiver_layout);
+		
+		PersonalDataManager.insertOrUpdateCurrentActivity("SharingReceiver");
+		
 		handler=new Handler();
 		FragmentManager fm = getSupportFragmentManager();
 		map = ((SupportMapFragment) fm.findFragmentById(R.id.mapSharingReceiver)).getMap();

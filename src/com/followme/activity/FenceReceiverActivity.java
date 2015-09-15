@@ -2,6 +2,7 @@ package com.followme.activity;
 
 import com.followme.manager.MapManager;
 import com.followme.manager.ParseManager;
+import com.followme.manager.PersonalDataManager;
 import com.followme.manager.Utils;
 import com.followme.object.Fence;
 import com.followme.object.Request;
@@ -52,6 +53,8 @@ public class FenceReceiverActivity extends ActionBarSuperClassActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.fence_receiver_layout);
+		
+		PersonalDataManager.insertOrUpdateCurrentActivity("FenceReceiver");
 		
 		handler=new Handler();
 		fenceRequest=(Request) getIntent().getSerializableExtra("acceptedRequest");

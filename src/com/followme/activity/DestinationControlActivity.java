@@ -44,6 +44,8 @@ public class DestinationControlActivity extends ActionBarSuperClassActivity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.destination_control_layout);
 		
+		PersonalDataManager.insertOrUpdateCurrentActivity("DestinationControl");
+		
 		listViewDestination = (ListView) this.findViewById(R.id.destinationControlList);
 		handler=new Handler();
 		

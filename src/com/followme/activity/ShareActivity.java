@@ -104,6 +104,9 @@ public class ShareActivity extends ActionBarSuperClassActivity implements SavePa
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.share_layout);
+		
+		PersonalDataManager.insertOrUpdateCurrentActivity("Share");
+		
 		map = ((SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.shareMap)).getMap();
 		mapWrapperLayout = (MapWrapperLayout)findViewById(R.id.map_linear_layout);
 

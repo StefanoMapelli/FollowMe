@@ -50,7 +50,9 @@ public class DatabaseCreationManager extends SQLiteOpenHelper {
 	public static final String TABLE_AUDIO = "audio";
 	public static final String COLUMN_AUDIO_ID = "id_audio";
 	
-	
+	public static final String TABLE_CURRENT_ACTIVITY = "current_activity";
+	public static final String COLUMN_CURRENT_ACTIVITY_NAME = "current_activity_name";
+	public static final String COLUMN_CURRENT_ACITIVTY_ID = "id_current_activity";
 
 	private static final String DATABASE_NAME = "followMeDatabase.db";
 	private static final int DATABASE_VERSION = 1;
@@ -106,6 +108,11 @@ public class DatabaseCreationManager extends SQLiteOpenHelper {
 		      + COLUMN_TITLE + " TEXT not null, "
 		      + COLUMN_FILE + " BLOB not null);";
 	
+	private static final String CURRENT_ACTIVITY_CREATE  = "create table "
+		      + TABLE_CURRENT_ACTIVITY
+		      + "(" + COLUMN_CURRENT_ACITIVTY_ID + " INTEGER primary key autoincrement, "
+		      + COLUMN_CURRENT_ACTIVITY_NAME + " TEXT not null);";
+	
 
 	public DatabaseCreationManager(Context context, String name, CursorFactory factory,
 			int version) {
@@ -127,6 +134,7 @@ public class DatabaseCreationManager extends SQLiteOpenHelper {
 		db.execSQL(VIDEO_CREATE);
 		db.execSQL(AUDIO_CREATE);
 		db.execSQL(CONTACT_CREATE);
+		db.execSQL(CURRENT_ACTIVITY_CREATE);
 
 	}
 

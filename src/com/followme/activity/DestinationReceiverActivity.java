@@ -2,6 +2,7 @@ package com.followme.activity;
 
 import com.followme.manager.MapManager;
 import com.followme.manager.ParseManager;
+import com.followme.manager.PersonalDataManager;
 import com.followme.manager.Utils;
 import com.followme.object.Destination;
 import com.followme.object.Request;
@@ -52,6 +53,8 @@ public class DestinationReceiverActivity extends ActionBarSuperClassActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.destination_receiver_layout);
+		
+		PersonalDataManager.insertOrUpdateCurrentActivity("DestinationReceiver");
 		
 		handler=new Handler();
 		destinationRequest=(Request) getIntent().getSerializableExtra("acceptedRequest");

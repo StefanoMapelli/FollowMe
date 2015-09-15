@@ -43,6 +43,8 @@ public class FenceControlActivity extends ActionBarSuperClassActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.fence_control_layout);
+				
+		PersonalDataManager.insertOrUpdateCurrentActivity("FenceControl");
 		
 		listViewFence = (ListView) this.findViewById(R.id.fenceControlList);
 		handler=new Handler();

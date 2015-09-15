@@ -70,7 +70,8 @@
         <activity
             android:name=".ShareActivity"
             android:label="@string/title_activity_share"
-            android:screenOrientation="portrait">
+            android:screenOrientation="portrait"
+            android:launchMode="singleTask">
         </activity>
         <activity
             android:name=".RequestsListActivity"
@@ -85,7 +86,8 @@
         <activity
             android:name=".SharingReceiverActivity"
             android:label="@string/title_activity_sharing_receiver"
-            android:screenOrientation="portrait" >
+            android:screenOrientation="portrait"
+            android:launchMode="singleTask" >
         </activity>
         <activity
             android:name=".PhotoInsertActivity"
@@ -122,12 +124,14 @@
         <activity
             android:name=".FenceReceiverActivity"
             android:label="@string/title_activity_fence_receiver"
-            android:screenOrientation="portrait" >
+            android:screenOrientation="portrait"
+            android:launchMode="singleTask" >
         </activity>
         <activity
             android:name=".FenceControlActivity"
             android:label="@string/title_activity_fence_control"
-            android:screenOrientation="portrait" >
+            android:screenOrientation="portrait"
+            android:launchMode="singleTask" >
         </activity>
         <activity
             android:name=".FullScreenVideoActivity"
@@ -138,23 +142,26 @@
         <activity
             android:name=".DestinationControlActivity"
             android:label="@string/title_activity_destination_control"
-            android:screenOrientation="portrait" >
+            android:screenOrientation="portrait"
+            android:launchMode="singleTask" >
         </activity>
         <activity
             android:name=".DestinationReceiverActivity"
             android:label="@string/title_activity_destination_receiver"
-            android:screenOrientation="portrait" >
+            android:screenOrientation="portrait"
+            android:launchMode="singleTask" >
         </activity>
         <activity
             android:name=".PathControlActivity"
             android:label="@string/title_activity_path_control"
-            android:launchMode="singleInstance"
-            android:screenOrientation="portrait" >
+            android:screenOrientation="portrait"
+            android:launchMode="singleTask" >
         </activity>
         <activity
             android:name=".PathReceiverActivity"
             android:label="@string/title_activity_path_receiver"
-            android:screenOrientation="portrait" >
+            android:screenOrientation="portrait"
+            android:launchMode="singleTask" >
         </activity>
         <activity
             android:name=".SavedPathListActivity"
@@ -164,14 +171,16 @@
         <activity
             android:name=".LoadPathActivity"
             android:label="@string/title_activity_load_path"
-            android:screenOrientation="portrait" >
+            android:screenOrientation="portrait"
+            android:launchMode="singleTask" >
         </activity>
         <activity
             android:name=".ShowFenceOrDestinationActivity"
             android:label="@string/title_activity_show_fence_or_destination"
             android:screenOrientation="portrait" >
         </activity>
-        <activity android:name=".ActionBarSuperClassActivity" >
+        <activity
+             android:name=".ActionBarSuperClassActivity" >
         </activity>
         <activity
             android:name=".SplashScreenActivity"

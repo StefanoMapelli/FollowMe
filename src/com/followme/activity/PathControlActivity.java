@@ -6,6 +6,7 @@ import java.util.List;
 
 import com.followme.manager.MapManager;
 import com.followme.manager.ParseManager;
+import com.followme.manager.PersonalDataManager;
 import com.followme.manager.Utils;
 import com.followme.object.Contact;
 import com.followme.object.Position;
@@ -49,6 +50,9 @@ public class PathControlActivity extends ActionBarSuperClassActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_path_control);
+		
+		PersonalDataManager.insertOrUpdateCurrentActivity("PathControl");
+		
 		handler=new Handler();
 		map = ((SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.followPathMap)).getMap();
 		

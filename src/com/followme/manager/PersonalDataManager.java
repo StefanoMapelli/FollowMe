@@ -472,7 +472,7 @@ public class PersonalDataManager {
 	  {
 		  ArrayList<Media> audioList=new ArrayList<Media>();  
 
-		  Cursor cursor=database.rawQuery("SELECT audio.id_audio, audio.position, audio.title, audio.file, position.id_position, position.counter, position.latitude, position.longitude FROM video, position WHERE audio.position=position.id_position AND position.id_path="+idPath, null);
+		  Cursor cursor=database.rawQuery("SELECT audio.id_audio, audio.position, audio.title, audio.file, position.id_position, position.counter, position.latitude, position.longitude FROM audio, position WHERE audio.position=position.id_position AND position.id_path="+idPath, null);
 
 		  cursor.moveToFirst();
 		  if(cursor.moveToFirst())
@@ -570,5 +570,45 @@ public class PersonalDataManager {
 	public static void deletePath(String id) 
 	{
 		database.delete(DatabaseCreationManager.TABLE_PATH, DatabaseCreationManager.COLUMN_PATH_ID+"="+id, null);
+	}
+	
+	/**
+	 * 
+	 * @param activityName
+	 */
+	public static void insertOrUpdateCurrentActivity(String activityName)
+	{
+		if(database.rawQuery("SELECT * FROM " + DatabaseCreationManager.TABLE_CURRENT_ACTIVITY, null).getCount()==0)
+		{
+			 //insert
+			ContentValues values = new ContentValues();
+			values.put(DatabaseCreationManager.COLUMN_CURRENT_ACTIVITY_NAME, activityName);
+			database.insert(DatabaseCreationManager.TABLE_CURRENT_ACTIVITY, null, values);
+		}
+		else
+		{
+			//update
+			ContentValues values = new ContentValues();
+			values.put(DatabaseCreationManager.COLUMN_CURRENT_ACTIVITY_NAME, activityName);
+			database.update(DatabaseCreationManager.TABLE_CURRENT_ACTIVITY, values, null, null);
+		}
+	}
+	
+	/**
+	 * 
+	 * @return
+	 */
+	public static String getCurrentActivityName()
+	{
+		Cursor cursor=database.rawQuery("SELECT "+ DatabaseCreationManager.TABLE_CURRENT_ACTIVITY + "."
+											+ DatabaseCreationManager.COLUMN_CURRENT_ACTIVITY_NAME+
+											" FROM "+DatabaseCreationManager.TABLE_CURRENT_ACTIVITY, null);
+		
+		cursor.moveToFirst();
+		  
+		String activityName=cursor.getString(0);
+	  
+		cursor.close();
+		return activityName;
 	}
 }

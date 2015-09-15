@@ -66,6 +66,9 @@ public class LoadPathActivity extends ActionBarSuperClassActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.load_path_layout);
+		
+		PersonalDataManager.insertOrUpdateCurrentActivity("LoadPath");
+		
 		handler=new Handler();
 	}
 	

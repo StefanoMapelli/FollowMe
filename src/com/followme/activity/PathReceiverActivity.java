@@ -2,6 +2,7 @@ package com.followme.activity;
 
 import com.followme.manager.MapManager;
 import com.followme.manager.ParseManager;
+import com.followme.manager.PersonalDataManager;
 import com.followme.manager.Utils;
 import com.followme.object.Request;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -46,6 +47,8 @@ public class PathReceiverActivity extends ActionBarSuperClassActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_path_receiver);
+		
+		PersonalDataManager.insertOrUpdateCurrentActivity("PathReceiver");
 		
 		handler=new Handler();
 		map = ((SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.followPathReveiverMap)).getMap();

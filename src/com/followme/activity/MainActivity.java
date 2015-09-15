@@ -13,12 +13,10 @@ import com.parse.ParseObject;
 import android.app.ActivityManager;
 import android.app.ActivityManager.AppTask;
 import android.app.ActivityManager.RecentTaskInfo;
-import android.app.ActivityManager.RunningAppProcessInfo;
 import android.app.AlertDialog;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -48,9 +46,7 @@ public class MainActivity extends ActionBarSuperClassActivity  {
 	{
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.main_activity_layout);
-		
-		
-		
+			
 		handler=new Handler();
 		vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
 		
@@ -59,6 +55,7 @@ public class MainActivity extends ActionBarSuperClassActivity  {
 		{
 			new PersonalDataManager(this);
 			PersonalDataManager.open();
+			PersonalDataManager.insertOrUpdateCurrentActivity("Main");
 			esito= PersonalDataManager.userExists();
 		}
 		catch(Exception e)
@@ -99,6 +96,13 @@ public class MainActivity extends ActionBarSuperClassActivity  {
 		}		
 		
 		new NetworkActivity().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);		
+	}
+	
+	@Override
+	protected void onResume()
+	{
+		super.onResume();
+		PersonalDataManager.insertOrUpdateCurrentActivity("Main");
 	}
 	
 	public void followOnClickHandler(View v)
@@ -358,7 +362,66 @@ public class MainActivity extends ActionBarSuperClassActivity  {
 											}
 											else
 											{
-												resultIntent= new Intent(MainActivity.this, MainActivity.class);
+												String currentActivity = PersonalDataManager.getCurrentActivityName();
+												
+												switch(currentActivity)
+												{
+												case "Main":
+												{
+													resultIntent= new Intent(MainActivity.this, MainActivity.class);
+													break;
+												}
+												case "SharingReceiver":
+												{
+													resultIntent= new Intent(MainActivity.this, SharingReceiverActivity.class);
+													break;
+												}
+												case "Share":
+												{
+													resultIntent= new Intent(MainActivity.this, ShareActivity.class);
+													break;
+												}
+												case "PathReceiver":
+												{
+													resultIntent= new Intent(MainActivity.this, PathReceiverActivity.class);
+													break;
+												}
+												case "PathControl":
+												{
+													resultIntent= new Intent(MainActivity.this, PathControlActivity.class);
+													break;
+												}
+												case "LoadPath":
+												{
+													resultIntent= new Intent(MainActivity.this, LoadPathActivity.class);
+													break;
+												}
+												case "DestinationReceiver":
+												{
+													resultIntent= new Intent(MainActivity.this, DestinationReceiverActivity.class);
+													break;
+												}
+												case "DestinationControl":
+												{
+													resultIntent= new Intent(MainActivity.this, DestinationControlActivity.class);
+													break;
+												}
+												case "FenceControl":
+												{
+													resultIntent= new Intent(MainActivity.this, FenceControlActivity.class);
+													break;
+												}
+												case "FenceReceiver":
+												{
+													resultIntent= new Intent(MainActivity.this, FenceReceiverActivity.class);
+													break;
+												}
+												default:
+												{
+													resultIntent= new Intent(MainActivity.this, MainActivity.class);
+													break;
+												}
+												}												
 											}
 										   
 											PendingIntent resultPendingIntent = PendingIntent.getActivity(MainActivity.this, 0, resultIntent, 0);
@@ -508,7 +571,66 @@ public class MainActivity extends ActionBarSuperClassActivity  {
 										}
 										else
 										{
-											resultIntent= new Intent(MainActivity.this, MainActivity.class);
+											String currentActivity = PersonalDataManager.getCurrentActivityName();
+											
+											switch(currentActivity)
+											{
+											case "Main":
+											{
+												resultIntent= new Intent(MainActivity.this, MainActivity.class);
+												break;
+											}
+											case "SharingReceiver":
+											{
+												resultIntent= new Intent(MainActivity.this, SharingReceiverActivity.class);
+												break;
+											}
+											case "Share":
+											{
+												resultIntent= new Intent(MainActivity.this, ShareActivity.class);
+												break;
+											}
+											case "PathReceiver":
+											{
+												resultIntent= new Intent(MainActivity.this, PathReceiverActivity.class);
+												break;
+											}
+											case "PathControl":
+											{
+												resultIntent= new Intent(MainActivity.this, PathControlActivity.class);
+												break;
+											}
+											case "LoadPath":
+											{
+												resultIntent= new Intent(MainActivity.this, LoadPathActivity.class);
+												break;
+											}
+											case "DestinationReceiver":
+											{
+												resultIntent= new Intent(MainActivity.this, DestinationReceiverActivity.class);
+												break;
+											}
+											case "DestinationControl":
+											{
+												resultIntent= new Intent(MainActivity.this, DestinationControlActivity.class);
+												break;
+											}
+											case "FenceControl":
+											{
+												resultIntent= new Intent(MainActivity.this, FenceControlActivity.class);
+												break;
+											}
+											case "FenceReceiver":
+											{
+												resultIntent= new Intent(MainActivity.this, FenceReceiverActivity.class);
+												break;
+											}
+											default:
+											{
+												resultIntent= new Intent(MainActivity.this, MainActivity.class);
+												break;
+											}
+											}	
 										}
 									    			    
 										PendingIntent resultPendingIntent = PendingIntent.getActivity(MainActivity.this, 0, resultIntent, 0);
