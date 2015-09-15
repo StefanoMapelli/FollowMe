@@ -238,11 +238,51 @@ public class PathControlActivity extends ActionBarSuperClassActivity {
 
 		@Override
 		protected String doInBackground(Void... params) 
-		{				
+		{		
+			final Boolean[]  statusShown = new Boolean[requestIdList.size()];
+			
+			for(int i=0; i<statusShown.length; i++)
+			{
+				statusShown[i] = false;
+			}
 			while(true)
 			{	
 				if(isCancelled())
 					return null;
+				
+				handler.post(new Runnable() {
+					@Override
+					public void run() 
+					{
+						int k=0;
+						for(String reqId : requestIdList)
+						{
+							if(!statusShown[k])
+							{
+								String status = ParseManager.getRequestStatus(PathControlActivity.this, reqId);
+
+								if(status==null)
+								{
+									Toast.makeText(PathControlActivity.this, "Make sure your internet connection is enabled!", Toast.LENGTH_LONG).show();
+								}
+								else
+								{
+									if(status.compareTo("accettata")==0)
+									{
+										Toast.makeText(PathControlActivity.this, contactsList.get(k).getName()+" accepts your request!", Toast.LENGTH_LONG).show();
+										statusShown[k] = true;
+									}
+									else if(status.compareTo("rifiutata")==0)
+									{
+										Toast.makeText(PathControlActivity.this, contactsList.get(k).getName()+" declined your request!", Toast.LENGTH_LONG).show();
+										statusShown[k] = true;
+									}
+								}
+							}
+							k++;
+						}
+					}
+				});
 				
 				handler.post(new Runnable() {
 					@Override

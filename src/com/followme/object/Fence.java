@@ -16,9 +16,10 @@ public class Fence implements Serializable{
 	private double centerLatitude;
 	private double centerLongitude;
 	private boolean inTheFence;
+	private Boolean statusAccepted;
 	
 	
-	public Fence(int radius, Contact user, LatLng center, String idFence, boolean inTheFence) {
+	public Fence(int radius, Contact user, LatLng center, String idFence, boolean inTheFence, Boolean statusAccepted) {
 		super();
 		this.radius = radius;
 		this.user = user;
@@ -26,6 +27,7 @@ public class Fence implements Serializable{
 		this.centerLongitude = center.longitude;
 		this.idFence=idFence;
 		this.setInTheFence(inTheFence);
+		this.statusAccepted = statusAccepted;
 	}
 	
 	public Fence() {
@@ -67,6 +69,14 @@ public class Fence implements Serializable{
 
 	public void setInTheFence(boolean inTheFence) {
 		this.inTheFence = inTheFence;
+	}
+
+	public Boolean getStatusAccepted() {
+		return statusAccepted;
+	}
+
+	public void setStatusAccepted(Boolean statusAccepted) {
+		this.statusAccepted = statusAccepted;
 	}
 
 }

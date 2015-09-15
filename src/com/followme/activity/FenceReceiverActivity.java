@@ -71,7 +71,7 @@ public class FenceReceiverActivity extends ActionBarSuperClassActivity {
 					new LatLng(fenceParseObject.getParseGeoPoint("posizione").getLatitude(),
 							fenceParseObject.getParseGeoPoint("posizione").getLongitude()),
 					fenceParseObject.getObjectId(),
-					true);
+					true, null);
 			radius=fence.getRadius();
 			center=fence.getCenter();
 			

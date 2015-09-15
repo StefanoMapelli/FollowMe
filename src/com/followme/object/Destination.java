@@ -16,9 +16,10 @@ public class Destination implements Serializable{
 	private double centerLatitude;
 	private double centerLongitude;
 	private boolean inTheDestination;
+	private Boolean statusAccepted;
 	
 	
-	public Destination(int radius, Contact user, LatLng center, String idDestination, boolean inTheDestination) {
+	public Destination(int radius, Contact user, LatLng center, String idDestination, boolean inTheDestination, Boolean statusAccepted) {
 		super();
 		this.radius = radius;
 		this.user = user;
@@ -26,6 +27,7 @@ public class Destination implements Serializable{
 		this.centerLongitude = center.longitude;
 		this.idDestination=idDestination;
 		this.setInTheDestination(inTheDestination);
+		this.statusAccepted = statusAccepted;
 	}
 	
 	public Destination() {
@@ -67,6 +69,14 @@ public class Destination implements Serializable{
 
 	public void setInTheDestination(boolean inTheDestination) {
 		this.inTheDestination = inTheDestination;
+	}
+
+	public Boolean getStatusAccepted() {
+		return statusAccepted;
+	}
+
+	public void setStatusAccepted(Boolean statusAccepted) {
+		this.statusAccepted = statusAccepted;
 	}
 
 }

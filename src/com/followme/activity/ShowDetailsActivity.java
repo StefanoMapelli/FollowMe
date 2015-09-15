@@ -64,7 +64,7 @@ public class ShowDetailsActivity extends ActionBarSuperClassActivity {
 						new LatLng(fenceParseObject.getParseGeoPoint("posizione").getLatitude(),
 								fenceParseObject.getParseGeoPoint("posizione").getLongitude()),
 						fenceParseObject.getObjectId(),
-						true);
+						true, null);
 				radius=fence.getRadius();
 				center=fence.getCenter();
 				
@@ -99,7 +99,7 @@ public class ShowDetailsActivity extends ActionBarSuperClassActivity {
 	    				new LatLng(destinationParseObject.getParseGeoPoint("posizione").getLatitude(),
 	    						destinationParseObject.getParseGeoPoint("posizione").getLongitude()),
 	    						destinationParseObject.getObjectId(),
-	    						true);
+	    						true, null);
 	    		radius=destination.getRadius();
 	    		center=destination.getCenter();
 

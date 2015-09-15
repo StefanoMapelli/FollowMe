@@ -104,6 +104,17 @@ public class MainActivity extends ActionBarSuperClassActivity  {
 		PersonalDataManager.insertOrUpdateCurrentActivity("Main");
 	}
 	
+	@Override
+	protected void onDestroy()
+	{
+		super.onDestroy();
+		
+		for(Request r : requestsList)
+		{
+			ParseManager.updateRequestStatusById(this, r.getId(), "non visualizzata");
+		}
+	}
+	
 	public void followOnClickHandler(View v)
 	{
 		if(user.getId().compareTo("")==0)
@@ -204,6 +215,10 @@ public class MainActivity extends ActionBarSuperClassActivity  {
 	    .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
 	        public void onClick(DialogInterface dialog, int which) { 
 	            // continue
+	        	for(Request r : requestsList)
+	    		{
+	    			ParseManager.updateRequestStatusById(MainActivity.this, r.getId(), "non visualizzata");
+	    		}
 	        	finish();
 	        	System.exit(0);
 	        }

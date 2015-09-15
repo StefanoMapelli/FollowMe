@@ -495,6 +495,25 @@ public class ParseManager {
 		}
 	}
 	
+	public static String getRequestStatus(Context context, String idReq)
+	{
+		ParseObject po = null;
+		List<ParseObject> objects = null;
+		Parse.initialize(context,"x9hwNnRfTCCYGXPVJNKaR7zYTIMOdKeLkerRQJT2" ,"hi7GT6rUlp9uTfw6XQzdEjnTqwgPnRPoikPehgVf");
+		
+		ParseQuery<ParseObject> query = ParseQuery.getQuery("Richiesta");
+		query.whereEqualTo("objectId", idReq);
+		
+		try {
+			objects=query.find();
+			po=objects.get(0);
+		} catch (Exception e) {
+			return null;
+		}
+		
+		return po.getString("stato");
+	}
+	
 	/**
 	 * Delete the request with the given id.
 	 * @param context

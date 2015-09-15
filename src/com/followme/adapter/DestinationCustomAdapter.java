@@ -41,15 +41,30 @@ public class DestinationCustomAdapter extends ArrayAdapter<Destination>{
 		userText.setText("User: "+ destination.get(position).getUser().getName());
 		centerText.setText("Center: "+ Double.toString(destination.get(position).getCenter().latitude).substring(0, 9)+ " - " +Double.toString(destination.get(position).getCenter().longitude).substring(0, 9));
 		radiusText.setText("Radius: "+ destination.get(position).getRadius()+"m");
-		if(destination.get(position).isInTheDestination())
+
+		if(destination.get(position).getStatusAccepted() == null)
 		{
-			statusText.setText("Status: User Is In The Destination Zone");
-			statusText.setTextColor(Color.GREEN);
+			statusText.setText("Status: Pending...");
+			statusText.setTextColor(Color.GRAY);
+		}
+		else if(!destination.get(position).getStatusAccepted())
+		{
+			statusText.setText("Status: Request declined");
+			statusText.setTextColor(Color.GRAY);
 		}
 		else
 		{
-			statusText.setText("Status: User Is Not Arrived");
-			statusText.setTextColor(Color.RED);
+
+			if(destination.get(position).isInTheDestination())
+			{
+				statusText.setText("Status: User Is In The Destination Zone");
+				statusText.setTextColor(Color.GREEN);
+			}
+			else
+			{
+				statusText.setText("Status: User Is Not Arrived");
+				statusText.setTextColor(Color.RED);
+			}
 		}
 		
 		return convertView;	

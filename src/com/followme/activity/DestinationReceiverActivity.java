@@ -73,7 +73,7 @@ public class DestinationReceiverActivity extends ActionBarSuperClassActivity {
 					new LatLng(destinationParseObject.getParseGeoPoint("posizione").getLatitude(),
 							destinationParseObject.getParseGeoPoint("posizione").getLongitude()),
 					destinationParseObject.getObjectId(),
-					true);
+					true, null);
 			radius=destination.getRadius();
 			center=destination.getCenter();
 			

@@ -36,6 +36,7 @@ public class DestinationControlActivity extends ActionBarSuperClassActivity {
 	private CheckDestinations checkDestinationsThread;
 	private Handler handler;
 	private int finishMode=1;
+	private List<Contact> contactList;
 	private ArrayList<String> requestIdList=new ArrayList<String>();
 	
 
@@ -64,7 +65,7 @@ public class DestinationControlActivity extends ActionBarSuperClassActivity {
 		double destinationLatitude=getIntent().getDoubleExtra("destinationLatitude",0);
 		double destinationLongitude=getIntent().getDoubleExtra("destinationLongitude",0);
 		LatLng position=new LatLng(destinationLatitude,destinationLongitude);
-		List<Contact> contactList = new ArrayList<Contact>();
+		contactList = new ArrayList<Contact>();
 		
 		//aggiungo i dati alla lista nell view
 		for(int i=0; i < objects.length; i++)
@@ -74,7 +75,7 @@ public class DestinationControlActivity extends ActionBarSuperClassActivity {
 
 		for(int i=0; i < contactList.size(); i++)
 		{
-			destinationList.add(new Destination(radius,contactList.get(i),position,(String)destinationIdList[i], false));			
+			destinationList.add(new Destination(radius,contactList.get(i),position,(String)destinationIdList[i], false, null));			
 		}
 
 		//set the adapter
@@ -179,10 +180,56 @@ public class DestinationControlActivity extends ActionBarSuperClassActivity {
 		protected String doInBackground(Void... params) 
 		{		
 			Boolean isNotificationShown=false;
+			final Boolean[]  statusShown = new Boolean[requestIdList.size()];
+			
+			for(int i=0; i<statusShown.length; i++)
+			{
+				statusShown[i] = false;
+			}
+			
 			while(true)
 			{	
 				if(isCancelled())
 					return null;
+
+				handler.post(new Runnable() {
+					@Override
+					public void run() 
+					{
+						int k=0;
+						Destination destinationObject = null;
+						for(String reqId : requestIdList)
+						{
+							destinationObject = destinationList.get(k);
+							if(!statusShown[k])
+							{
+								String status = ParseManager.getRequestStatus(DestinationControlActivity.this, reqId);
+
+								if(status==null)
+								{
+									Toast.makeText(DestinationControlActivity.this, "Make sure your internet connection is enabled!", Toast.LENGTH_LONG).show();
+								}
+								else
+								{
+									if(status.compareTo("accettata")==0)
+									{
+										destinationObject.setStatusAccepted(true);
+										adapter = new DestinationCustomAdapter(DestinationControlActivity.this, destinationList);
+										statusShown[k] = true;
+									}
+									else if(status.compareTo("rifiutata")==0)
+									{
+										destinationObject.setStatusAccepted(false);
+										adapter = new DestinationCustomAdapter(DestinationControlActivity.this, destinationList);
+										statusShown[k] = true;
+									}
+								}
+							}
+							k++;
+						}
+					}
+				});
+				
 				
 				Destination destinationObject;
 
@@ -353,7 +400,7 @@ public class DestinationControlActivity extends ActionBarSuperClassActivity {
 				}
 
 				try {
-					Thread.sleep(10000);
+					Thread.sleep(5000);
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}

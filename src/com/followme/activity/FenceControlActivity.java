@@ -36,6 +36,7 @@ public class FenceControlActivity extends ActionBarSuperClassActivity {
 	private CheckFences checkFencesThread;
 	private Handler handler;
 	private int finishMode=1;
+	private List<Contact> contactList;
 	private ArrayList<String> requestIdList=new ArrayList<String>();
 	
 	
@@ -64,7 +65,7 @@ public class FenceControlActivity extends ActionBarSuperClassActivity {
 		double fenceLatitude=getIntent().getDoubleExtra("fenceLatitude",0);
 		double fenceLongitude=getIntent().getDoubleExtra("fenceLongitude",0);
 		LatLng position=new LatLng(fenceLatitude,fenceLongitude);
-		List<Contact> contactList = new ArrayList<Contact>();
+		contactList = new ArrayList<Contact>();
 		
 		//aggiungo i dati alla lista nell view
 		for(int i=0; i < objects.length; i++)
@@ -75,7 +76,7 @@ public class FenceControlActivity extends ActionBarSuperClassActivity {
 		
 		for(int i=0; i < contactList.size(); i++)
 		{
-			fenceList.add(new Fence(radius,contactList.get(i),position,((String) fenceIdList[i]), true));			
+			fenceList.add(new Fence(radius,contactList.get(i),position,((String) fenceIdList[i]), true, null));			
 		}
 		
 		//set the adapter
@@ -180,10 +181,54 @@ public class FenceControlActivity extends ActionBarSuperClassActivity {
 		protected String doInBackground(Void... params) 
 		{			
 			Boolean isNotificationShown=false;
+			final Boolean[]  statusShown = new Boolean[requestIdList.size()];
+			
+			for(int i=0; i<statusShown.length; i++)
+			{
+				statusShown[i] = false;
+			}
 			while(true)
 			{	
 				if(isCancelled())
 					return null;
+				
+				handler.post(new Runnable() {
+					@Override
+					public void run() 
+					{
+						Fence fenceObject=null;
+						int k=0;
+						for(String reqId : requestIdList)
+						{
+							fenceObject = fenceList.get(k);
+							if(!statusShown[k])
+							{
+								String status = ParseManager.getRequestStatus(FenceControlActivity.this, reqId);
+
+								if(status==null)
+								{
+									Toast.makeText(FenceControlActivity.this, "Make sure your internet connection is enabled!", Toast.LENGTH_LONG).show();
+								}
+								else
+								{
+									if(status.compareTo("accettata")==0)
+									{
+										fenceObject.setStatusAccepted(true);
+										adapter = new FenceCustomAdapter(FenceControlActivity.this, fenceList);
+										statusShown[k] = true;
+									}
+									else if(status.compareTo("rifiutata")==0)
+									{
+										fenceObject.setStatusAccepted(false);
+										adapter = new FenceCustomAdapter(FenceControlActivity.this, fenceList);
+										statusShown[k] = true;
+									}
+								}
+							}
+							k++;
+						}
+					}
+				});
 				
 				Fence fenceObject;
 				
@@ -351,7 +396,7 @@ public class FenceControlActivity extends ActionBarSuperClassActivity {
 						}
 					}
 					try {
-						Thread.sleep(10000);
+						Thread.sleep(5000);
 					} catch (InterruptedException e) {
 						e.printStackTrace();
 					}
