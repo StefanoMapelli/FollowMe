@@ -264,7 +264,7 @@ public class LoadPathActivity extends ActionBarSuperClassActivity {
 							.position(new LatLng(photo.getPosition().getLatitude(),
 									photo.getPosition().getLongitude()))
 									.snippet(photo.getTitle())
-									.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE))
+									.icon(BitmapDescriptorFactory.fromResource(R.drawable.camera_marker))
 									.title("photo"+String.valueOf(markerCounter)));
 
 
@@ -302,7 +302,7 @@ public class LoadPathActivity extends ActionBarSuperClassActivity {
 					.position(new LatLng(video.getPosition().getLatitude(),
 							video.getPosition().getLongitude()))
 							.snippet(video.getTitle())
-							.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN))
+							.icon(BitmapDescriptorFactory.fromResource(R.drawable.movie_marker))
 							.title("video"+String.valueOf(markerCounter)));
 
 					Date dt = new Date();
