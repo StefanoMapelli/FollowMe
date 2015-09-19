@@ -12,7 +12,7 @@
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="21dp"
-        android:text="Inserisci numero di telefono"
+        android:text="Insert phone number"
         android:textAppearance="?android:attr/textAppearanceLarge" />
 
     <com.followme.adapter.CustomEditText 
