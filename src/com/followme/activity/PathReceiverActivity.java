@@ -269,7 +269,6 @@ public class PathReceiverActivity extends ActionBarSuperClassActivity {
 			 if((Math.abs(location.getLongitude() - loc.getLongitude()) > 0.00001 ||
 				  Math.abs(location.getLatitude() - loc.getLatitude()) > 0.00001))
 				 {
-					Toast.makeText(PathReceiverActivity.this, "speed: "+loc.getSpeed()+" accuracy: "+loc.getAccuracy(), Toast.LENGTH_LONG).show();
 					Log.i("GPS", "LOCATION FOUND");
 					    
 					String id = ParseManager.insertPosition(PathReceiverActivity.this, path, loc.getLatitude(), loc.getLongitude(), positionCounter);	

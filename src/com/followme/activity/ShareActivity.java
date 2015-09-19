@@ -651,7 +651,6 @@ public class ShareActivity extends ActionBarSuperClassActivity implements SavePa
 				if((Math.abs(location.getLongitude() - loc.getLongitude()) > 0.00001 ||
 						Math.abs(location.getLatitude() - loc.getLatitude()) > 0.00001))
 				{
-					Toast.makeText(ShareActivity.this, "speed: "+loc.getSpeed()+" accuracy: "+loc.getAccuracy(), Toast.LENGTH_LONG).show();
 					Log.i("GPS", "LOCATION FOUND");
 
 					String id = ParseManager.insertPosition(ShareActivity.this, pathParseObject, loc.getLatitude(), loc.getLongitude(), positionCounter);
